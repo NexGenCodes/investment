@@ -53,7 +53,7 @@ export default function WalletPage() {
       <div className="flex flex-col min-h-screen bg-backgroundStart dark:bg-backgroundEnd text-foreground px-4 md:px-8 py-6 overflow-x-hidden">
         {/* Header */}
         <header className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-white pt-10">💰 Wallet</h1>
+          <h1 className="text-3xl font-bold text-white pt-16">💰 Wallet</h1>
           <p className="text-mutedText">Manage your funds seamlessly</p>
         </header>
 

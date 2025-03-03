@@ -303,18 +303,20 @@
   max-width: 70%;
   display: flex;
   justify-content: center;
-}
-
-.howItWorksImage {
+  align-items: center;
   position: relative;
 }
 
 .howItWorksImage img {
+  margin-top: 8rem;
   width: 70%;
-  height: 450px;
+  max-height: 450px;
+  height: auto;
   border-radius: 16px;
   display: block;
+  object-fit: cover; /* Prevents stretching */
 }
+
 
 .howItWorksImage::after {
   content: "";

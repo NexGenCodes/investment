@@ -44,7 +44,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-backgroundStart dark:bg-backgroundEnd flex justify-center px-4 py-8">
       <div className="w-full max-w-6xl space-y-6">
         {/* Header */}
-        <h1 className="text-3xl font-bold text-foreground text-center pt-10">⚙️ Settings</h1>
+        <h1 className="text-3xl font-bold text-foreground text-center pt-16">⚙️ Settings</h1>
 
         {/* Settings Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

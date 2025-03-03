@@ -12,14 +12,14 @@ export default function PortfolioOverview() {
   ]);
 
   return (
-    <div className="bg-backgroundStart dark:bg-backgroundEnd min-h-screen p-6">
+    <div className="bg-backgroundStart dark:bg-backgroundEnd min-h-screen p-6  overflow-x-hidden">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Portfolio Balance Overview */}
         <div
           className="bg-gradient-to-r from-primaryAccent via-secondaryAccent to-primaryAccent 
              p-6 sm:p-8 md:p-10 rounded-xl shadow-2xl flex flex-col 
              md:flex-row justify-between items-center transform transition-all 
-             duration-300 hover:scale-[1.03] group mt-10"
+             duration-300 hover:scale-[1.03] group mt-16"
         >
           {/* Left Content (Title + Subtitle) */}
           <div className="text-center md:text-left">
@@ -36,11 +36,11 @@ export default function PortfolioOverview() {
             className="text-4xl sm:text-5xl md:text-6xl font-semibold text-white mt-4 md:mt-0 
                 group-hover:scale-105 transition-transform duration-300"
           >
-            ${portfolioBalance.toFixed(2)}
+            ₦{portfolioBalance.toFixed(2)}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
           {/* Investment Performance Chart (Line) */}
           <div className="rounded-lg p-6 flex flex-col h-full">
             <div className="w-full h-full mt-4 flex justify-center items-center">
@@ -59,7 +59,7 @@ export default function PortfolioOverview() {
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg mt-8 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg mt-8 p-6 overflow-x-auto">
           <h3 className="text-xl font-semibold text-gray-700 dark:text-white">
             Recent Transactions
           </h3>
