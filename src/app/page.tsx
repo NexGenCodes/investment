@@ -1,101 +1,223 @@
 import Image from "next/image";
+import Link from "next/link";
+import styles from "../style/Home.module.css";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className={styles.main}>
+      <section className={styles.hero}>
+        <video autoPlay loop muted className={styles.heroVideo} playsInline>
+          <source src="/video/hero-vid.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className={styles.heroOverlay}></div>
+        <div className={styles.heroContent}>
+          <h1>Invest in a Sustainable Future</h1>
+          <p>
+            Join our community of forward-thinking investors and contribute to
+            the growth of renewable energy.
+          </p>
+          <Link
+            href="/register"
+            className={styles.heroButton}
+            aria-label="Get Started"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Get Started
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <div className={styles.scrollIndicator}></div>
+      </section>
+
+      <section className={styles.aboutSection}>
+        <div className={styles.aboutImage}>
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src="/images/img/about-img.jpg"
+            alt="About Us"
+            width={500}
+            height={500}
+            priority={false}
+            loading="lazy"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        </div>
+        <div className={styles.aboutText}>
+          <h2>SunVault Investments</h2>
+          <p className={styles.aboutTextHighlight}>
+            Invest in the Future with SunVault Investments
+          </p>
+
+          <p>
+            At SunVault Investments, we offer individuals and institutions the
+            opportunity to invest in high-quality solar energy projects.
+          </p>
+          <Link
+            href="/investment"
+            className={styles.ctaButton}
+            aria-label="Explore Investment Opportunities"
+          >
+            Explore Investment Opportunities
+          </Link>
+        </div>
+      </section>
+
+      <section className={styles.howItWorks}>
+        <h2>How It Works</h2>
+        <div className={styles.howItWorksContainer}>
+          <div className={styles.howItWorksImage}>
+            <Image
+              src="/images/how-it-works.png"
+              alt="How It Works"
+              width={500}
+              height={800}
+              priority={false}
+              loading="lazy"
+              className={styles.howItWorksImage}
+            />
+          </div>
+          <div className={styles.stepsContainer}>
+            {[
+              {
+                image: "/images/reg-removebg-preview (1).png",
+                title: "Register",
+                description: "Create an account in minutes.",
+              },
+              {
+                image: "/images/dep-removebg-preview.png",
+                title: "Deposit Funds",
+                description: "Add funds securely to your account.",
+              },
+              {
+                image: "/images/invest-removebg-preview.png",
+                title: "Invest in Your Future",
+                description: "Choose from a variety of solar projects.",
+              },
+            ].map((step, index) => (
+              <div key={index} className={styles.step}>
+                <div className={styles.stepIcon}>
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    width={80}
+                    height={80}
+                    priority={false}
+                    loading="lazy"
+                    className={styles.iconImage}
+                  />
+                </div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.whyChooseUs}>
+        <h2>Why Choose Us?</h2>
+        <div className={styles.reasonsContainer}>
+          {[
+            {
+              icon: "📊",
+              title: "Low-Risk, High-Return Investments",
+              description:
+                "Diversify your portfolio with secure solar projects.",
+            },
+            {
+              icon: "⏱️",
+              title: "Real-Time Investment Data",
+              description: "Track your investments with live updates.",
+            },
+            {
+              icon: "🌍",
+              title: "Sustainable Energy Growth",
+              description:
+                "Contribute to a greener planet while earning returns.",
+            },
+          ].map((reason, index) => (
+            <div key={index} className={styles.reason}>
+              <div className={styles.reasonIcon}>{reason.icon}</div>
+              <h3>{reason.title}</h3>
+              <p>{reason.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.testimonials}>
+        <h2>What Our Investors Say</h2>
+        <div className={styles.testimonialsContainer}>
+          {[
+            {
+              avatar: "/images/avator3.png",
+              quote:
+                "Great platform! I've seen consistent returns on my investments.",
+              name: "John Doe",
+              role: "Solar Investor",
+            },
+            {
+              avatar: "/images/avator1-removebg-preview.png",
+              quote: "Easy to use and transparent. Highly recommend!",
+              name: "Jane Smith",
+              role: "Renewable Energy Enthusiast",
+            },
+            {
+              avatar: "/images/avator2.png",
+              quote: "A fantastic way to invest in renewable energy.",
+              name: "Mike Johnson",
+              role: "Sustainability Advocate",
+            },
+          ].map((testimonial, index) => (
+            <div key={index} className={styles.testimonial}>
+              <div className={styles.testimonialAvatar}>
+                <Image
+                  src={testimonial.avatar}
+                  alt={testimonial.name}
+                  width={80}
+                  height={80}
+                  priority={false}
+                  loading="lazy"
+                />
+              </div>
+              <p>{testimonial.quote}</p>
+              <h3>{testimonial.name}</h3>
+              <div className={styles.testimonialRole}>{testimonial.role}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer className={styles.footer}>
+        <div className={styles.footerContent}>
+          <div className={styles.footerLinks}>
+            <h3>Quick Links</h3>
+            <Link href="/about">About Us</Link>
+            <Link href="/investments">Investments</Link>
+            <Link href="/faq">FAQ</Link>
+            <Link href="/contact">Contact Us</Link>
+          </div>
+          <div className={styles.newsletter}>
+            <h3>Subscribe to Our Newsletter</h3>
+            <p>
+              Stay updated with the latest investment opportunities and news.
+            </p>
+            <form className={styles.newsletterForm}>
+              <input type="email" placeholder="Enter your email" required />
+              <button type="submit">Subscribe</button>
+            </form>
+          </div>
+        </div>
+        <div className={styles.footerBottom}>
+          <p>
+            &copy; 2025 SunVualt Investments. All rights reserved.{" "}
+            <Link href="/privacy" aria-label="Privacy Policy">
+              Privacy Policy
+            </Link>{" "}
+            |{" "}
+            <Link href="/terms" aria-label="Terms & Conditions">
+              Terms & Conditions
+            </Link>
+          </p>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }
