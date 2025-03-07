@@ -60,56 +60,59 @@ export default function Home() {
       </section>
 
       <section className={styles.howItWorks}>
-        <h2>How It Works</h2>
-        <div className={styles.howItWorksContainer}>
-          <div className={styles.howItWorksImage}>
+  <h2>How It Works</h2>
+  <div className={styles.howItWorksContainer}>
+    <div className={styles.howItWorksVideo}>
+      <iframe
+        width="500"
+        height="800"
+        src="https://www.youtube.com/embed/mhzUk7pXFVg"
+        title="How It Works"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className={styles.howItWorksVideo}
+      ></iframe>
+    </div>
+    <div className={styles.stepsContainer}>
+      {[
+        {
+          image: "/images/reg-removebg-preview (1).png",
+          title: "Register",
+          description: "Create an account in minutes.",
+        },
+        {
+          image: "/images/dep-removebg-preview.png",
+          title: "Deposit Funds",
+          description: "Add funds securely to your account.",
+        },
+        {
+          image: "/images/invest-removebg-preview.png",
+          title: "Invest in Your Future",
+          description: "Choose from a variety of solar projects.",
+        },
+      ].map((step, index) => (
+        <div key={index} className={styles.step}>
+          <div className={styles.stepIcon}>
             <Image
-              src="/images/how-it-works.png"
-              alt="How It Works"
-              width={500}
-              height={800}
+              src={step.image}
+              alt={step.title}
+              width={80}
+              height={80}
               priority={false}
               loading="lazy"
-              className={styles.howItWorksImage}
+              className={styles.iconImage}
             />
           </div>
-          <div className={styles.stepsContainer}>
-            {[
-              {
-                image: "/images/reg-removebg-preview (1).png",
-                title: "Register",
-                description: "Create an account in minutes.",
-              },
-              {
-                image: "/images/dep-removebg-preview.png",
-                title: "Deposit Funds",
-                description: "Add funds securely to your account.",
-              },
-              {
-                image: "/images/invest-removebg-preview.png",
-                title: "Invest in Your Future",
-                description: "Choose from a variety of solar projects.",
-              },
-            ].map((step, index) => (
-              <div key={index} className={styles.step}>
-                <div className={styles.stepIcon}>
-                  <Image
-                    src={step.image}
-                    alt={step.title}
-                    width={80}
-                    height={80}
-                    priority={false}
-                    loading="lazy"
-                    className={styles.iconImage}
-                  />
-                </div>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
-              </div>
-            ))}
-          </div>
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
+
+
 
       <section className={styles.whyChooseUs}>
         <h2>Why Choose Us?</h2>

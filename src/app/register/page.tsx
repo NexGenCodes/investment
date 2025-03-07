@@ -10,6 +10,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [nationality, setNationality] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState(""); // ✅ Success message state
   const { login } = useAuth();
@@ -26,7 +27,7 @@ export default function Register() {
     }
 
     try {
-      console.log("Registering user", { name, email, password });
+      console.log("Registering user", { name, email, password, nationality });
       await login(email, password);
 
       // ✅ Show success message
@@ -120,10 +121,30 @@ export default function Register() {
             />
           </div>
 
+          <div>
+            <label htmlFor="nationality" className="block text-sm text-gray-300 mb-1">
+              Nationality
+            </label>
+            <select
+              id="nationality"
+              value={nationality}
+              onChange={(e) => setNationality(e.target.value)}
+              className="w-full p-3 bg-black/60 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-yellow-400 focus:outline-none"
+              required
+            >
+              <option value="">Select your nationality</option>
+              <option value="Nigeria">Nigeria</option>
+              <option value="United States">United States</option>
+              <option value="United Kingdom">United Kingdom</option>
+              <option value="Canada">Canada</option>
+              <option value="India">India</option>
+              <option value="India">Others</option>
+            </select>
+          </div>
+
           <button
             type="submit"
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-800 to-gray-900 text-white font-semibold shadow-lg hover:from-gray-900 hover:to-blue-800
-           focus:ring-yellow-400 focus:outline-none transition-all duration-300"
+            className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-800 to-gray-900 text-white font-semibold shadow-lg hover:from-gray-900 hover:to-blue-800 focus:ring-yellow-400 focus:outline-none transition-all duration-300"
           >
             Sign Up
           </button>

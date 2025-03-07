@@ -33,8 +33,11 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
 
   return (
     <AnimatePresence>
+  {isOpen && (
+    <>
       {/* Modal Overlay */}
       <motion.div
+        key="modal-overlay" // ✅ Added a unique key
         className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -44,6 +47,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
 
       {/* Modal Content */}
       <motion.div
+        key="modal-content" // ✅ Added a unique key
         className="fixed inset-0 flex justify-center items-center z-50"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -69,7 +73,10 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           {children}
         </div>
       </motion.div>
-    </AnimatePresence>
+    </>
+  )}
+</AnimatePresence>
+
   );
 };
 

@@ -5,13 +5,14 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContex";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
 
   // Scroll effect for navbar background change
   useEffect(() => {
@@ -22,6 +23,12 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Logout handler with redirection
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+  };
 
   // Hide navbar on dashboard/login/register pages
   if (pathname.startsWith("/dashboard") || pathname === "/login" || pathname === "/register") return null;
@@ -52,7 +59,7 @@ export default function Navbar() {
               <Link href="/investments" className="hover:text-[#FFD700] transition">Investments</Link>
               <Link href="/dashboard" className="hover:text-[#FFD700] transition">Dashboard</Link>
               <button 
-                onClick={logout} 
+                onClick={handleLogout} 
                 className="hover:text-red-400 transition focus:outline-none focus:ring-2 focus:ring-red-500 px-3 py-1 rounded"
               >
                 Logout
@@ -99,7 +106,10 @@ export default function Navbar() {
               <Link href="/dashboard" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
               <button 
                 className="text-lg hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 px-3 py-1 rounded"
-                onClick={() => { logout(); setIsMenuOpen(false); }}
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
               >
                 Logout
               </button>
