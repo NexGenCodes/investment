@@ -84,7 +84,7 @@ const investments: Investment[] = [
       "Invest in solar inverters, the brains of the solar system that convert DC power to AC. Your contribution helps us produce and sell these critical components to energy projects worldwide. Returns are subject to a 10% withholding tax.",
     cta: "Invest in Inverters",
     imageUrl: "/images/investments/solar3.jpg",
-    riskLevel: "Medium",
+    riskLevel: "High",
   },
   {
     id: "4",
@@ -110,19 +110,19 @@ const investments: Investment[] = [
       "Fund the production of advanced energy storage batteries, essential for storing solar power. Your investment helps us deliver reliable energy solutions to homes and businesses. Returns are subject to a 10% withholding tax.",
     cta: "Invest in Storage Batteries",
     imageUrl: "/images/investments/solar5.jpg",
-    riskLevel: "High",
+    riskLevel: "Medium",
   },
   {
-    id: "7",
+    id: "6",
     name: "NextEra Energy, Inc. (NEE)",
     investmentRange: "₦8,000 – ₦150,000",
-    riskLevel: "Medium",
+    riskLevel: "High",
     imageUrl: "/images/investments/solar6.jpg",
     description:
       "NextEra Energy, Inc. is a global leader in renewable energy, specializing in solar and wind power generation.",
-    duration: "10–20 years",
-    grossReturn: 8, // Assuming a single value for simplicity
-    netReturn: 6, // Assuming a single value for simplicity
+      duration: "16 Weeks",
+      grossReturn: 50,
+      netReturn: 45,
     cta: "Invest in Storage Batteries",
   },
 ];

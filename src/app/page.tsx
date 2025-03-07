@@ -1,6 +1,9 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../style/Home.module.css";
+import FAQSection from "../components/faq";
+
 
 export default function Home() {
   return (
@@ -28,7 +31,11 @@ export default function Home() {
         <div className={styles.scrollIndicator}></div>
       </section>
 
-      <section className={styles.aboutSection}>
+      <section className={styles.aboutSection} id="aboutus">
+        <div className={styles.aboutus}>
+          <h1>About Us</h1>
+        </div>
+
         <div className={styles.aboutImage}>
           <Image
             src="/images/img/about-img.jpg"
@@ -60,59 +67,57 @@ export default function Home() {
       </section>
 
       <section className={styles.howItWorks}>
-  <h2>How It Works</h2>
-  <div className={styles.howItWorksContainer}>
-    <div className={styles.howItWorksVideo}>
-      <iframe
-        width="500"
-        height="800"
-        src="https://www.youtube.com/embed/mhzUk7pXFVg"
-        title="How It Works"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className={styles.howItWorksVideo}
-      ></iframe>
-    </div>
-    <div className={styles.stepsContainer}>
-      {[
-        {
-          image: "/images/reg-removebg-preview (1).png",
-          title: "Register",
-          description: "Create an account in minutes.",
-        },
-        {
-          image: "/images/dep-removebg-preview.png",
-          title: "Deposit Funds",
-          description: "Add funds securely to your account.",
-        },
-        {
-          image: "/images/invest-removebg-preview.png",
-          title: "Invest in Your Future",
-          description: "Choose from a variety of solar projects.",
-        },
-      ].map((step, index) => (
-        <div key={index} className={styles.step}>
-          <div className={styles.stepIcon}>
-            <Image
-              src={step.image}
-              alt={step.title}
-              width={80}
-              height={80}
-              priority={false}
-              loading="lazy"
-              className={styles.iconImage}
-            />
+        <h2>How It Works</h2>
+        <div className={styles.howItWorksContainer}>
+          <div className={styles.howItWorksVideo}>
+            <iframe
+              width="500"
+              height="800"
+              src="https://www.youtube.com/embed/mhzUk7pXFVg"
+              title="How It Works"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className={styles.howItWorksVideo}
+            ></iframe>
           </div>
-          <h3>{step.title}</h3>
-          <p>{step.description}</p>
+          <div className={styles.stepsContainer}>
+            {[
+              {
+                image: "/images/reg-removebg-preview (1).png",
+                title: "Register",
+                description: "Create an account in minutes.",
+              },
+              {
+                image: "/images/dep-removebg-preview.png",
+                title: "Deposit Funds",
+                description: "Add funds securely to your account.",
+              },
+              {
+                image: "/images/invest-removebg-preview.png",
+                title: "Invest in Your Future",
+                description: "Choose from a variety of solar projects.",
+              },
+            ].map((step, index) => (
+              <div key={index} className={styles.step}>
+                <div className={styles.stepIcon}>
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    width={80}
+                    height={80}
+                    priority={false}
+                    loading="lazy"
+                    className={styles.iconImage}
+                  />
+                </div>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
+      </section>
 
       <section className={styles.whyChooseUs}>
         <h2>Why Choose Us?</h2>
@@ -150,22 +155,34 @@ export default function Home() {
         <div className={styles.testimonialsContainer}>
           {[
             {
-              avatar: "/images/avator3.png",
+              avatar: "/images/img/tes1.jpg",
               quote:
                 "Great platform! I've seen consistent returns on my investments.",
-              name: "John Doe",
+              name: " Chinedu Okafor",
               role: "Solar Investor",
             },
             {
-              avatar: "/images/avator1-removebg-preview.png",
+              avatar: "/images/img/tes4.jpg",
               quote: "Easy to use and transparent. Highly recommend!",
               name: "Jane Smith",
               role: "Renewable Energy Enthusiast",
             },
             {
-              avatar: "/images/avator2.png",
+              avatar: "/images/img/tes2.jpg",
+              quote: "Easy to use and transparent. Highly recommend!",
+              name: "Karim Benyamin.",
+              role: "Eco-Conscious Entrepreneur",
+            },
+            {
+              avatar: "/images/img/tes3.jpg",
+              quote: "Easy to use and transparent. Highly recommend!",
+              name: " Youssef El Amrani",
+              role: "Sustainability Strategist",
+            },
+            {
+              avatar: "/images/img/tes5.jpg",
               quote: "A fantastic way to invest in renewable energy.",
-              name: "Mike Johnson",
+              name: "Amina Hassan",
               role: "Sustainability Advocate",
             },
           ].map((testimonial, index) => (
@@ -188,11 +205,13 @@ export default function Home() {
         </div>
       </section>
 
+      <FAQSection /> 
+
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.footerLinks}>
             <h3>Quick Links</h3>
-            <Link href="/about">About Us</Link>
+            <Link href="#aboutus">About Us</Link>
             <Link href="/investments">Investments</Link>
             <Link href="/faq">FAQ</Link>
             <Link href="/contact">Contact Us</Link>

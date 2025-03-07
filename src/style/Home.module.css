@@ -212,6 +212,15 @@
   color: rgb(229, 231, 235);
 }
 
+.aboutus h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: bold;
+  position: relative;
+  display: inline-block;
+  z-index: 3;
+  margin-bottom: 3rem;
+
+}
 .aboutText h2 {
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: bold;
@@ -221,7 +230,7 @@
 
 }
 
-.aboutText h2::after {
+.aboutus h1::after {
   content: "";
   position: absolute;
   bottom: -10px;
@@ -556,6 +565,88 @@
   font-size: 0.875rem;
   color: #cfcfcf;
 }
+
+/* FAQ Section */
+.faqSection {
+  background: linear-gradient(145deg, rgb(17, 24, 39), rgb(24, 32, 50));
+  padding: 60px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.faqSection h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: rgb(255, 215, 0);
+  margin-bottom: 20px;
+}
+
+.faqContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.faqItem {
+  background: rgb(197, 197, 197);
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+}
+
+.faqItem h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #222;
+  font-weight: bold;
+}
+
+.faqItem .icon {
+  font-size: 1.5rem;
+  color: #007bff;
+}
+
+.faqAnswer {
+  font-size: 1rem;
+  color: #555;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+/* Expand Answer */
+.faqItem.open .faqAnswer {
+  max-height: 100px;
+  padding-top: 10px;
+}
+
+/* View More FAQs Button */
+.faqLink {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, rgb(17, 24, 39), rgb(30, 58, 138));
+  color: rgb(255, 215, 0);
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.faqLink:hover {
+  background: rgb(229, 231, 235);
+  color: #100d1f;
+}
+
 
 /* Footer */
 .footer {
