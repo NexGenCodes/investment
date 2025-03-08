@@ -1,4 +1,3 @@
-
 .main {
   font-family: 'Inter', sans-serif;
   color: rgb(229, 231, 235);
@@ -102,51 +101,6 @@
   outline-offset: 2px;
 }
 
-.scrollIndicator {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 60px;
-  border: 2px solid rgb(255, 215, 0);
-  /* Gold border */
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  z-index: 100;
-}
-
-.scrollIndicator::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  background: rgb(255, 215, 0);
-  border-radius: 50%;
-  position: absolute;
-  top: 15px;
-  animation: scrollBounce 1.8s infinite ease-in-out;
-}
-
-@keyframes scrollBounce {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  50% {
-    transform: translateY(15px);
-    opacity: 0.5;
-  }
-
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
 /* About Section */
 .aboutSection {
   position: relative;
@@ -221,6 +175,7 @@
   margin-bottom: 3rem;
 
 }
+
 .aboutText h2 {
   font-size: clamp(1.8rem, 4vw, 2.5rem);
   font-weight: bold;
@@ -301,28 +256,36 @@
 
 .howItWorksContainer {
   display: flex;
-  flex-direction: row; 
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .howItWorksVideo {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 70%; /* Keeps video to half the width on large screens */
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.howItWorksVideo iframe {
+/* Responsive Iframe Container */
+.iframeContainer {
+  position: relative;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
   width: 100%;
-  aspect-ratio: 16 / 9; /* Maintains aspect ratio */
-  border-radius: 16px;
-  object-fit: cover;
-  max-height: 400px;
+}
+
+/* Responsive Iframe */
+.responsiveIframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .stepsContainer {
@@ -331,6 +294,8 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   align-items: start;
+  margin:0 auto;
+  max-width: 600px;
 }
 
 .step {
@@ -383,6 +348,23 @@
   width: 50%;
   margin: 0 auto;
 }
+/* Media Query for Larger Screens */
+@media (min-width: 768px) {
+  .howItWorksContainer {
+    flex-direction: row; /* Side-by-side layout on larger screens */
+    justify-content: center;
+  }
+
+  .howItWorksVideo {
+    flex: 1; /* Take up half the space */
+    max-width: 50%; /* Limit width to 50% of the container */
+  }
+
+  .stepsContainer {
+    flex: 1; /* Take up half the space */
+    max-width: 50%; /* Limit width to 50% of the container */
+  }
+}
 
 /* Why Choose Us Section */
 .whyChooseUs {
@@ -414,16 +396,19 @@
 
 .reasonsContainer {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+  gap: 30px; /* Space between cards */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .reason {
-  background: linear-gradient(145deg, rgb(17, 24, 39), rgb(30, 58, 138));
+  background: rgba(255, 255, 255, 0.089);
+  backdrop-filter: blur(10);
   color: rgb(229, 231, 235);
   padding: 24px 16px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 215, 0, 0.5);
   transition: transform 0.3s, box-shadow 0.3s;
   text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -438,6 +423,8 @@
   font-size: 5rem;
   margin-bottom: 16px;
   transition: transform 0.3s;
+  justify-content: center;
+  align-items: center
 }
 
 .reason:hover .reasonIcon {
@@ -462,13 +449,17 @@
 /* Testimonials Section */
 .testimonials {
   position: relative;
-  padding: 80px 20px;
+  padding: 32px;
+  border-radius: 16px;
   background: rgb(17, 24, 39);
   background-image: url("/images/img/heroimg2.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
 }
 
 .testimonials::before {
@@ -478,18 +469,43 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(17, 24, 39, 0.8));
   z-index: 1;
+}
+
+/* Testimonial Card */
+.testimonial {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  width: 100%;
+  max-width: 900px;
+  padding: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 300px;
+}
+
+@media (min-width: 1024px) {
+  .testimonial {
+    width: 70%;
+    max-width: 900px;
+    padding: 30px;
+  }
 }
 
 .testimonials h2 {
   font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 48px;
-  color: rgb(229, 231, 235);
+  color: #f0f0f0;
   position: relative;
   display: inline-block;
-  z-index: 1;
+  z-index: 2;
 }
 
 .testimonials h2::after {
@@ -502,25 +518,47 @@
   height: 4px;
   background: rgb(255, 215, 0);
   border-radius: 2px;
-  
 }
 
+/* Swiper Container */
 .testimonialsContainer {
+  width: 100%;
+  height: auto;
+  max-width: 900px;
+  margin: auto;
+  overflow: hidden;
+}
+
+/* Swiper Wrapper */
+.swiper-wrapper {
+  display: flex;
+  transition-timing-function: linear;
+}
+
+/* Swiper Slide */
+.swiper-slide {
+  flex-shrink: 0;
+  width: 100%;
   display: flex;
   justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
+  align-items: center;
+  padding: 20px;
 }
 
-.testimonial {
-  background: linear-gradient(145deg, rgb(17, 24, 39), rgb(30, 58, 138));
-  padding: 32px;
-  border-radius: 16px;
-  width: 300px;
-  transition: transform 0.3s, box-shadow 0.3s;
-  text-align: center;
-  color: rgb(229, 231, 235);
-  z-index: 3;
+@media (max-width: 768px) {
+  .swiper-slide {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  .testimonial {
+    height: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .swiper-slide {
+    width: 80%;
+  }
 }
 
 .testimonial:hover {
@@ -547,11 +585,12 @@
 }
 
 .testimonial p {
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   margin-bottom: 16px;
-  color: rgb(229, 231, 235);
+  color: #f0f0f0;
   font-style: italic;
-  line-height: 1.6;
+  line-height: 1.7;
+  flex-grow: 1;
 }
 
 .testimonial h3 {
@@ -562,8 +601,40 @@
 }
 
 .testimonialRole {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: #cfcfcf;
+}
+
+/* Swiper Navigation and Pagination Styles */
+.swiper-button-next,
+.swiper-button-prev {
+  color: rgb(255, 215, 0);
+  background: rgba(17, 24, 39, 0.8);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  transition: background 0.3s ease, border 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(30, 58, 138, 0.8);
+  border: 2px solid rgb(255, 215, 0);
+}
+
+.swiper-pagination-bullet {
+  background: rgb(229, 231, 235);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  background: rgb(255, 215, 0);
+  opacity: 1;
 }
 
 /* FAQ Section */
@@ -577,7 +648,7 @@
 }
 
 .faqSection h2 {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: rgb(255, 215, 0);
   margin-bottom: 20px;
@@ -690,7 +761,7 @@
 .newsletter {
   text-align: left;
   max-width: 300px;
-  
+
 }
 
 .newsletter h3 {
@@ -826,15 +897,6 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .testimonialsContainer {
-    gap: 24px;
-  }
-
-  .testimonial {
-    width: 100%;
-    max-width: 400px;
-  }
-
   .footerContent {
     flex-direction: column;
     align-items: center;
@@ -856,10 +918,6 @@
     gap: 20px;
   }
 
-  .howItWorksVideo {
-    max-width: 100%;
-    margin-bottom: 20px;
-  }
 
   .stepsContainer {
     width: 100%;
@@ -897,22 +955,8 @@
     grid-template-columns: 1fr;
   }
 
-  .testimonialsContainer {
-    gap: 16px;
-  }
-
   .aboutImage img {
     max-width: 100%;
-  }
-
-  .howItWorksVideo iframe {
-    border-radius: 8px;
-  }
-
-  
-  .howItWorksVideo {
-    max-width: 100%;
-    margin-bottom: 20px;
   }
 
   .step {

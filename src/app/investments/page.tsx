@@ -13,14 +13,11 @@ const COLORS = {
 
 const riskColors: { [key: string]: string } = {
   Low: `bg-[${COLORS.gold}] text-gray-900`,
-  Medium: "bg-[rgb(30,58,138)] text-white",
-  High: "bg-red-500 text-white",
 };
 
 interface Investment {
   id: string;
   name: string;
-  expectedReturns: number;
   riskLevel: string;
   imageUrl: string;
   description: string;
@@ -33,11 +30,10 @@ const investments: Investment[] = [
   {
     id: "1",
     name: "First Solar Plan",
-    expectedReturns: 12,
     riskLevel: "Low",
     imageUrl: "/images/investments/solar.jpg",
     description:
-      "A leader in solar panel manufacturing with sustainable solutions.",
+      "Invest in the production of high-quality solar panel frames, the backbone of every solar system.",
     duration: "4 Weeks",
     grossReturn: 50,
     netReturn: 45,
@@ -45,10 +41,9 @@ const investments: Investment[] = [
   {
     id: "2",
     name: "Photovoltaic Cell Plan",
-    expectedReturns: 18,
-    riskLevel: "Medium",
+    riskLevel: "Low",
     imageUrl: "/images/investments/solar1.jpg",
-    description: "Specializes in advanced solar inverters and energy storage.",
+    description: "Fund the production of photovoltaic cells, the heart of solar panels that convert sunlight into energy.",
     duration: "6 Weeks",
     grossReturn: 45,
     netReturn: 40.5,
@@ -56,11 +51,10 @@ const investments: Investment[] = [
   {
     id: "3",
     name: "Inverter System Plan",
-    expectedReturns: 15,
-    riskLevel: "High",
+    riskLevel: "Low",
     imageUrl: "/images/investments/solar2.jpg",
     description:
-      "Provides high-efficiency solar panels for residential and commercial use.",
+      "Invest in solar inverters, the brains of the solar system that convert DC power to AC.",
     duration: "8 Weeks",
     grossReturn: 45,
     netReturn: 40.5,
@@ -68,11 +62,10 @@ const investments: Investment[] = [
   {
     id: "4",
     name: "Mounting Structure Plan",
-    expectedReturns: 10,
     riskLevel: "Low",
     imageUrl: "/images/investments/solar3.jpg",
     description:
-      "Develops smart energy solutions for efficient power conversion.",
+      "Support the manufacturing of durable mounting structures that secure solar panels in place",
     duration: "12 Weeks",
     grossReturn: 50,
     netReturn: 45,
@@ -80,10 +73,9 @@ const investments: Investment[] = [
   {
     id: "5",
     name: "Energy Storage Battery Plan",
-    expectedReturns: 20,
-    riskLevel: "Medium",
+    riskLevel: "Low",
     imageUrl: "/images/investments/solar4.jpg",
-    description: "Invests in solar and wind farms for a greener future.",
+    description: "Fund the production of advanced energy storage batteries, essential for storing solar power.",
     duration: "14 Weeks",
     grossReturn: 50,
     netReturn: 45,
@@ -91,11 +83,10 @@ const investments: Investment[] = [
   {
     id: "6",
     name: "NextEra Energy, Inc. (NEE)",
-    expectedReturns: 25,
-    riskLevel: "High",
+    riskLevel: "Low",
     imageUrl: "/images/investments/solar5.jpg",
     description:
-      "Pioneering solar technology with energy-efficient solar roofs and storage.",
+      "NextEra Energy, Inc. is a global leader in renewable energy, specializing in solar and wind power generation.",
     duration: "16 Weeks",
     grossReturn: 50,
     netReturn: 45,
@@ -130,9 +121,6 @@ const InvestmentCard = ({ investment }: InvestmentCardProps) => {
         </h2>
         <p className="text-gray-300 text-sm mb-2 italic">
           {investment.description}
-        </p>
-        <p className="text-gray-300 text-sm">
-          Expected Returns: {investment.expectedReturns}%
         </p>
         <p className="text-gray-300 text-sm flex items-center">
           Risk Level:

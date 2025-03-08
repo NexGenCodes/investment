@@ -1,15 +1,21 @@
-"use client"
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "../style/Home.module.css";
 import FAQSection from "../components/faq";
 
+// Import Swiper styles
+import "swiper/swiper-bundle.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper modules
+import { Autoplay } from "swiper/modules";
 
 export default function Home() {
   return (
     <main className={styles.main}>
       <section className={styles.hero}>
-        <video autoPlay loop muted className={styles.heroVideo} playsInline>
+        <video autoPlay loop muted playsInline className={styles.heroVideo}>
           <source src="/video/hero-vid.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -28,7 +34,6 @@ export default function Home() {
             Get Started
           </Link>
         </div>
-        <div className={styles.scrollIndicator}></div>
       </section>
 
       <section className={styles.aboutSection} id="aboutus">
@@ -70,16 +75,15 @@ export default function Home() {
         <h2>How It Works</h2>
         <div className={styles.howItWorksContainer}>
           <div className={styles.howItWorksVideo}>
-            <iframe
-              width="500"
-              height="800"
-              src="https://www.youtube.com/embed/mhzUk7pXFVg"
-              title="How It Works"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className={styles.howItWorksVideo}
-            ></iframe>
+            <div className={styles.iframeContainer}>
+              <iframe
+                src="https://www.youtube.com/embed/mhzUk7pXFVg"
+                title="How It Works"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className={styles.responsiveIframe}
+              ></iframe>
+            </div>
           </div>
           <div className={styles.stepsContainer}>
             {[
@@ -152,47 +156,67 @@ export default function Home() {
 
       <section className={styles.testimonials}>
         <h2>What Our Investors Say</h2>
-        <div className={styles.testimonialsContainer}>
+        <Swiper
+          className={styles.testimonialsContainer}
+          spaceBetween={20}
+          slidesPerView={1}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+          modules={[Autoplay]}
+          breakpoints={{
+            320: { slidesPerView: 1, spaceBetween: 10 },
+            640: { slidesPerView: 1, spaceBetween: 20 },
+            1024: { slidesPerView: 1, spaceBetween: 30 },
+          }}
+        >
           {[
             {
-              avatar: "/images/img/tes1.jpg",
+              avatar: "/images/img/TES1.jpeg",
+              quote: "A top-notch platform for investors. Highly satisfied!",
+              name: "Leila El-Mansouri",
+              role: "Solar Energy Advocate",
+            },
+            {
+              avatar: "/images/img/istockphoto-1362997089-612x612.jpg",
+              quote: "Consistent growth and great transparency. Love it!",
+              name: "Luca Moretti",
+              role: "Energy Transition Investor",
+            },
+            {
+              avatar: "/images/img/istockphoto-1082488524-612x612.jpg",
+              quote: "Easy to use and highly effective. Highly recommend!",
+              name: "Jake Reynolds",
+              role: "Clean Energy Investor",
+            },
+            {
+              avatar: "/images/img/istockphoto-1295044829-612x612.jpg",
               quote:
-                "Great platform! I've seen consistent returns on my investments.",
-              name: " Chinedu Okafor",
-              role: "Solar Investor",
+                "Transparent, reliable, and easy to use. A top choice for investors!",
+              name: "Sofia Laurent",
+              role: "Green Energy Pioneer",
             },
             {
-              avatar: "/images/img/tes4.jpg",
-              quote: "Easy to use and transparent. Highly recommend!",
-              name: "Jane Smith",
-              role: "Renewable Energy Enthusiast",
+              avatar: "/images/img/istockphoto-2189595718-612x612.jpg",
+              quote: "Simple, effective, and rewarding. Highly recommend!",
+              name: "Ayomide Johnson",
+              role: "Renewable Energy Strategist",
             },
             {
-              avatar: "/images/img/tes2.jpg",
-              quote: "Easy to use and transparent. Highly recommend!",
-              name: "Karim Benyamin.",
-              role: "Eco-Conscious Entrepreneur",
-            },
-            {
-              avatar: "/images/img/tes3.jpg",
-              quote: "Easy to use and transparent. Highly recommend!",
-              name: " Youssef El Amrani",
-              role: "Sustainability Strategist",
-            },
-            {
-              avatar: "/images/img/tes5.jpg",
-              quote: "A fantastic way to invest in renewable energy.",
-              name: "Amina Hassan",
-              role: "Sustainability Advocate",
+              avatar: "/images/img/istockphoto-1269131355-612x612.jpg",
+              quote:
+                "Excellent returns and a user-friendly interface. Highly recommend!",
+              name: "Elena Martinez",
+              role: "Solar Project Financier",
             },
           ].map((testimonial, index) => (
-            <div key={index} className={styles.testimonial}>
+            <SwiperSlide key={index} className={styles.testimonial}>
               <div className={styles.testimonialAvatar}>
                 <Image
                   src={testimonial.avatar}
                   alt={testimonial.name}
-                  width={80}
-                  height={80}
+                  width={100}
+                  height={100}
+                  objectFit="cover"
                   priority={false}
                   loading="lazy"
                 />
@@ -200,12 +224,12 @@ export default function Home() {
               <p>{testimonial.quote}</p>
               <h3>{testimonial.name}</h3>
               <div className={styles.testimonialRole}>{testimonial.role}</div>
-            </div>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </section>
 
-      <FAQSection /> 
+      <FAQSection />
 
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
@@ -222,7 +246,12 @@ export default function Home() {
               Stay updated with the latest investment opportunities and news.
             </p>
             <form className={styles.newsletterForm}>
-              <input type="email" placeholder="Enter your email" required />
+              <input
+                type="email"
+                placeholder="Enter your email"
+                required
+                aria-label="Enter your email"
+              />
               <button type="submit">Subscribe</button>
             </form>
           </div>
