@@ -6,35 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import InvestmentForm from "@/components/InvestmentForm";
-import { Investment } from "@/type";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-// ✅ Register the required components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { Investment } from "@/type/type";
 
 // Risk Level Colors
 const riskColors: Record<string, string> = {
   Low: "bg-green-500 text-white",
-  Medium: "bg-yellow-500 text-gray-900",
-  High: "bg-red-500 text-white",
 };
 
 interface Transaction {
@@ -71,7 +47,7 @@ const investments: Investment[] = [
       "Fund the production of photovoltaic cells, the heart of solar panels that convert sunlight into energy. Your investment supports cutting-edge technology and global energy solutions. Returns are subject to a 10% withholding tax.",
     cta: "Invest in PV Cells",
     imageUrl: "/images/investments/solar2.jpg",
-    riskLevel: "Medium",
+    riskLevel: "Low",
   },
   {
     id: "3",
@@ -84,7 +60,7 @@ const investments: Investment[] = [
       "Invest in solar inverters, the brains of the solar system that convert DC power to AC. Your contribution helps us produce and sell these critical components to energy projects worldwide. Returns are subject to a 10% withholding tax.",
     cta: "Invest in Inverters",
     imageUrl: "/images/investments/solar3.jpg",
-    riskLevel: "High",
+    riskLevel: "Low",
   },
   {
     id: "4",
@@ -110,13 +86,13 @@ const investments: Investment[] = [
       "Fund the production of advanced energy storage batteries, essential for storing solar power. Your investment helps us deliver reliable energy solutions to homes and businesses. Returns are subject to a 10% withholding tax.",
     cta: "Invest in Storage Batteries",
     imageUrl: "/images/investments/solar5.jpg",
-    riskLevel: "Medium",
+    riskLevel: "Low",
   },
   {
     id: "6",
     name: "NextEra Energy, Inc. (NEE)",
     investmentRange: "₦8,000 – ₦150,000",
-    riskLevel: "High",
+    riskLevel: "Low",
     imageUrl: "/images/investments/solar6.jpg",
     description:
       "NextEra Energy, Inc. is a global leader in renewable energy, specializing in solar and wind power generation.",
@@ -134,28 +110,6 @@ export default function InvestmentDetails() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showForm, setShowForm] = useState(false);
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-      },
-    },
-  };
-
-  // ✅ Define chart data inside the component
-  const chartData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May"],
-    datasets: [
-      {
-        label: "Sales",
-        data: [100, 200, 300, 400, 500],
-        borderColor: "blue",
-        backgroundColor: "rgba(0, 0, 255, 0.2)",
-      },
-    ],
-  };
-
   useEffect(() => {
     if (investmentId) {
       const selectedInvestment = investments.find(
@@ -172,7 +126,7 @@ export default function InvestmentDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-900 mt-16">
       <div className="container mx-auto p-4 md:p-6 text-white pt-[70px] md:pt-[90px] overflow-hidden">
         {/* Back Link */}
         <Link
@@ -223,7 +177,7 @@ export default function InvestmentDetails() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mt-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg"
+          className="mt-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg mx-2"
         >
           {/* Enhanced Header */}
           <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-lg mb-6">
@@ -242,7 +196,7 @@ export default function InvestmentDetails() {
                   d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                 />
               </svg>
-              <h1 className="text-4xl font-bold text-white">
+              <h1 className="text-2xl font-bold text-white">
                 {investment.name}
               </h1>
             </div>
@@ -263,25 +217,25 @@ export default function InvestmentDetails() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-gradient-to-br from-blue-600 to-blue-500 p-4 rounded-lg text-center">
               <p className="text-gray-200">Duration</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl font-bold text-white">
                 {investment.duration}
               </p>
             </div>
             <div className="bg-gradient-to-br from-green-600 to-green-500 p-4 rounded-lg text-center">
               <p className="text-gray-200">Investment Range</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl font-bold text-white">
                 {investment.investmentRange}
               </p>
             </div>
             <div className="bg-gradient-to-br from-purple-600 to-purple-500 p-4 rounded-lg text-center">
               <p className="text-gray-200">Gross Return</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl font-bold text-white">
                 {investment.grossReturn}%
               </p>
             </div>
             <div className="bg-gradient-to-br from-red-600 to-red-500 p-4 rounded-lg text-center">
               <p className="text-gray-200">Net Return</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl font-bold text-white">
                 {investment.netReturn}%
               </p>
             </div>
@@ -333,7 +287,7 @@ export default function InvestmentDetails() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg"
+          className="mt-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg mx-2"
         >
           <h2 className="text-2xl font-semibold mb-4 text-white">
             Understanding Your Returns
@@ -347,39 +301,6 @@ export default function InvestmentDetails() {
             your behalf, so you can focus on earning returns.
           </p>
         </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 shadow-lg overflow-hidden"
-        >
-          <h2 className="text-2xl font-semibold mb-4 text-white">
-            Investment Performance Over Time
-          </h2>
-          <p className="text-gray-300 mb-4">
-            Track the performance of your investment with this live candlestick
-            chart.
-          </p>
-
-          {/* Chart Container */}
-          <div className="relative w-full h-auto min-h-[300px] md:min-h-[350px] lg:min-h-[400px] bg-gray-800 rounded-lg shadow-lg overflow-hidden p-4 flex flex-col justify-center">
-            {/* Background Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/30 to-transparent opacity-25"></div>
-
-            {/* Chart Component */}
-            <div className="relative w-full h-full">
-              <Line options={options} data={chartData} />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Download Summary */}
-        <div className="mt-8 text-center">
-          <button className="bg-gray-700 text-white px-6 py-2 rounded-lg hover:bg-gray-600">
-            Download Investment Summary
-          </button>
-        </div>
 
         {/* Contact Option */}
         <div className="mt-8 text-center">

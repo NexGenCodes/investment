@@ -5,14 +5,13 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "../context/AuthContex";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const pathname = usePathname();
-  const router = useRouter();
 
   // Scroll effect for navbar background change
   useEffect(() => {
@@ -24,14 +23,13 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Logout handler with redirection
-  const handleLogout = async () => {
-    await logout();
-    router.push("/");
-  };
-
-  // Hide navbar on dashboard/login/register pages
-  if (pathname.startsWith("/dashboard") || pathname === "/login" || pathname === "/register") return null;
+  // Hide navbar on login/register pages
+  if (
+    pathname.startsWith("/dashboard") || 
+    pathname === "/login" || 
+    pathname === "/register"
+  ) return null;
+  
 
   return (
     <nav
@@ -57,13 +55,8 @@ export default function Navbar() {
             <>
               <Link href="/" className="hover:text-[#FFD700] transition">Home</Link>
               <Link href="/investments" className="hover:text-[#FFD700] transition">Investments</Link>
-              <Link href="/dashboard" className="hover:text-[#FFD700] transition">Dashboard</Link>
-              <button 
-                onClick={handleLogout} 
-                className="hover:text-red-400 transition focus:outline-none focus:ring-2 focus:ring-red-500 px-3 py-1 rounded"
-              >
-                Logout
-              </button>
+              <Link href="/referral" className="hover:text-[#FFD700] transition">Earn More</Link>
+              <Link href="/dashboard" className="hover:text-[#FFD700] transition">Portfolio</Link>
             </>
           ) : (
             <>
@@ -103,16 +96,8 @@ export default function Navbar() {
             <>
               <Link href="/" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Home</Link>
               <Link href="/investments" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Investments</Link>
-              <Link href="/dashboard" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
-              <button 
-                className="text-lg hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 px-3 py-1 rounded"
-                onClick={() => {
-                  handleLogout();
-                  setIsMenuOpen(false);
-                }}
-              >
-                Logout
-              </button>
+              <Link href="/referral" className="hover:text-[#FFD700] transition"  onClick={() => setIsMenuOpen(false)}>Earn More</Link>
+              <Link href="/dashboard" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Portfolio</Link>
             </>
           ) : (
             <>

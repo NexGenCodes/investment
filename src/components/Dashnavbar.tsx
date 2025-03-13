@@ -29,10 +29,6 @@ export default function Navbar() {
           <span className="hidden sm:inline font-medium">Home</span>
         </button>
 
-        {/* Logo */}
-        <div className="text-white text-xl sm:text-2xl font-bold tracking-wide">
-          SunVault <span className="text-[rgb(255,215,0)]">Investments</span>
-        </div>
 
         {/* User Profile Dropdown */}
         <div className="relative">
@@ -41,19 +37,27 @@ export default function Navbar() {
             className="flex items-center text-white hover:text-[rgb(255,215,0)] transition-all duration-300 p-2 rounded-lg"
           >
             <FaUserCircle className="mr-2 text-xl sm:text-2xl" />
-            <span className="hidden sm:inline font-medium">Account</span>
+            <span className="hidden sm:inline font-medium">Portfolio</span>
             <span className="ml-2">&#9662;</span>
           </button>
 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-3 w-40 sm:w-52 bg-white/10 backdrop-blur-md border border-gray-700 rounded-xl shadow-lg overflow-hidden">
+            <div className="absolute right-0 mt-3 w-40 sm:w-52 bg-gray-900 backdrop-blur-md border border-gray-700 rounded-xl shadow-lg overflow-hidden  bg-opacity-90">
               <Link
                 href="/dashboard"
                 className="block px-4 py-2 sm:py-3 text-white hover:bg-green-500/20 transition"
               >
                 📊 Portfolio
               </Link>
+
+              <Link
+                href="/dashboard/referral"
+                className="block px-4 py-2 sm:py-3 text-white hover:bg-green-500/20 transition"
+              >
+                🎁 Refer a friend
+              </Link>
+
               <Link
                 href="/dashboard/wallet"
                 className="block px-4 py-2 sm:py-3 text-white hover:bg-green-500/20 transition"

@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { TrendingDown, Zap } from "lucide-react";
 import styles from "../style/Home.module.css";
 import FAQSection from "../components/faq";
 
@@ -14,6 +15,7 @@ import { Autoplay } from "swiper/modules";
 export default function Home() {
   return (
     <main className={styles.main}>
+      {/* Existing Hero Section */}
       <section className={styles.hero}>
         <video autoPlay loop muted playsInline className={styles.heroVideo}>
           <source src="/video/hero-vid.mp4" type="video/mp4" />
@@ -36,11 +38,11 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Existing About Section */}
       <section className={styles.aboutSection} id="aboutus">
         <div className={styles.aboutus}>
           <h1>About Us</h1>
         </div>
-
         <div className={styles.aboutImage}>
           <Image
             src="/images/img/about-img.jpg"
@@ -56,7 +58,6 @@ export default function Home() {
           <p className={styles.aboutTextHighlight}>
             Invest in the Future with SunVault Investments
           </p>
-
           <p>
             At SunVault Investments, we offer individuals and institutions the
             opportunity to invest in high-quality solar energy projects.
@@ -71,6 +72,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Existing How It Works Section */}
       <section className={styles.howItWorks}>
         <h2>How It Works</h2>
         <div className={styles.howItWorksContainer}>
@@ -123,37 +125,101 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Updated Why Choose Us Section */}
       <section className={styles.whyChooseUs}>
-        <h2>Why Choose Us?</h2>
-        <div className={styles.reasonsContainer}>
-          {[
-            {
-              icon: "📊",
-              title: "Low-Risk, High-Return Investments",
-              description:
-                "Diversify your portfolio with secure solar projects.",
-            },
-            {
-              icon: "⏱️",
-              title: "Real-Time Investment Data",
-              description: "Track your investments with live updates.",
-            },
-            {
-              icon: "🌍",
-              title: "Sustainable Energy Growth",
-              description:
-                "Contribute to a greener planet while earning returns.",
-            },
-          ].map((reason, index) => (
-            <div key={index} className={styles.reason}>
-              <div className={styles.reasonIcon}>{reason.icon}</div>
-              <h3>{reason.title}</h3>
-              <p>{reason.description}</p>
+        <div className={styles.whyChooseUsContainer}>
+          <div className={styles.whyChooseUsText}>
+            <h2>Why Choose Us?</h2>
+            <p className={styles.whyChooseUsDescription}>
+            At SunVault Investments, we are committed to providing top-quality solar solutions that are efficient, cost-effective,
+             and eco-friendly. Here’s why we are the best choice for your solar energy needs:
+            </p>
+            {/* Two Images with Text in a Row */}
+            <div className={styles.iconRow}>
+              <div className={styles.iconItem}>
+                <div className={styles.iconContainer}>
+                  <TrendingDown className={styles.icon_Img} />
+                </div>
+                <div className={styles.iconText}>
+                  <h3> Lower Energy Costs</h3>
+                </div>
+              </div>
+
+              <div className={styles.iconItem}>
+                <div className={styles.iconContainer}>
+                  <Zap className={styles.icon_Img} />
+                </div>
+                <div className={styles.iconText}>
+                  <h3> Quick & Easy Installation </h3>
+                </div>
+              </div>
             </div>
-          ))}
+            {/* Bottom Border */}
+            <div className={styles.bottomBorder}></div>
+            {/* Progress Bars Section */}
+            <div className={styles.progressSection}>
+              <div className={styles.progressItem}>
+                <h3>High Efficiency Panels</h3>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{ width: `85%` }}
+                  ></div>
+                  <span style={{ left: `85%` }}>85%</span>
+                </div>
+              </div>
+
+              <div className={styles.progressItem}>
+                <h3>Sustainable & Eco-Friendly</h3>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{ width: `90%` }}
+                  ></div>
+                  <span style={{ left: `90%` }}>90%</span>
+                </div>
+              </div>
+
+              <div className={styles.progressItem}>
+                <h3>Trusted Experts</h3>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{ width: `95%` }}
+                  ></div>
+                  <span style={{ left: `95%` }}>95%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Image Layout on the Right */}
+          <div className={styles.imageLayout}>
+            <div className={styles.imageTop}>
+              <Image
+                src="/images/img/whychooseus.jpg" // Replace with your top image path
+                alt="Top Image"
+                width={500}
+                height={300}
+                priority={false}
+                loading="lazy"
+              />
+            </div>
+            <div className={styles.imageBottom}>
+              <Image
+                src="/images/img/whychooseus2.jpg" // Replace with your bottom image path
+                alt="Why Choose Us"
+                width={500}
+                height={300}
+                priority={false}
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* Existing Testimonials Section */}
       <section className={styles.testimonials}>
         <h2>What Our Investors Say</h2>
         <Swiper
@@ -176,38 +242,7 @@ export default function Home() {
               name: "Leila El-Mansouri",
               role: "Solar Energy Advocate",
             },
-            {
-              avatar: "/images/img/istockphoto-1362997089-612x612.jpg",
-              quote: "Consistent growth and great transparency. Love it!",
-              name: "Luca Moretti",
-              role: "Energy Transition Investor",
-            },
-            {
-              avatar: "/images/img/istockphoto-1082488524-612x612.jpg",
-              quote: "Easy to use and highly effective. Highly recommend!",
-              name: "Jake Reynolds",
-              role: "Clean Energy Investor",
-            },
-            {
-              avatar: "/images/img/istockphoto-1295044829-612x612.jpg",
-              quote:
-                "Transparent, reliable, and easy to use. A top choice for investors!",
-              name: "Sofia Laurent",
-              role: "Green Energy Pioneer",
-            },
-            {
-              avatar: "/images/img/istockphoto-2189595718-612x612.jpg",
-              quote: "Simple, effective, and rewarding. Highly recommend!",
-              name: "Ayomide Johnson",
-              role: "Renewable Energy Strategist",
-            },
-            {
-              avatar: "/images/img/istockphoto-1269131355-612x612.jpg",
-              quote:
-                "Excellent returns and a user-friendly interface. Highly recommend!",
-              name: "Elena Martinez",
-              role: "Solar Project Financier",
-            },
+            // Add other testimonials here
           ].map((testimonial, index) => (
             <SwiperSlide key={index} className={styles.testimonial}>
               <div className={styles.testimonialAvatar}>
@@ -229,8 +264,10 @@ export default function Home() {
         </Swiper>
       </section>
 
+      {/* Existing FAQ Section */}
       <FAQSection />
 
+      {/* Existing Footer Section */}
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.footerLinks}>

@@ -5,14 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 // Constants for repeated values
-const COLORS = {
-  gold: "rgb(255,215,0)",
-  gray: "rgb(229,231,235)",
-  white: "rgb(255,255,255)",
-};
 
 const riskColors: { [key: string]: string } = {
-  Low: `bg-[${COLORS.gold}] text-gray-900`,
+  Low: "bg-green-500 text-white",
 };
 
 interface Investment {
@@ -43,7 +38,8 @@ const investments: Investment[] = [
     name: "Photovoltaic Cell Plan",
     riskLevel: "Low",
     imageUrl: "/images/investments/solar1.jpg",
-    description: "Fund the production of photovoltaic cells, the heart of solar panels that convert sunlight into energy.",
+    description:
+      "Fund the production of photovoltaic cells, the heart of solar panels that convert sunlight into energy.",
     duration: "6 Weeks",
     grossReturn: 45,
     netReturn: 40.5,
@@ -75,7 +71,8 @@ const investments: Investment[] = [
     name: "Energy Storage Battery Plan",
     riskLevel: "Low",
     imageUrl: "/images/investments/solar4.jpg",
-    description: "Fund the production of advanced energy storage batteries, essential for storing solar power.",
+    description:
+      "Fund the production of advanced energy storage batteries, essential for storing solar power.",
     duration: "14 Weeks",
     grossReturn: 50,
     netReturn: 45,
@@ -145,18 +142,28 @@ const InvestmentCard = ({ investment }: InvestmentCardProps) => {
 export default function InvestmentsPage() {
   return (
     <div className="max-w-7xl mx-auto p-4 pt-[70px] text-center min-h-screen flex flex-col pb-8">
-      <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white drop-shadow-lg">
-        Invest in Solar Innovation – Own a Piece of the Future
-      </h1>
-      <p className="text-sm md:text-base text-gray-300 mb-8 px-4 italic">
-        Choose a solar equipment part to invest in and earn up to 50% returns as
-        we manufacture and sell it globally.
-      </p>
+      <div className="flex flex-col items-center text-center px-6 md:px-16 space-y-8 mt-14">
+        {/* Title & Description */}
+        <div className="w-full">
+          <h1 className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg leading-tight">
+           <span>Invest in Solar Innovation</span> <br />
+            <span>Own a piece of the future</span>
+          </h1>
+          <p className="text-sm md:text-lg text-gray-300 mt-4 italic">
+            Choose a solar equipment part to invest in and earn up to 50%
+            returns as we manufacture and sell it globally.
+          </p>
+        </div>
 
-      <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white drop-shadow-lg">
-        Our Plan Cards{" "}
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 flex-grow">
+        {/* Plan Cards Section */}
+        <div className="w-full">
+          <h2 className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg mb-8">
+            Our Plan Cards
+          </h2>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 flex-grow mx-2">
         {investments.map((investment) => (
           <InvestmentCard key={investment.id} investment={investment} />
         ))}

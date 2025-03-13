@@ -11,6 +11,7 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nationality, setNationality] = useState("");
+  const [referralCode, setReferralCode] = useState(""); // New state for referral code
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState(""); // ✅ Success message state
   const { login } = useAuth();
@@ -27,7 +28,7 @@ export default function Register() {
     }
 
     try {
-      console.log("Registering user", { name, email, password, nationality });
+      console.log("Registering user", { name, email, password, nationality, referralCode });
       await login(email, password);
 
       // ✅ Show success message
@@ -140,6 +141,20 @@ export default function Register() {
               <option value="India">India</option>
               <option value="India">Others</option>
             </select>
+          </div>
+
+          <div>
+            <label htmlFor="referralCode" className="block text-sm text-gray-300 mb-1">
+              Referral Code (optional)
+            </label>
+            <input
+              type="text"
+              id="referralCode"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value)}
+              className="w-full p-3 bg-black/30 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-yellow-400 focus:outline-none placeholder-gray-400"
+              placeholder="Enter referral code (optional)"
+            />
           </div>
 
           <button

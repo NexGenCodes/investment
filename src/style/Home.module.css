@@ -273,7 +273,8 @@
 /* Responsive Iframe Container */
 .iframeContainer {
   position: relative;
-  padding-top: 56.25%; /* 16:9 aspect ratio */
+  padding-top: 56.25%;
+  /* 16:9 aspect ratio */
   overflow: hidden;
   width: 100%;
 }
@@ -294,7 +295,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   align-items: start;
-  margin:0 auto;
+  margin: 0 auto;
   max-width: 600px;
 }
 
@@ -348,102 +349,280 @@
   width: 50%;
   margin: 0 auto;
 }
+
 /* Media Query for Larger Screens */
 @media (min-width: 768px) {
   .howItWorksContainer {
-    flex-direction: row; /* Side-by-side layout on larger screens */
+    flex-direction: row;
+    /* Side-by-side layout on larger screens */
     justify-content: center;
   }
 
   .howItWorksVideo {
-    flex: 1; /* Take up half the space */
-    max-width: 50%; /* Limit width to 50% of the container */
+    flex: 1;
+    /* Take up half the space */
+    max-width: 50%;
+    /* Limit width to 50% of the container */
   }
 
   .stepsContainer {
-    flex: 1; /* Take up half the space */
-    max-width: 50%; /* Limit width to 50% of the container */
+    flex: 1;
+    /* Take up half the space */
+    max-width: 50%;
+    /* Limit width to 50% of the container */
   }
 }
 
 /* Why Choose Us Section */
 .whyChooseUs {
-  padding: 80px 20px;
+  padding: 6rem 8vw;
   background: rgb(24, 32, 50);
-  text-align: center;
 }
 
-.whyChooseUs h2 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 48px;
-  color: rgb(229, 231, 235);
-  position: relative;
-  display: inline-block;
-}
-
-.whyChooseUs h2::after {
-  content: "";
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: rgb(255, 215, 0);
-  border-radius: 2px;
-}
-
-.reasonsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
-  gap: 30px; /* Space between cards */
+.whyChooseUsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  /* Centers the entire section */
+  gap: 4rem;
 }
 
-.reason {
-  background: rgba(255, 255, 255, 0.089);
-  backdrop-filter: blur(10);
-  color: rgb(229, 231, 235);
-  padding: 24px 16px;
-  border-radius: 16px;
-  transition: transform 0.3s, box-shadow 0.3s;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
-.reason:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-}
-
-.reasonIcon {
-  font-size: 5rem;
-  margin-bottom: 16px;
-  transition: transform 0.3s;
+.whyChooseUsText,
+.imageLayout {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center
+  flex: 1;
+  min-height: 100%;
 }
 
-.reason:hover .reasonIcon {
+
+.whyChooseUs h2 {
+  font-size: 2rem;
+  color: rgb(208, 210, 214);
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.whyChooseUsDescription {
+  font-size: 1rem;
+  color: rgb(208, 210, 214);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.iconRow {
+  display: flex;
+  justify-content: space-between;
+  /* Left & Right alignment */
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.iconItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+
+/* Icon Styling with Background */
+.iconContainer {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 217, 0, 0.808);
+  border-radius: 50%;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+  flex-shrink: 0;
+}
+
+.iconContainer:hover {
+  background: rgba(255, 217, 0, 0.603);
   transform: scale(1.1);
 }
 
-.reason h3 {
-  position: relative;
-  display: inline-block;
-  font-size: 1.5rem;
+.icon_Img {
+  color: white;
+  width: 24px;
+  height: 24px;
+}
+
+/* Text Styling */
+.iconText h3 {
+  font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 12px;
+  margin-bottom: 0.2rem;
+}
+
+/* Progress Bars Section */
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.progressItem {
+  display: flex;
+  flex-direction: column;
   position: relative;
 }
 
-.reason p {
-  font-size: 0.875rem;
-  color: #e0e0e0;
-  line-height: 1.5;
+.progressItem h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.progressBar {
+  background-color: #ececec;
+  border-radius: 8px;
+  height: 8px;
+  overflow: visible;
+  position: relative;
+}
+
+.progressFill {
+  background: rgba(255, 217, 0, 0.904);
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.5s ease-in-out;
+  position: relative;
+}
+
+/* Positions the percentage text correctly */
+.progressBar span {
+  position: absolute;
+  top: -22px;
+  left: calc(var(--progress) - 10px);
+  font-weight: bold;
+  color: rgb(255, 215, 0);
+  white-space: nowrap;
+  z-index: 2;
+  transform: translateX(-50%);
+}
+
+/* Image Layout on the Right */
+.imageLayout {
+  flex: 1;
+  position: relative;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  padding: 0 5vw;
+}
+
+.imageTop {
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.imageTop img {
+  width: 70%;
+  height: 400px;
+  display: block;
+}
+
+.imageBottom {
+  position: absolute;
+  top: 90px;
+  left: 60%;
+  transform: translateX(-20%);
+  width: 100%;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.imageBottom img {
+  width: 60%;
+  height: 400px;
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .whyChooseUsContainer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .iconRow {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .progressItem h3 {
+    font-size: 1rem;
+  }
+
+  .imageLayout {
+    text-align: center;
+    padding-bottom: 4rem;
+  }
+
+  .imageBottom {
+    top: 100px;
+    left: 50%;
+    transform: translateX(-20%);
+    width: 100%;
+    /* Keeps image size consistent */
+  }
+}
+
+@media (max-width: 768px) {
+  .whyChooseUs {
+    padding: 4rem 5vw;
+  }
+
+  .iconRow {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .iconItem {
+    flex: 1;
+    width: 40%;
+  }
+
+  .imageBottom {
+    top: 60px;
+    left: 60%;
+    transform: translateX(-20%);
+  }
+
+  .imageTop img {
+    width: 70%;
+    height: 300px;
+    display: block;
+  }
+
+  .imageBottom img {
+    width: 60%;
+    height: 300px;
+    display: block;
+  }
+
+  .imageLayout {
+    padding: 0 4vw;
+    margin-bottom: 5rem;
+    max-width: 100%;
+  }
+
+  .whyChooseUsContainer {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 4vw;
+  }
 }
 
 /* Testimonials Section */
@@ -550,6 +729,7 @@
     width: 100% !important;
     min-width: 100% !important;
   }
+
   .testimonial {
     height: auto;
   }
