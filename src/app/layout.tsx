@@ -10,9 +10,14 @@ import { AuthProvider } from '../context/AuthContex'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Solar Investment',
-  description: 'Invest in a sustainable future with solar energy projects',
-}
+  title: "Solar Investment",
+  description: "Invest in a sustainable future with solar energy projects",
+  icons: {
+    icon: "/images/favicon-32x32.png",
+    shortcut: "/images/favicon-32x32.png",
+    apple: "/images/apple-touch-icon.png",
+  },
+};
 
 export default function RootLayout({
   children,
