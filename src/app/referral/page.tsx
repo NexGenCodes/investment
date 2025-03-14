@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Bell, Trophy} from "lucide-react";
+import { Bell, Trophy } from "lucide-react";
 import "../../style/globals.css";
 import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
@@ -27,7 +27,8 @@ export default function SolarReferralPage() {
   const [testimonials] = useState<Testimonial[]>([
     {
       name: "Ollie Hunter",
-      message: "I earned ₦40,000 in just a month by referring friends. It's so easy!",
+      message:
+        "I earned ₦40,000 in just a month by referring friends. It's so easy!",
     },
     {
       name: "Mckenzie Dom",
@@ -40,7 +41,10 @@ export default function SolarReferralPage() {
     const interval = setInterval(() => {
       setNotifications((prev) => [
         ...prev,
-        { message: "Kayden William just joined using your referral!", time: new Date().toLocaleTimeString() },
+        {
+          message: "Kayden William just joined using your referral!",
+          time: new Date().toLocaleTimeString(),
+        },
       ]);
     }, 10000);
     return () => clearInterval(interval);
@@ -59,11 +63,13 @@ export default function SolarReferralPage() {
       {/* Confetti Animation */}
       {showConfetti && <Confetti />}
 
-      <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
         Refer & Earn with SunVault Investments
       </h1>
+
       <p className="text-lg mt-2 text-gray-200">
-        Invite friends and earn up to <b className="text-green-600">₦50,000</b> per successful investment!
+        Invite friends and earn up to <b className="text-green-600">₦50,000</b>{" "}
+        per successful investment!
       </p>
 
       {/* How It Works Section */}
@@ -75,9 +81,12 @@ export default function SolarReferralPage() {
               <span className="text-blue-400 font-bold">1</span>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-200">Share Your Referral Link</h3>
+              <h3 className="font-semibold text-gray-200">
+                Share Your Referral Link
+              </h3>
               <p className="text-sm text-gray-400">
-                Copy your unique referral link and share it with friends, family, or on social media.
+                Copy your unique referral link and share it with friends,
+                family, or on social media.
               </p>
             </div>
           </div>
@@ -86,9 +95,12 @@ export default function SolarReferralPage() {
               <span className="text-blue-400 font-bold">2</span>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-200">Your Friends Sign Up</h3>
+              <h3 className="font-semibold text-gray-200">
+                Your Friends Sign Up
+              </h3>
               <p className="text-sm text-gray-400">
-                When your friends sign up using your referral link, they get started with Solar Invest.
+                When your friends sign up using your referral link, they get
+                started with Solar Invest.
               </p>
             </div>
           </div>
@@ -97,9 +109,12 @@ export default function SolarReferralPage() {
               <span className="text-blue-400 font-bold">3</span>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-200">They Make an Investment</h3>
+              <h3 className="font-semibold text-gray-200">
+                They Make an Investment
+              </h3>
               <p className="text-sm text-gray-400">
-                Once your friends make their first investment, you earn a reward.
+                Once your friends make their first investment, you earn a
+                reward.
               </p>
             </div>
           </div>
@@ -110,24 +125,30 @@ export default function SolarReferralPage() {
             <div className="flex-1">
               <h3 className="font-semibold text-gray-200">Earn Rewards</h3>
               <p className="text-sm text-gray-400">
-                You earn <b className="text-green-400">₦1000</b> for every successful referral. The more you refer, the more you earn!
+                You earn <b className="text-green-400">₦1000</b> for every
+                successful referral. The more you refer, the more you earn!
               </p>
             </div>
           </div>
         </div>
       </div>
 
-       {/* Access Referral Code Section */}
-       <div className="mt-8 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-        <h2 className="text-xl font-semibold text-gray-200">Access Your Referral Code</h2>
+      {/* Access Referral Code Section */}
+      <div className="mt-8 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
+        <h2 className="text-xl font-semibold text-gray-200">
+          Access Your Referral Code
+        </h2>
         <p className="text-sm mt-2 text-gray-400">
-          You can find your referral code on your portfolio page. Use it to invite friends and start earning rewards!
+          You can find your referral code on your portfolio page. Use it to
+          invite friends and start earning rewards!
         </p>
       </div>
 
       {/* Milestone Rewards */}
       <div className="mt-8 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-        <h2 className="text-xl font-semibold text-gray-200">Milestone Rewards</h2>
+        <h2 className="text-xl font-semibold text-gray-200">
+          Milestone Rewards
+        </h2>
         <div className="mt-4 space-y-3">
           <div className="flex justify-between items-center bg-gray-700 p-3 rounded-lg hover:bg-gray-600 transition-all">
             <span className="text-gray-200">5 Referrals</span>
@@ -158,7 +179,9 @@ export default function SolarReferralPage() {
               <span className="text-gray-200">
                 {index + 1}. {user.name} {index === 0 && "👑"}
               </span>
-              <span className="font-semibold text-green-400">₦{user.earnings}</span>
+              <span className="font-semibold text-green-400">
+                ₦{user.earnings}
+              </span>
             </li>
           ))}
         </ul>
@@ -189,7 +212,9 @@ export default function SolarReferralPage() {
 
       {/* Testimonials Section */}
       <div className="mt-8 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-        <h2 className="text-xl font-semibold text-gray-200">What People Are Saying</h2>
+        <h2 className="text-xl font-semibold text-gray-200">
+          What People Are Saying
+        </h2>
         <div className="mt-4 space-y-4">
           {testimonials.map((testimonial, index) => (
             <motion.div
@@ -223,7 +248,9 @@ export default function SolarReferralPage() {
               How much can I earn?
             </summary>
             <p className="text-sm mt-2 text-gray-400">
-              You earn <b className="text-green-400">₦1000 per successful investor</b>. No limits!
+              You earn{" "}
+              <b className="text-green-400">₦1000 per successful investor</b>.
+              No limits!
             </p>
           </details>
         </div>
