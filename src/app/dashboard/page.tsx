@@ -6,16 +6,16 @@ import { ArrowUpRight, Search } from 'lucide-react';
 const mockData = {
   totalHolding: 12304.11,
   return: 165.20,
-  portfolioPerformance: Array.from({ length: 30 }, (_, i) => ({
-    date: `2024-02-${i + 1}`,
+  portfolioPerformance: Array.from({ length: 30 }, () => ({
+    date: `2024-02-₦{i + 1}`,
     value: 10000 + Math.random() * 5000
   })),
   portfolioOverview: [
-    { symbol: 'Solar Panel Frame', lastPrice: 535.00, change: -3.45, marketCap: '$548.6B', volume: '$7.9B' },
-    { symbol: 'Energy Storage Battery', lastPrice: 322.00, change: 1.44, marketCap: '$548.6B', volume: '$7.9B' },
+    { symbol: 'Solar Panel Frame', lastPrice: 535.00, change: -3.45, marketCap: '₦548.6B', volume: '₦7.9B' },
+    { symbol: 'Energy Storage Battery', lastPrice: 322.00, change: 1.44, marketCap: '₦548.6B', volume: '₦7.9B' },
   ],
   watchlist: [
-    { symbol: 'NEE', name: 'NextEra Energy', price: 323.55, change: 4.23 },
+    { symbol: 'MS', name: 'Mounting Structure', price: 323.55, change: 4.23 },
     { symbol: 'SPF', name: 'Solar Panel Frame', price: 178.15, change: -2.34 },
   ]
 };
@@ -49,10 +49,10 @@ const Dashboard = () => {
           <div className="flex justify-between items-start mb-6">
             <div>
               <p className="text-gray-400 mb-2">Total Holding</p>
-              <h2 className="text-4xl font-bold text-white">${mockData.totalHolding.toLocaleString()}</h2>
+              <h2 className="text-4xl font-bold text-white">₦{mockData.totalHolding.toLocaleString()}</h2>
               <p className="text-green-400 flex items-center mt-2">
                 <ArrowUpRight className="w-4 h-4 mr-1" />
-                +${mockData.return}
+                +₦{mockData.return}
               </p>
             </div>
           </div>
@@ -101,8 +101,8 @@ const Dashboard = () => {
                     {mockData.portfolioOverview.map((stock) => (
                       <tr key={stock.symbol} className="border-t border-gray-700">
                         <td className="py-4 text-white">{stock.symbol}</td>
-                        <td className="text-right text-white">${stock.lastPrice}</td>
-                        <td className={`text-right ${stock.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <td className="text-right text-white">₦{stock.lastPrice}</td>
+                        <td className={`text-right ₦{stock.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
                           {stock.change > 0 ? '+' : ''}{stock.change}%
                         </td>
                         <td className="text-right text-gray-300">{stock.marketCap}</td>
@@ -126,8 +126,8 @@ const Dashboard = () => {
                       <p className="text-sm text-gray-400">{item.name}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-white">${item.price}</p>
-                      <p className={`text-sm ${item.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      <p className="text-white">₦{item.price}</p>
+                      <p className={`text-sm ₦{item.change > 0 ? 'text-green-400' : 'text-red-400'}`}>
                         {item.change > 0 ? '+' : ''}{item.change}%
                       </p>
                     </div>

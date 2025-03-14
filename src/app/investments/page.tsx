@@ -77,17 +77,6 @@ const investments: Investment[] = [
     grossReturn: 50,
     netReturn: 45,
   },
-  {
-    id: "6",
-    name: "NextEra Energy, Inc. (NEE)",
-    riskLevel: "Low",
-    imageUrl: "/images/investments/solar5.jpg",
-    description:
-      "NextEra Energy, Inc. is a global leader in renewable energy, specializing in solar and wind power generation.",
-    duration: "16 Weeks",
-    grossReturn: 50,
-    netReturn: 45,
-  },
 ];
 
 // Reusable InvestmentCard Component

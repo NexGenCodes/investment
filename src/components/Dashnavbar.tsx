@@ -55,7 +55,7 @@ export default function Navbar() {
                 href="/dashboard/referral"
                 className="block px-4 py-2 sm:py-3 text-white hover:bg-green-500/20 transition"
               >
-                🎁 Refer a friend
+                🎁 Referral
               </Link>
 
               <Link

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { TrendingDown, Zap } from "lucide-react";
 import styles from "../style/Home.module.css";
+import "../style/globals.css";
 import FAQSection from "../components/faq";
 
 // Import Swiper styles

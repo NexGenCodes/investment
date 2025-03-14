@@ -88,19 +88,6 @@ const investments: Investment[] = [
     imageUrl: "/images/investments/solar5.jpg",
     riskLevel: "Low",
   },
-  {
-    id: "6",
-    name: "NextEra Energy, Inc. (NEE)",
-    investmentRange: "₦8,000 – ₦150,000",
-    riskLevel: "Low",
-    imageUrl: "/images/investments/solar6.jpg",
-    description:
-      "NextEra Energy, Inc. is a global leader in renewable energy, specializing in solar and wind power generation.",
-      duration: "16 Weeks",
-      grossReturn: 50,
-      netReturn: 45,
-    cta: "Invest in Storage Batteries",
-  },
 ];
 
 export default function InvestmentDetails() {

@@ -1,8 +1,13 @@
+.main{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .main {
   font-family: 'Inter', sans-serif;
   color: rgb(229, 231, 235);
   background: rgb(17, 24, 39);
-
 }
 
 /* Hero Section */
@@ -78,7 +83,6 @@
   text-decoration: none;
   transition: background 0.3s;
   box-shadow: 0px 4px 8px rgba(17, 24, 39, 0.616);
-
 }
 
 .heroButton:hover,
@@ -133,7 +137,6 @@
   max-width: 1000px;
 }
 
-
 .aboutImage {
   width: 100%;
   max-width: 500px;
@@ -143,7 +146,6 @@
   margin-bottom: 32px;
   z-index: 3;
 }
-
 
 .aboutImage img {
   border-radius: 8px;
@@ -173,7 +175,6 @@
   display: inline-block;
   z-index: 3;
   margin-bottom: 3rem;
-
 }
 
 .aboutText h2 {
@@ -182,7 +183,6 @@
   margin-bottom: 16px;
   position: relative;
   display: inline-block;
-
 }
 
 .aboutus h1::after {
@@ -197,7 +197,6 @@
   border-radius: 2px;
 }
 
-
 .aboutTextHighlight {
   color: rgb(255, 215, 0);
   padding-top: 20px;
@@ -211,7 +210,6 @@
   line-height: 1.6;
   text-align: center;
 }
-
 
 .ctaButton {
   background: linear-gradient(135deg, rgb(17, 24, 39), rgb(30, 58, 138));
@@ -273,8 +271,7 @@
 /* Responsive Iframe Container */
 .iframeContainer {
   position: relative;
-  padding-top: 56.25%;
-  /* 16:9 aspect ratio */
+  padding-top: 56.25%; /* 16:9 aspect ratio */
   overflow: hidden;
   width: 100%;
 }
@@ -354,22 +351,17 @@
 @media (min-width: 768px) {
   .howItWorksContainer {
     flex-direction: row;
-    /* Side-by-side layout on larger screens */
     justify-content: center;
   }
 
   .howItWorksVideo {
     flex: 1;
-    /* Take up half the space */
     max-width: 50%;
-    /* Limit width to 50% of the container */
   }
 
   .stepsContainer {
     flex: 1;
-    /* Take up half the space */
     max-width: 50%;
-    /* Limit width to 50% of the container */
   }
 }
 
@@ -385,10 +377,8 @@
   align-items: stretch;
   max-width: 1200px;
   margin: 0 auto;
-  /* Centers the entire section */
   gap: 4rem;
 }
-
 
 .whyChooseUsText,
 .imageLayout {
@@ -398,7 +388,6 @@
   flex: 1;
   min-height: 100%;
 }
-
 
 .whyChooseUs h2 {
   font-size: 2rem;
@@ -417,7 +406,6 @@
 .iconRow {
   display: flex;
   justify-content: space-between;
-  /* Left & Right alignment */
   gap: 2rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
@@ -431,8 +419,6 @@
   min-width: 200px;
 }
 
-
-/* Icon Styling with Background */
 .iconContainer {
   width: 50px;
   height: 50px;
@@ -456,14 +442,12 @@
   height: 24px;
 }
 
-/* Text Styling */
 .iconText h3 {
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 0.2rem;
 }
 
-/* Progress Bars Section */
 .progressSection {
   display: flex;
   flex-direction: column;
@@ -498,7 +482,6 @@
   position: relative;
 }
 
-/* Positions the percentage text correctly */
 .progressBar span {
   position: absolute;
   top: -22px;
@@ -510,7 +493,6 @@
   transform: translateX(-50%);
 }
 
-/* Image Layout on the Right */
 .imageLayout {
   flex: 1;
   position: relative;
@@ -519,6 +501,7 @@
   justify-content: center;
   max-width: 100%;
   padding: 0 5vw;
+  overflow: hidden;
 }
 
 .imageTop {
@@ -575,7 +558,6 @@
     left: 50%;
     transform: translateX(-20%);
     width: 100%;
-    /* Keeps image size consistent */
   }
 }
 
@@ -652,7 +634,6 @@
   z-index: 1;
 }
 
-/* Testimonial Card */
 .testimonial {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -699,7 +680,6 @@
   border-radius: 2px;
 }
 
-/* Swiper Container */
 .testimonialsContainer {
   width: 100%;
   height: auto;
@@ -708,13 +688,11 @@
   overflow: hidden;
 }
 
-/* Swiper Wrapper */
 .swiper-wrapper {
   display: flex;
   transition-timing-function: linear;
 }
 
-/* Swiper Slide */
 .swiper-slide {
   flex-shrink: 0;
   width: 100%;
@@ -785,7 +763,6 @@
   color: #cfcfcf;
 }
 
-/* Swiper Navigation and Pagination Styles */
 .swiper-button-next,
 .swiper-button-prev {
   color: rgb(255, 215, 0);
@@ -848,7 +825,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
-
 }
 
 .faqItem h3 {
@@ -873,13 +849,11 @@
   transition: max-height 0.3s ease-in-out;
 }
 
-/* Expand Answer */
 .faqItem.open .faqAnswer {
   max-height: 100px;
   padding-top: 10px;
 }
 
-/* View More FAQs Button */
 .faqLink {
   display: inline-block;
   margin-top: 20px;
@@ -897,7 +871,6 @@
   background: rgb(229, 231, 235);
   color: #100d1f;
 }
-
 
 /* Footer */
 .footer {
@@ -937,11 +910,9 @@
   color: rgb(255, 215, 0);
 }
 
-
 .newsletter {
   text-align: left;
   max-width: 300px;
-
 }
 
 .newsletter h3 {
@@ -953,7 +924,6 @@
 .newsletter p {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
-  /* Softer white for readability */
   margin-bottom: 12px;
 }
 
@@ -987,7 +957,6 @@
   background: rgb(230, 195, 0);
 }
 
-
 .footerBottom {
   padding-top: 20px;
   font-size: 0.85rem;
@@ -1006,7 +975,6 @@
   color: rgb(230, 195, 0);
   text-decoration: underline;
 }
-
 
 /* ===== Large Screens (1200px and below) ===== */
 @media (max-width: 1200px) {
@@ -1097,7 +1065,6 @@
     align-items: center;
     gap: 20px;
   }
-
 
   .stepsContainer {
     width: 100%;

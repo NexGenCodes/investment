@@ -58,7 +58,7 @@ const Wallet = () => {
     setInvestedAmount(prev => prev + (depositAmount * 0.8)); // Assume 80% of deposit goes to investments
     setAmount('');
     setShowDepositModal(false);
-    showToast('success', `Successfully deposited $${depositAmount.toLocaleString()}`);
+    showToast('success', `Successfully deposited ₦{depositAmount.toLocaleString()}`);
   };
 
   const handleWithdraw = () => {
@@ -89,7 +89,7 @@ const Wallet = () => {
     setInvestedAmount(prev => Math.max(0, prev - (withdrawAmount * 0.2))); // Assume 20% of withdrawal comes from investments
     setAmount('');
     setShowWithdrawModal(false);
-    showToast('success', `Successfully withdrew $${withdrawAmount.toLocaleString()}`);
+    showToast('success', `Successfully withdrew ₦{withdrawAmount.toLocaleString()}`);
   };
 
   return (
@@ -97,7 +97,7 @@ const Wallet = () => {
       {/* Toast Notification */}
       {toast && (
         <div
-          className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg flex items-center gap-2 ${
+          className={`fixed top-4 right-4 p-4 rounded-lg shadow-lg flex items-center gap-2 ₦{
             toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
           } text-white z-50`}
         >
@@ -113,15 +113,15 @@ const Wallet = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-gray-800 rounded-xl p-6">
           <p className="text-gray-400 mb-2">Total Balance</p>
-          <h3 className="text-3xl font-bold text-white">${balance.toLocaleString()}</h3>
+          <h3 className="text-3xl font-bold text-white">₦{balance.toLocaleString()}</h3>
         </div>
         <div className="bg-gray-800 rounded-xl p-6">
           <p className="text-gray-400 mb-2">Available Funds</p>
-          <h3 className="text-3xl font-bold text-white">${availableFunds.toLocaleString()}</h3>
+          <h3 className="text-3xl font-bold text-white">₦{availableFunds.toLocaleString()}</h3>
         </div>
         <div className="bg-gray-800 rounded-xl p-6">
           <p className="text-gray-400 mb-2">Invested Amount</p>
-          <h3 className="text-3xl font-bold text-white">${investedAmount.toLocaleString()}</h3>
+          <h3 className="text-3xl font-bold text-white">₦{investedAmount.toLocaleString()}</h3>
         </div>
       </div>
 
@@ -160,7 +160,7 @@ const Wallet = () => {
                 <tbody>
                   {transactions.map((transaction) => (
                     <tr key={transaction.id} className="border-t border-gray-700">
-                      <td className="py-4">
+                      <td className="py-4 \">
                         <div className="flex items-center">
                           {transaction.type === 'Deposit' ? (
                             <ArrowUpRight className="w-4 h-4 text-green-400 mr-2" />
@@ -170,9 +170,9 @@ const Wallet = () => {
                           <span className="text-white">{transaction.type}</span>
                         </div>
                       </td>
-                      <td className="text-right text-white">${transaction.amount.toLocaleString()}</td>
+                      <td className="text-right text-white">₦{transaction.amount.toLocaleString()}</td>
                       <td className="text-right">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
+                        <span className={`px-2 py-1 rounded-full text-xs ₦{
                           transaction.status === 'Completed'
                             ? 'bg-green-500/20 text-green-400'
                             : transaction.status === 'Pending'
@@ -182,9 +182,9 @@ const Wallet = () => {
                           {transaction.status}
                         </span>
                       </td>
-                      <td className="text-right text-gray-300">
+                      <td className="text-right text-gray-300 ">
                         <div>{transaction.date}</div>
-                        <div className="text-sm text-gray-400">{transaction.time}</div>
+                        <div className="text-sm text-gray-400 ">{transaction.time}</div>
                       </td>
                     </tr>
                   ))}
