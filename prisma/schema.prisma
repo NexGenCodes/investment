@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-  provider = "sqlite" // Use SQLite as the database provider
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -31,15 +31,15 @@ model User {
 
   Investment Investment[]
 }
-model Investment {
-  id             String        @id @default(uuid())
-  userId         String
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  planName       String        // "Solar Panel", "Photoelectric Cell", etc.
-  amount     Int           // Amount invested
-  returns        Int           // Expected return
-  duration       Int           // In weeks
-  startDate      DateTime      // When the investment started
-  createdAt      DateTime      @default(now())
 
+model Investment {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planName  String // "Solar Panel", "Photoelectric Cell", etc.
+  amount    Int // Amount invested
+  returns   Int // Expected return
+  duration  Int // In weeks
+  startDate DateTime // When the investment started
+  createdAt DateTime @default(now())
 }
