@@ -4,14 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import { useAuth } from "../context/AuthContex";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { user } = useAuth();
   const pathname = usePathname();
+  const { data: session, status } = useSession();
+  const user = session?.user;
 
   // Scroll effect for navbar background change
   useEffect(() => {
@@ -25,11 +26,13 @@ export default function Navbar() {
 
   // Hide navbar on login/register pages
   if (
-    pathname.startsWith("/dashboard") || 
-    pathname === "/login" || 
-    pathname === "/register"
-  ) return null;
-  
+    pathname.startsWith("/dashboard") ||
+    pathname === "/auth/login" ||
+    pathname === "/auth/register"
+  )
+    return null;
+
+  if (status === "loading") return null;
 
   return (
     <nav
@@ -53,21 +56,48 @@ export default function Navbar() {
         <div className="hidden md:flex space-x-8 text-lg font-medium text-white">
           {user ? (
             <>
-              <Link href="/" className="hover:text-[#FFD700] transition">Home</Link>
-              <Link href="/investments" className="hover:text-[#FFD700] transition">Investments</Link>
-              <Link href="/referral" className="hover:text-[#FFD700] transition">Earn More</Link>
-              <Link href="/dashboard" className="hover:text-[#FFD700] transition">Portfolio</Link>
+              <Link href="/" className="hover:text-[#FFD700] transition">
+                Home
+              </Link>
+              <Link
+                href="/investments"
+                className="hover:text-[#FFD700] transition"
+              >
+                Investments
+              </Link>
+              <Link
+                href="/referral"
+                className="hover:text-[#FFD700] transition"
+              >
+                Earn More
+              </Link>
+              <Link
+                href="/dashboard"
+                className="hover:text-[#FFD700] transition"
+              >
+                Portfolio
+              </Link>
             </>
           ) : (
             <>
-              <Link href="/login" className="hover:text-green-400 transition">Login</Link>
-              <Link href="/register" className="hover:text-green-400 transition">Register</Link>
+              <Link
+                href="/auth/login"
+                className="hover:text-green-400 transition"
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/register"
+                className="hover:text-green-400 transition"
+              >
+                Register
+              </Link>
             </>
           )}
         </div>
 
         {/* Mobile Menu Button */}
-        <button 
+        <button
           className="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-[#FFD700] rounded p-2"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-expanded={isMenuOpen}
@@ -83,7 +113,7 @@ export default function Navbar() {
         }`}
       >
         {/* Close Button */}
-        <button 
+        <button
           className="absolute top-4 right-4 p-2 text-white hover:text-red-600"
           onClick={() => setIsMenuOpen(false)}
         >
@@ -94,15 +124,51 @@ export default function Navbar() {
         <div className="flex flex-col items-center mt-16 space-y-6 text-lg font-semibold text-white">
           {user ? (
             <>
-              <Link href="/" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Home</Link>
-              <Link href="/investments" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Investments</Link>
-              <Link href="/referral" className="hover:text-[#FFD700] transition"  onClick={() => setIsMenuOpen(false)}>Earn More</Link>
-              <Link href="/dashboard" className="hover:text-[#FFD700] transition" onClick={() => setIsMenuOpen(false)}>Portfolio</Link>
+              <Link
+                href="/"
+                className="hover:text-[#FFD700] transition"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/investments"
+                className="hover:text-[#FFD700] transition"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Investments
+              </Link>
+              <Link
+                href="/referral"
+                className="hover:text-[#FFD700] transition"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Earn More
+              </Link>
+              <Link
+                href="/dashboard"
+                className="hover:text-[#FFD700] transition"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Portfolio
+              </Link>
             </>
           ) : (
             <>
-              <Link href="/login" className="hover:text-green-400 transition" onClick={() => setIsMenuOpen(false)}>Login</Link>
-              <Link href="/register" className="hover:text-green-400 transition" onClick={() => setIsMenuOpen(false)}>Register</Link>
+              <Link
+                href="/auth/login"
+                className="hover:text-green-400 transition"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/register"
+                className="hover:text-green-400 transition"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Register
+              </Link>
             </>
           )}
         </div>

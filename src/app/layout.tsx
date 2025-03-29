@@ -1,13 +1,12 @@
-// src/app/layout.tsx
-import '@/style/globals.css';
-import { ToastProvider } from '../components/ui/toast';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import Navbar from '../components/Navbar';
-import { Toaster } from 'react-hot-toast'; 
-import { AuthProvider } from '../context/AuthContex'
+import "@/style/globals.css";
+import { ToastProvider } from "../components/ui/toast";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import Navbar from "../components/Navbar";
+import { Toaster } from "react-hot-toast";
+import { SessionProvider } from "next-auth/react";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Solar Investment",
@@ -19,25 +18,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={inter.className}>
         {/* Ensure ToastProvider wraps everything */}
-        <ToastProvider>
-          <AuthProvider>
-          <Navbar />
+        <SessionProvider>
+          <ToastProvider>
+            <Navbar />
             {children}
-            
-          </AuthProvider>
-          {/* The Toaster component should be placed within ToastProvider */}
-          <Toaster position="top-right" />
-        </ToastProvider>
+            {/* The Toaster component should be placed within ToastProvider */}
+            <Toaster position="top-right" />
+          </ToastProvider>
+        </SessionProvider>
       </body>
     </html>
-  )
+  );
 }

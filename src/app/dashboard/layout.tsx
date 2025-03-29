@@ -7,9 +7,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider> {/* Ensure ThemeProvider wraps everything */}
+    <ThemeProvider>
+      {" "}
+      {/* Ensure ThemeProvider wraps everything */}
       <div className="flex min-h-screen bg-backgroundStart dark:bg-backgroundEnd">
-        
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Navbar */}

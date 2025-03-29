@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "sqlite" // Use SQLite as the database provider
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  emailVerified DateTime?
+  firstName     String?
+  lastName      String?
+  nationality   String?
+  image         String?
+  referralCode  String    @unique
+  referredById  String?
+  referredBy    User?     @relation("UserReferrals", fields: [referredById], references: [id])
+  referrals     User[]    @relation("UserReferrals")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  Investment Investment[]
+}
+model Investment {
+  id             String        @id @default(uuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planName       String        // "Solar Panel", "Photoelectric Cell", etc.
+  amount     Int           // Amount invested
+  returns        Int           // Expected return
+  duration       Int           // In weeks
+  startDate      DateTime      // When the investment started
+  createdAt      DateTime      @default(now())
+
+}

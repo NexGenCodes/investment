@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 229, 231, 235; 
-  --background-start-rgb: 17, 24, 39; 
-  --background-end-rgb: 24, 32, 50; 
+  --foreground-rgb: 229, 231, 235;
+  --background-start-rgb: 17, 24, 39;
+  --background-end-rgb: 24, 32, 50;
 
-  --primary-accent: 255, 215, 0; 
-  --secondary-accent: 30, 58, 138; 
-  
+  --primary-accent: 255, 215, 0;
+  --secondary-accent: 30, 58, 138;
+
   --success-accent: 0, 184, 148;
-  --muted-text: 160, 174, 192; 
+  --muted-text: 160, 174, 192;
 }
 
 
@@ -28,8 +28,10 @@ body {
 
 html,
 body {
-  overflow-x: hidden; /* Prevents horizontal scrolling */
-  width: 100%; /* Ensures the body takes up the full viewport width */
+  overflow-x: hidden;
+  /* Prevents horizontal scrolling */
+  width: 100%;
+  /* Ensures the body takes up the full viewport width */
 }
 
 /* Ensure all elements use border-box sizing */
@@ -41,3 +43,21 @@ body {
   padding: 0;
 }
 
+
+
+/* Hide the default eye icon in Chrome and Edge */
+input[type="password"]::-ms-reveal {
+  display: none;
+  /* For Internet Explorer and Edge */
+}
+
+input[type="password"]::-webkit-outer-spin-button,
+input[type="password"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+   /* Add a custom arrow icon for modern browsers */
+   select::-ms-expand {
+    display: none; /* Removes default dropdown arrow for Internet Explorer */
+  }

@@ -1,0 +1,54 @@
+import Countries from "@/constants/countries";
+import { object, string, z } from "zod";
+
+const password = string()
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .regex(/[a-zA-Z]/, { message: " Password must contain at least one letter." })
+  .regex(/[0-9]/, { message: "Password must contain at least one number." })
+  .regex(/[^a-zA-Z0-9]/, {
+    message: "Password must contain at least one special character.",
+  })
+  .trim();
+
+const email = string().email({ message: "Please enter a valid email." }).trim();
+
+const nationality = string({
+  required_error: "Nationality is required",
+})
+  .min(1, "Nationality is required")
+  .max(32, "Nationality must be less than 32 characters")
+  .refine((value) => Countries.some((country) => country.value === value), {
+    message: "Invalid nationality. Please select a valid country.",
+  });
+
+export const signInSchema = object({
+  email: email,
+  password: password,
+});
+
+export const signUpSchema = object({
+  email: email,
+  password: password,
+  nationality: nationality,
+  confirmPassword: password,
+  referralCode: string()
+    .length(8, "Referral code must be exactly 8 characters long")
+    .optional(),
+
+  firstName: string({ required_error: "First name is required" })
+    .min(2, "First name is required")
+    .max(32, "First name must be less than 32 characters"),
+  lastName: string()
+    .min(2, { message: "Name must be at least 2 characters long." })
+    .trim(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+export const otpSchema = object({
+  otp: string().length(4, "OTP must be exactly 4 characters long"),
+});
+
+export type SignInType = z.infer<typeof signInSchema>;
+export type SignUpType = z.infer<typeof signUpSchema>;

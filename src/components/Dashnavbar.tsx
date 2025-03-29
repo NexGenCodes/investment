@@ -5,22 +5,19 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaUserCircle } from "react-icons/fa";
 import { IoChevronBackOutline } from "react-icons/io5";
-import { useAuth } from "../context/AuthContex"; // Import the auth context
+import { signOut } from "next-auth/react";
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
-  const { logout } = useAuth(); // Get the logout function
 
   const handleLogout = async () => {
-    await logout(); // Perform logout
-    router.push("/login"); // Redirect to login page after logging out
+    signOut({ redirect: true, redirectTo: "/auth/login" }); // Perform logout
   };
 
   return (
     <nav className="bg-gray-900 p-4 shadow-lg fixed w-full z-10 top-0 left-0 backdrop-blur-md bg-opacity-90">
       <div className="flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         <button
           onClick={() => router.push("/")}
           className="flex items-center text-white hover:text-[rgb(255,215,0)] transition-all duration-300 p-2 rounded-lg hover:bg-gray-800/50"
@@ -28,7 +25,6 @@ export default function Navbar() {
           <IoChevronBackOutline className="text-2xl mr-2" />
           <span className="hidden sm:inline font-medium">Home</span>
         </button>
-
 
         {/* User Profile Dropdown */}
         <div className="relative">

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import styles from "../style/Home.module.css"; // Ensure the path is correct
@@ -18,15 +20,18 @@ export default function FAQSection() {
   const faqs: FAQItem[] = [
     {
       question: "How do I start investing?",
-      answer: "Simply register, deposit funds, and choose a solar project to invest in.",
+      answer:
+        "Simply register, deposit funds, and choose a solar project to invest in.",
     },
     {
       question: "What returns can I expect?",
-      answer: "Returns vary by project, but we aim for competitive and sustainable growth.",
+      answer:
+        "Returns vary by project, but we aim for competitive and sustainable growth.",
     },
     {
       question: "Is my investment secure?",
-      answer: "Yes, all investments are backed by real solar projects with risk mitigation strategies.",
+      answer:
+        "Yes, all investments are backed by real solar projects with risk mitigation strategies.",
     },
   ];
 
@@ -37,12 +42,16 @@ export default function FAQSection() {
         {faqs.map((faq, index: number) => (
           <div
             key={index}
-            className={`${styles.faqItem} ${openIndex === index ? styles.open : ""}`}
+            className={`${styles.faqItem} ${
+              openIndex === index ? styles.open : ""
+            }`}
             onClick={() => toggleFAQ(index)}
           >
             <h3>
               {faq.question}
-              <span className={styles.icon}>{openIndex === index ? "−" : "+"}</span>
+              <span className={styles.icon}>
+                {openIndex === index ? "−" : "+"}
+              </span>
             </h3>
             <p className={styles.faqAnswer}>{faq.answer}</p>
           </div>
