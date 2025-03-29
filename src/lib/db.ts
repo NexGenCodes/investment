@@ -46,6 +46,9 @@ export async function GetUserFromDb(where: Prisma.UserWhereUniqueInput) {
   try {
     const user = await prisma.user.findUnique({
       where,
+      include: {
+        referrals: true,
+      },
     });
 
     return user;

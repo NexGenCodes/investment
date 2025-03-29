@@ -10,6 +10,24 @@ type FAQItem = {
   answer: string;
 };
 
+const faqs: FAQItem[] = [
+  {
+    question: "How do I start investing?",
+    answer:
+      "Simply register, deposit funds, and choose a solar project to invest in.",
+  },
+  {
+    question: "What returns can I expect?",
+    answer:
+      "Returns vary by project, but we aim for competitive and sustainable growth.",
+  },
+  {
+    question: "Is my investment secure?",
+    answer:
+      "Yes, all investments are backed by real solar projects with risk mitigation strategies.",
+  },
+];
+
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -17,23 +35,7 @@ export default function FAQSection() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const faqs: FAQItem[] = [
-    {
-      question: "How do I start investing?",
-      answer:
-        "Simply register, deposit funds, and choose a solar project to invest in.",
-    },
-    {
-      question: "What returns can I expect?",
-      answer:
-        "Returns vary by project, but we aim for competitive and sustainable growth.",
-    },
-    {
-      question: "Is my investment secure?",
-      answer:
-        "Yes, all investments are backed by real solar projects with risk mitigation strategies.",
-    },
-  ];
+  
 
   return (
     <section className={styles.faqSection}>
