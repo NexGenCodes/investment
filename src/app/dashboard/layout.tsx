@@ -1,5 +1,4 @@
-import Navbar from "@/components/Dashnavbar";
-import { ThemeProvider } from "@/context/ThemeContext"; // Import ThemeProvider
+import DashboardNavbar from "@/components/navs/Dashnavbar";
 
 export default function DashboardLayout({
   children,
@@ -7,21 +6,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider>
-      {" "}
-      {/* Ensure ThemeProvider wraps everything */}
-      <div className="flex min-h-screen bg-backgroundStart dark:bg-backgroundEnd">
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          {/* Navbar */}
-          <Navbar />
+    <div className="flex min-h-screen bg-backgroundStart dark:bg-backgroundEnd">
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Navbar */}
+        <DashboardNavbar />
 
-          {/* Page Content */}
-          <main className="flex-1 p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 text-foreground">
-            {children}
-          </main>
-        </div>
+        {/* Page Content */}
+        <main className="flex-1 p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 text-foreground">
+          {children}
+        </main>
       </div>
-    </ThemeProvider>
+    </div>
   );
 }

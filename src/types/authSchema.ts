@@ -50,5 +50,32 @@ export const otpSchema = object({
   otp: string().length(4, "OTP must be exactly 4 characters long"),
 });
 
+export const changePwdSchema = object({
+  currentPassword: password,
+  newPassword: password,
+  confirmPassword: password,
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "New passwords do not match",
+  path: ["confirmPassword"],
+}).refine((data) => data.currentPassword === data.newPassword, {
+  message: "New password cannot be the same as the current password",
+  path: ["newPassword"],
+});
+
+export const updateSchema = object({
+  firstName: string()
+    .min(2, "First name is required")
+    .max(32, "First name must be less than 32 characters")
+    .optional(),
+  lastName: string()
+    .min(2, { message: "Name must be at least 2 characters long." })
+    .trim()
+    .optional(),
+  nationality: nationality.optional(),
+});
+
+export type ChangePwdType = z.infer<typeof changePwdSchema>;
+export type UpdateType = z.infer<typeof updateSchema>;
 export type SignInType = z.infer<typeof signInSchema>;
 export type SignUpType = z.infer<typeof signUpSchema>;
+export type OtpType = z.infer<typeof otpSchema>;

@@ -1,17 +1,16 @@
-// src/components/SortDropdown.tsx
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown } from "lucide-react";
 
 interface SortDropdownProps {
-  value: string
-  onChange: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
 }
 
 const SortDropdown: React.FC<SortDropdownProps> = ({ value, onChange }) => {
   const options = [
-    { value: 'name', label: 'Name' },
-    { value: 'risk', label: 'Risk' },
-    { value: 'returns', label: 'Expected Returns' }
-  ]
+    { value: "name", label: "Name" },
+    { value: "risk", label: "Risk" },
+    { value: "returns", label: "Expected Returns" },
+  ];
 
   return (
     <div className="relative inline-block text-left">
@@ -28,7 +27,7 @@ const SortDropdown: React.FC<SortDropdownProps> = ({ value, onChange }) => {
       </select>
       <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none" />
     </div>
-  )
-}
+  );
+};
 
-export default SortDropdown
+export default SortDropdown;

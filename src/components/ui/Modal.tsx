@@ -1,4 +1,3 @@
-// src/components/Modal.tsx
 "use client";
 
 import { FC, useEffect, useCallback } from "react";
@@ -67,7 +66,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           </button>
 
           {/* Modal Title */}
-          <h2 className="text-2xl font-semibold text-white mb-4">{title}</h2>
+          <h2 className="text-2xl text-center font-semibold text-white mb-4">{title}</h2>
 
           {/* Modal Content */}
           {children}

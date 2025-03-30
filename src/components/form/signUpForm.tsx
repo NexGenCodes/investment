@@ -3,12 +3,14 @@
 import Signup from "@/actions/signup";
 import Link from "next/link";
 import { useActionState } from "react";
-import Input from "./input";
-import SelectInput from "./select";
 import Countries from "@/constants/countries";
+import InputField from "../ui/input";
+import SelectInput from "../ui/select";
+import { useRouter } from "next/navigation";
 
-export default function SigninForm() {
+export default function SignUpForm() {
   const [error, Action, isPending] = useActionState(Signup, undefined);
+  const router = useRouter();
 
   return (
     <div className="w-full max-w-md px-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
@@ -16,18 +18,25 @@ export default function SigninForm() {
         Create an Account
       </h2>
       <form action={Action} className="space-y-4">
-        <Input
+        <InputField
           name="firstName"
+          label="First Name"
+          required
           error={{ errors: error?.errors?.firstName, message: error?.message }}
           placeholder="Enter your firstName"
         />
-        <Input
+        <InputField
           name="lastName"
+          label="Last Name"
+          required
           error={{ errors: error?.errors?.lastName, message: error?.message }}
           placeholder="Enter your lastName"
         />
-        <Input
+        <InputField
           name="email"
+          type="email"
+          label="Email"
+          required
           error={{ errors: error?.errors?.email, message: error?.message }}
           placeholder="Enter your email"
         />
@@ -39,27 +48,37 @@ export default function SigninForm() {
             message: error?.message,
           }}
         />
-        <Input
+        <InputField
           name="password"
+          label="Password"
+          required
+          type="password"
+          icon="password"
           error={{ errors: error?.errors?.password, message: error?.message }}
           placeholder="Enter your password"
         />
-        <Input
+        <InputField
           name="confirmPassword"
+          label="Confirm Password"
+          required
+          type="password"
+          icon="password"
           error={{
             errors: error?.errors?.confirmPassword,
             message: error?.message,
           }}
           placeholder="Confirm your password"
         />
-        <Input
+        <InputField
           name="referralCode"
+          label="Referral Code"
+          required={false}
+          type="text"
           error={{
             errors: error?.errors?.referralCode,
             message: error?.message,
           }}
           placeholder="Enter referral code (optional)"
-          required={false}
         />
 
         {error?.message && (
@@ -77,6 +96,7 @@ export default function SigninForm() {
         Already have an account?
         <Link
           href="/auth/login"
+          onClick={() => setTimeout(() => router.refresh(), 1000)}
           className="text-blue-400 hover:text-yellow-400 hover:underline px-1"
         >
           Log in

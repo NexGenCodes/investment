@@ -18,11 +18,10 @@ model User {
   email         String    @unique
   password      String
   emailVerified DateTime?
-  balance       Float ?      @default(0)
+  balance       Float?    @default(0)
   firstName     String?
   lastName      String?
   nationality   String?
-  image         String?
   referralCode  String    @unique
   referredById  String?
   referredBy    User?     @relation("UserReferrals", fields: [referredById], references: [id])

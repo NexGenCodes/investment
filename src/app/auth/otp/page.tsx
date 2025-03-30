@@ -1,4 +1,4 @@
-import OtpForm from "@/components/otpform";
+import OtpForm from "@/components/form/otpform";
 import { auth } from "@/lib/auth";
 import { getCookie } from "@/lib/cookies";
 import { redirect } from "next/navigation";

@@ -7,7 +7,6 @@ import {
   TabsTrigger,
 } from "../components/ui/tabs";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import {
   Card,
   CardContent,
@@ -15,6 +14,7 @@ import {
   CardTitle,
 } from "../components/ui/card";
 import { CircleNotch } from "phosphor-react";
+import InputField from "./ui/input";
 
 type TransactionType = "deposit" | "withdraw";
 type PaymentMethod = "Bank" | "Crypto" | "Card" | "PayPal";
@@ -174,7 +174,7 @@ const DepositWithdraw: React.FC<DepositWithdrawProps> = ({
             className="space-y-4"
           >
             {/* Amount Input */}
-            <Input
+            <InputField
               type="number"
               placeholder="Enter deposit amount"
               className="bg-gray-900 border border-gray-700 text-white p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
@@ -209,7 +209,7 @@ const DepositWithdraw: React.FC<DepositWithdrawProps> = ({
         <TabsContent value="withdraw">
           <form onSubmit={handleSubmit(onSubmit)} data-type="withdraw" className="space-y-4">
             {/* Amount Input */}
-            <Input
+            <InputField
               type="number"
               placeholder="Enter withdrawal amount"
               className="bg-gray-900 border border-gray-700 text-white p-3 rounded-lg focus:ring-2 focus:ring-red-500"

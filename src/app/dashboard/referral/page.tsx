@@ -1,7 +1,7 @@
-import ReferralSection from "@/components/refferal";
+import ReferralSection from "@/components/referral";
 import { auth } from "@/lib/auth";
 import { GetUserFromDb } from "@/lib/db";
-import { Copy, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function SolarReferralPage() {
@@ -16,12 +16,6 @@ export default async function SolarReferralPage() {
     email,
   });
   if (!user) redirect("/auth/login");
-
-  const copyToClipboard = () => {
-    if (user) {
-      navigator.clipboard.writeText(user.referralCode);
-    }
-  };
 
   return (
     <div className="p-6  max-w-full mx-auto text-center bg-gradient-to-b from-gray-900 to-gray-900 min-h-screen mt-16 w-full overflow-x-hidden">
@@ -58,7 +52,7 @@ export default async function SolarReferralPage() {
           href={`mailto:?subject=${encodeURIComponent(
             "Check this out!"
           )}&body=${encodeURIComponent(
-            `I found this amazing platform. Have a look: https://yourwebsite.com`
+            `I found this amazing platform. Have a look: ${urlToShare}`
           )}`}
           className="bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:from-gray-600 hover:to-gray-700 transition-all"
         >
@@ -109,16 +103,6 @@ export default async function SolarReferralPage() {
             </p>
           </details>
         </div>
-      </div>
-
-      {/* Floating Copy Referral Link Button */}
-      <div className="fixed bottom-4 inset-x-0 flex justify-end px-4 w-full">
-        <button
-          onClick={copyToClipboard}
-          className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-2 rounded-lg flex items-center hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg"
-        >
-          <Copy className="w-4 h-4 mr-2" /> Copy Referral Link
-        </button>
       </div>
     </div>
   );

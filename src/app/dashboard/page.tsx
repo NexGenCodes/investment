@@ -6,19 +6,17 @@ import PortfolioOverView from "@/components/pOverView";
 import SearchForm from "@/components/search";
 import PortfolioPerformance from "@/components/pPerformance";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
+import { GetUserFromDb } from "@/lib/db";
 
 const Dashboard = async () => {
   const session = await auth();
   const email = session?.user?.email;
   if (!email) redirect("/auth/login");
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
+  const user = await GetUserFromDb({
+    email,
   });
   if (!user) redirect("/auth/login");
-  
+
   return (
     <div className="flex-1 bg-gray-900 p-6 overflow-y-auto mt-14">
       {/* Welcome Message */}

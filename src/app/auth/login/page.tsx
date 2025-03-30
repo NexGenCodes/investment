@@ -1,4 +1,4 @@
-import LoginForm from "@/components/loginform";
+import LoginForm from "@/components/form/loginform";
 import { Suspense } from "react";
 import { auth } from "@/lib/auth"; 
 import { redirect } from "next/navigation";

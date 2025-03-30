@@ -1,9 +1,10 @@
 import prisma from "./prisma";
 import { randomBytes } from "crypto";
 import { Prisma } from "@prisma/client";
-import { SignUpType } from "@/types/authSchema";
+import { SignUpType, UpdateType } from "@/types/authSchema";
 
 type CreateUser = Omit<SignUpType, "confirmPassword">;
+type UpdateUser = UpdateType & { password: string };
 
 async function generateReferralCode(length: number = 8) {
   let attempts = 0; // Initialize attempt counter
@@ -71,6 +72,23 @@ export async function CreateUser(userData: CreateUser) {
     return user;
   } catch (error) {
     console.error("Failed to create user:", error);
+    return null;
+  }
+}
+
+export async function UpdateUser(email: string, userData: UpdateUser) {
+  try {
+    const user = await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        ...userData,
+      },
+    });
+    return user;
+  } catch (error) {
+    console.error("Failed to update user:", error);
     return null;
   }
 }

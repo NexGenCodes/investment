@@ -2,7 +2,7 @@ import "@/style/globals.css";
 import { ToastProvider } from "../components/ui/toast";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navs/Navbar";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 
