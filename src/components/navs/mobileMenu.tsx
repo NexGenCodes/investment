@@ -2,6 +2,7 @@
 
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useMemo } from "react";
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
 
 export default function MobileMenu({ user }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const pathname = usePathname();
+  
 
   // Function to handle closing the menu when a link is clicked
   const closeMenu = () => setIsMenuOpen(false);
@@ -62,7 +65,9 @@ export default function MobileMenu({ user }: Props) {
             <Link
               key={link.href}
               href={link.href}
-              className="hover:text-[#FFD700] transition"
+              className={`hover:text-[#FFD700] transition ${
+                pathname === link.href ? "text-[#FFD700]" : ""
+              }`}
               onClick={closeMenu}
             >
               {link.label}

@@ -2,6 +2,7 @@
 
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { FaUserCircle } from "react-icons/fa";
 
@@ -35,6 +36,7 @@ const useOutsideClick = (
 
 export default function DropDown() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const pathname = usePathname();
   // Define ref with HTMLDivElement | null explicitly
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -77,7 +79,9 @@ export default function DropDown() {
                 <Link
                   href={link.href}
                   replace
-                  className="block px-4 py-2 sm:py-3 text-white hover:bg-green-500/20 transition"
+                  className={`block px-4 py-2 sm:py-3 text-white hover:bg-green-500/20 transition${
+                    pathname === link.href ? "text-[#FFD700]" : ""
+                  }`}
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   {link.label}
