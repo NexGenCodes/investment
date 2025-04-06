@@ -22,14 +22,14 @@ export default function SignUpForm() {
           name="firstName"
           label="First Name"
           required
-          error={{ errors: error?.errors?.firstName, message: error?.message }}
+          errors={error?.errors?.firstName}
           placeholder="Enter your firstName"
         />
         <InputField
           name="lastName"
           label="Last Name"
           required
-          error={{ errors: error?.errors?.lastName, message: error?.message }}
+          errors={error?.errors?.lastName}
           placeholder="Enter your lastName"
         />
         <InputField
@@ -37,16 +37,13 @@ export default function SignUpForm() {
           type="email"
           label="Email"
           required
-          error={{ errors: error?.errors?.email, message: error?.message }}
+          errors={error?.errors?.email}
           placeholder="Enter your email"
         />
         <SelectInput
           name="nationality"
           list={Countries}
-          error={{
-            errors: error?.errors?.nationality,
-            message: error?.message,
-          }}
+          errors={error?.errors?.nationality}
         />
         <InputField
           name="password"
@@ -54,7 +51,7 @@ export default function SignUpForm() {
           required
           type="password"
           icon="password"
-          error={{ errors: error?.errors?.password, message: error?.message }}
+          errors={error?.errors?.password}
           placeholder="Enter your password"
         />
         <InputField
@@ -63,10 +60,7 @@ export default function SignUpForm() {
           required
           type="password"
           icon="password"
-          error={{
-            errors: error?.errors?.confirmPassword,
-            message: error?.message,
-          }}
+          errors={error?.errors?.confirmPassword}
           placeholder="Confirm your password"
         />
         <InputField
@@ -74,10 +68,7 @@ export default function SignUpForm() {
           label="Referral Code"
           required={false}
           type="text"
-          error={{
-            errors: error?.errors?.referralCode,
-            message: error?.message,
-          }}
+          errors={error?.errors?.referralCode}
           placeholder="Enter referral code (optional)"
         />
 

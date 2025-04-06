@@ -4,23 +4,18 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Select from "react-select";
 
-type CombinedError = {
-  errors?: string[];
-  message?: string;
-};
-
 interface SelectInputProps {
   name: string;
   list: { value: string; label: string }[];
-  error?: CombinedError;
+  errors?: string[];
   defaultValue?: string;
 }
 
 export default function SelectInput(props: SelectInputProps) {
-  const { name: selectName, list, error, defaultValue } = props;
+  const { name: selectName, list, errors, defaultValue } = props;
 
-  function hasError(value?: CombinedError) {
-    const result = value?.errors ? true : value?.message ? true : false;
+  function hasError(value?: string[]) {
+    const result = value ? true : false;
     return result;
   }
 
@@ -55,16 +50,14 @@ export default function SelectInput(props: SelectInputProps) {
         classNamePrefix="react-select"
         className={cn(
           "w-full bg-gray-900 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none focus:border-yellow-400",
-          error?.message &&
-            "border-red-500 ring-red-500 outline-none focus:outline-none",
-          error?.errors &&
+          errors &&
             "mb-2 focus:border-red-500 focus:ring-red-500 border-red-500 ring-red-500"
         )}
         styles={{
           control: (base, { isFocused }) => ({
             ...base,
             backgroundColor: "transparent",
-            borderColor: hasError(error)
+            borderColor: hasError(errors)
               ? "red"
               : isFocused
               ? "#facc15"
@@ -137,7 +130,7 @@ export default function SelectInput(props: SelectInputProps) {
         }}
       />
 
-      {error?.errors?.map((val, index) => (
+      {errors?.map((val, index) => (
         <p key={index} className="text-red-500 text-xs m-1">
           {val}
         </p>
