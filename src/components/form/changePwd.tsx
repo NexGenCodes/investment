@@ -38,10 +38,7 @@ export default function ChangePwd() {
             label="Current Password"
             type="password"
             icon="password"
-            error={{
-              errors: error?.errors?.currentPassword,
-              message: error?.message,
-            }}
+            errors={error?.errors?.currentPassword}
             required
           />
           <InputField
@@ -50,10 +47,7 @@ export default function ChangePwd() {
             label="New Password"
             type="password"
             icon="password"
-            error={{
-              errors: error?.errors?.newPassword,
-              message: error?.message,
-            }}
+            errors={error?.errors?.newPassword}
             required
           />
           <InputField
@@ -62,10 +56,7 @@ export default function ChangePwd() {
             label="Confirm Password"
             type="password"
             icon="password"
-            error={{
-              errors: error?.errors?.confirmPassword,
-              message: error?.message,
-            }}
+            errors={error?.errors?.confirmPassword}
             required
           />
           <div className="flex gap-4 mt-6">

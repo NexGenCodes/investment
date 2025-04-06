@@ -22,7 +22,7 @@ export default function LoginForm() {
         placeholder="email"
         label="email"
         required
-        error={{ errors: error?.errors?.email, message: error?.message }}
+        errors={error?.errors?.email}
       />
       <InputField
         name="password"
@@ -30,7 +30,7 @@ export default function LoginForm() {
         placeholder="password"
         required
         label="password"
-        error={{ errors: error?.errors?.password, message: error?.message }}
+        errors={error?.errors?.password}
         icon="password"
       />
       {error && <p className="text-red-500 text-xs ml-2">{error.message}</p>}

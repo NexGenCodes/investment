@@ -21,7 +21,7 @@ export default function OtpForm() {
         name="otp"
         placeholder="enter otp"
         required
-        error={{ errors: error?.errors?.otp, message: error?.message }}
+        errors={error?.errors?.otp}
       />
 
       {error && <p className="text-red-500 text-xs ml-2">{error.message}</p>}

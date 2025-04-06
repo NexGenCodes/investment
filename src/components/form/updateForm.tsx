@@ -21,10 +21,7 @@ export default function UpdateForm({ data }: Props) {
         label="First Name"
         type="text"
         defaultValue={data?.firstName || undefined}
-        error={{
-          errors: error?.errors?.firstName,
-          message: error?.message,
-        }}
+        errors={error?.errors?.firstName}
       />
       <InputField
         name="lastName"
@@ -33,19 +30,14 @@ export default function UpdateForm({ data }: Props) {
         type="text"
         required
         defaultValue={data.lastName || undefined}
-        error={{
-          errors: error?.errors?.lastName,
-          message: error?.message,
-        }}
+        errors={error?.errors?.lastName}
       />
       <SelectInput
         name={"nationality"}
         list={Countries}
         defaultValue={data.nationality || undefined}
-        error={{
-          errors: error?.errors?.nationality,
-          message: error?.message,
-        }}
+        errors={error?.errors?.nationality}
+
       />
       <button
         className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition-colors"
