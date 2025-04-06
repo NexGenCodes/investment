@@ -29,7 +29,7 @@ export default async function OtpAction(state: FormState, formData: FormData) {
   }
 
   //   check if otp is valid
-  const data = getFromCache<SignUpType>(validatedFields.data.otp);
+  const data = await getFromCache<SignUpType>(validatedFields.data.otp);
   if (!data) {
     return {
       message: "invalid otp",
