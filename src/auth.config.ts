@@ -14,6 +14,7 @@ export default {
   callbacks: {
     authorized: async ({ auth }) => {
       return !!auth;
+      // return true;
     },
   },
   pages: {
@@ -23,3 +24,7 @@ export default {
   session: { strategy: "jwt" },
   secret: process.env.AUTH_SECRET,
 } satisfies NextAuthConfig;
+
+
+
+
