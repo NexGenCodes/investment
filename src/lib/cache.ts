@@ -1,26 +1,32 @@
-import NodeCache from "node-cache";
+// lib/cache.ts
+import { Redis } from "@upstash/redis";
 
-// Create a cache with a default TTL of 60 seconds (1 minutes)
-const cache = new NodeCache({ stdTTL: 80, checkperiod: 120 });
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL!,
+  token: process.env.KV_REST_API_TOKEN!,
+});
 
-export function getFromCache<T>(key: string) {
-  return cache.get<T>(key);
+export async function getFromCache<T>(key: string): Promise<T | null> {
+  return await redis.get<T>(key);
 }
 
-export function setToCache<T>(key: string, value: T, ttl?: number) {
-  // check if key exists
-  if (getFromCache(key)) {
-    return false;
+export async function setToCache<T>(key: string, value: T, ttlSeconds?: number): Promise<boolean> {
+  const exists = await redis.get(key);
+  if (exists) return false;
+
+  if (ttlSeconds) {
+    await redis.set(key, value, { ex: ttlSeconds });
+  } else {
+    await redis.set(key, value);
   }
-  if (ttl) cache.set(key, value, ttl);
-  
-  return cache.set(key, value);
+
+  return true;
 }
 
-export function deleteFromCache(key: string) {
-  cache.del(key);
+export async function deleteFromCache(key: string): Promise<void> {
+  await redis.del(key);
 }
 
-export function clearCache() {
-  cache.flushAll();
+export async function clearCache(): Promise<void> {
+  await redis.flushall(); // WARNING: Clears entire cache
 }
