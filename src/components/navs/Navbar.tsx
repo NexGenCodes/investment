@@ -14,18 +14,16 @@ export default function Navbar() {
   const pathname = usePathname();
   const user = session?.user;
 
-  // Scroll effect for navbar background change
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    const debouncedHandleScroll = () => {
-      handleScroll();
-    };
+    const debouncedHandleScroll = () => handleScroll();
 
+    // Reset scroll state on page change
+    setIsScrolled(false);
     window.addEventListener("scroll", debouncedHandleScroll, { passive: true });
     return () => window.removeEventListener("scroll", debouncedHandleScroll);
-  }, []);
+  }, [pathname]); // Depend on pathname
 
-  // Skip rendering on specific paths
   const shouldRenderNavbar = useMemo(() => {
     return !(
       pathname.startsWith("/dashboard") ||
@@ -35,8 +33,6 @@ export default function Navbar() {
   }, [pathname]);
 
   if (!shouldRenderNavbar) return null;
-
-  // Show loading state if session is still being fetched
   if (status === "loading") return null;
 
   return (
@@ -46,7 +42,6 @@ export default function Navbar() {
       }`}
     >
       <div className="max-full mx-auto px-6 sm:px-10 py-4 flex justify-between items-center">
-        {/* Logo */}
         <Link href="/" replace>
           <Image
             src="/images/img/logo.PNG"
@@ -57,28 +52,33 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-8 text-lg font-medium text-white items-center">
           {user ? (
             <>
               <Link
                 href="/"
-                className="hover:text-[#FFD700] transition"
+                className={`hover:text-[#FFD700] transition ${
+                  pathname === "/" ? "text-[#FFD700]" : ""
+                }`}
                 replace
               >
                 Home
               </Link>
               <Link
                 href="/investments"
-                className="hover:text-[#FFD700] transition"
+                className={`hover:text-[#FFD700] transition ${
+                  pathname === "/investments" ? "text-[#FFD700]" : ""
+                }`}
                 replace
               >
                 Investments
               </Link>
               <Link
                 href="/referral"
+                className={`hover:text-[#FFD700] transition ${
+                  pathname === "/referral" ? "text-[#FFD700]" : ""
+                }`}
                 replace
-                className="hover:text-[#FFD700] transition"
               >
                 Earn More
               </Link>
@@ -88,15 +88,19 @@ export default function Navbar() {
             <>
               <Link
                 href="/auth/login"
+                className={`hover:text-green-400 transition ${
+                  pathname === "/auth/login" ? "text-green-400" : ""
+                }`}
                 replace
-                className="hover:text-green-400 transition"
               >
                 Login
               </Link>
               <Link
                 href="/auth/register"
+                className={`hover:text-green-400 transition ${
+                  pathname === "/auth/register" ? "text-green-400" : ""
+                }`}
                 replace
-                className="hover:text-green-400 transition"
               >
                 Register
               </Link>
@@ -104,7 +108,6 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
         <MobileMenu user={Boolean(user)} />
       </div>
     </nav>

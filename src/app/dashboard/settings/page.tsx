@@ -34,7 +34,7 @@ export default async function Settings() {
           <div className="bg-gray-800 rounded-xl p-6">
             <div className="flex items-center gap-4 mb-6">
               <Shield className="w-6 h-6 text-blue-400" />
-              <h3 className="text-white font-semibold">Security Settings ...</h3>
+              <h3 className="text-white font-semibold">Security Settings</h3>
             </div>
             <div className="space-y-4">
               {/* change password */}
