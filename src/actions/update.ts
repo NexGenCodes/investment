@@ -22,12 +22,12 @@ export default async function Update(state: FormState, formData: FormData) {
   if (!email) {
     return { message: "You must be logged in to update your profile." };
   }
-
   const validatedFields = await updateSchema.safeParseAsync({
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
     nationality: formData.get("nationality"),
   });
+
 
   // If any form fields are invalid, return early
   if (!validatedFields.success) {
@@ -52,5 +52,5 @@ export default async function Update(state: FormState, formData: FormData) {
     };
   }
 
-  redirect("/auth/dashboard");
+  redirect("/dashboard");
 }

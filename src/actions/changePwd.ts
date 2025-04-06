@@ -24,6 +24,12 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
     return { message: "You must be logged in to update your profile." };
   }
 
+  console.log({
+    confirmPassword: formData.get("confirmPassword"),
+    currentPassword: formData.get("currentPassword"),
+    newPassword: formData.get("newPassword"),
+  });
+
   const validatedFields = await changePwdSchema.safeParseAsync({
     confirmPassword: formData.get("confirmPassword"),
     currentPassword: formData.get("currentPassword"),
@@ -56,12 +62,12 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
     };
   }
 
-  //   encript password
-  const encryptedPassword = await Hash(validatedFields.data.newPassword);
+  //   encrypt password
+  const encryptedPwd = await Hash(validatedFields.data.newPassword);
 
   //   update user
   const updatedUser = await UpdateUser(email, {
-    password: encryptedPassword,
+    password: encryptedPwd,
   });
   if (!updatedUser) {
     return {
@@ -69,5 +75,5 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
     };
   }
 
-  redirect("/auth/dashboard");
+  redirect("/dashboard");
 }
