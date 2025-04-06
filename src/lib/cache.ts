@@ -1,32 +1,64 @@
-// lib/cache.ts
-import { Redis } from "@upstash/redis";
+import NodeCache from "node-cache";
 
-const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+// Singleton class for cache
+class CacheSingleton {
+  private static instance: CacheSingleton;
+  private cache: NodeCache;
 
-export async function getFromCache<T>(key: string): Promise<T | null> {
-  return await redis.get<T>(key);
-}
-
-export async function setToCache<T>(key: string, value: T, ttlSeconds?: number): Promise<boolean> {
-  const exists = await redis.get(key);
-  if (exists) return false;
-
-  if (ttlSeconds) {
-    await redis.set(key, value, { ex: ttlSeconds });
-  } else {
-    await redis.set(key, value);
+  // Private constructor to prevent direct instantiation
+  private constructor() {
+    this.cache = new NodeCache({
+      stdTTL: 80, // Default TTL of 80 seconds
+      checkperiod: 120, // Check for expired keys every 120 seconds
+    });
   }
 
-  return true;
+  // Get the singleton instance
+  public static getInstance(): CacheSingleton {
+    if (!CacheSingleton.instance) {
+      CacheSingleton.instance = new CacheSingleton();
+    }
+    return CacheSingleton.instance;
+  }
+
+  // Cache methods
+  public get<T>(key: string): T | undefined {
+    return this.cache.get<T>(key);
+  }
+
+  public set<T>(key: string, value: T, ttl?: number): boolean {
+    if (this.get<T>(key) !== undefined) {
+      return false; // Prevent overwriting existing key
+    }
+    return ttl ? this.cache.set(key, value, ttl) : this.cache.set(key, value);
+  }
+
+  public del(key: string): void {
+    this.cache.del(key);
+  }
+
+  public flushAll(): void {
+    this.cache.flushAll();
+  }
 }
 
-export async function deleteFromCache(key: string): Promise<void> {
-  await redis.del(key);
+// Export singleton instance methods
+const cacheInstance = CacheSingleton.getInstance();
+
+export function getFromCache<T>(key: string): T | undefined {
+  return cacheInstance.get<T>(key);
 }
 
-export async function clearCache(): Promise<void> {
-  await redis.flushall(); // WARNING: Clears entire cache
+export function setToCache<T>(key: string, value: T, ttl?: number): boolean {
+  return cacheInstance.set<T>(key, value, ttl);
 }
+
+export function deleteFromCache(key: string): void {
+  cacheInstance.del(key);
+}
+
+export function clearCache(): void {
+  cacheInstance.flushAll();
+}
+
+export default cacheInstance; // Optional: export the instance for direct access

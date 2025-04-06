@@ -1,16 +1,16 @@
 import Transporter from "./transporter";
-import fs from "fs";
-import path from "path";
 import ejs from "ejs";
+import otpTemplate from "../email/templates/otp.ejs";
+import messageTemplate from "../email/templates/message.ejs";
 
-// Create a function to render the email template
+// Render template function
 async function renderTemplate(templateName: string, data: object) {
-  const templatePath = path.join(
-    process.cwd(),
-    "src/email/templates",
-    `${templateName}.ejs`
-  );
-  const template = fs.readFileSync(templatePath, "utf-8");
+  const templates: { [key: string]: string } = {
+    otp: otpTemplate,
+    message: messageTemplate,
+  };
+  const template = templates[templateName];
+  if (!template) throw new Error(`Template ${templateName} not found`);
   return ejs.render(template, data);
 }
 
