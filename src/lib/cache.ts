@@ -8,8 +8,8 @@ class CacheSingleton {
   // Private constructor to prevent direct instantiation
   private constructor() {
     this.cache = new NodeCache({
-      stdTTL: 80, // Default TTL of 80 seconds
-      checkperiod: 120, // Check for expired keys every 120 seconds
+      stdTTL: 120,
+      checkperiod: 180,
     });
   }
 
