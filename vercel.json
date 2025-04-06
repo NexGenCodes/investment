@@ -1,0 +1,19 @@
+{
+  "cron": [
+    {
+      "path": "/api/cron/update-investments",
+      "schedule": "0 0 * * *"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/cron/update-investments",
+      "headers": [
+        {
+          "key": "x-cron-secret",
+          "value": "@cron_secret"
+        }
+      ]
+    }
+  ]
+}
