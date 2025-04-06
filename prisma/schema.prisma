@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -13,12 +7,24 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum TransactionType {
+  DEPOSIT
+  INVESTMENT
+  WITHDRAWAL
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
   password      String
   emailVerified DateTime?
-  balance       Float?    @default(0)
+  balance       Float     @default(0)
   firstName     String?
   lastName      String?
   nationality   String?
@@ -29,17 +35,34 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  Investment Investment[]
+  investments  Investment[]
+  transactions Transaction[]
 }
 
 model Investment {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  planName  String // "Solar Panel", "Photoelectric Cell", etc.
-  amount    Int // Amount invested
-  returns   Int // Expected return
-  duration  Int // In weeks
-  startDate DateTime // When the investment started
-  createdAt DateTime @default(now())
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planName       String // e.g., "Solar Panel", "Photoelectric Cell"
+  amount         Float // Amount invested
+  expectedReturn Float // Total expected return after duration
+  duration       Int // Duration in weeks
+  dailyAmount    Float    @default(0) // Updated every day
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id           String            @id @default(uuid())
+  userId       String
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount       Float // Transaction amount
+  type         TransactionType // "DEPOSIT", "INVESTMENT", "WITHDRAWAL"
+  investmentId String? // Only for INVESTMENT transactions
+  status       TransactionStatus
+  investment   Investment?       @relation(fields: [investmentId], references: [id])
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
