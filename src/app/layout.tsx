@@ -1,5 +1,4 @@
 import "@/style/globals.css";
-import { ToastProvider } from "../components/ui/toast";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "../components/navs/Navbar";
@@ -26,14 +25,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* Ensure ToastProvider wraps everything */}
         <SessionProvider>
-          <ToastProvider>
-            <Navbar />
-            {children}
-            {/* The Toaster component should be placed within ToastProvider */}
-            <Toaster position="top-right" />
-          </ToastProvider>
+          <Navbar />
+          {children}
+          <Toaster position="top-right" />
         </SessionProvider>
       </body>
     </html>

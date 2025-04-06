@@ -21,13 +21,16 @@ export default async function SolarReferralPage() {
     <div className="p-6  max-w-full mx-auto text-center bg-gradient-to-b from-gray-900 to-gray-900 min-h-screen mt-16 w-full overflow-x-hidden">
       {/* Welcome Section */}
       <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-        Welcome, {user.firstName}!
+        Welcome,{" "}
+        <p className="first-letter:uppercase inline-block ">
+          {user.firstName}
+        </p>
       </h1>
       <p className="text-base md:text-lg mt-2 text-gray-200">
-        Invite friends and earn up to <b className="text-green-600">₦10,000</b>{" "}
+        Invite friends and earn up to <b className="text-green-600">₦1000</b>{" "}
         per successful investment!
       </p>
-      <ReferralSection user={user} />
+      <ReferralSection referralCode={user.referralCode} />
 
       {/* Social Share Buttons */}
       <div className="mt-6 flex flex-col md:flex-row justify-center space-y-3 md:space-y-0 md:space-x-4">
