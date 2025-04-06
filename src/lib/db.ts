@@ -4,7 +4,12 @@ import { Prisma } from "@prisma/client";
 import { SignUpType, UpdateType } from "@/types/authSchema";
 
 type CreateUser = Omit<SignUpType, "confirmPassword">;
-type UpdateUser = UpdateType & { password: string };
+type UpdateUser = UpdateType & { password?: string };
+
+type CreateInvestment = Omit<
+  Prisma.InvestmentUncheckedCreateInput,
+  "id" | "createdAt"
+>;
 
 async function generateReferralCode(length: number = 8) {
   let attempts = 0; // Initialize attempt counter
@@ -91,4 +96,53 @@ export async function UpdateUser(email: string, userData: UpdateUser) {
     console.error("Failed to update user:", error);
     return null;
   }
+}
+
+export async function CreateInvestment(data: CreateInvestment) {
+  const investment = await prisma.investment.create({
+    data: {
+      ...data,
+    },
+  });
+  return investment;
+}
+
+export async function GetInvestments(email: string) {
+  const investments = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+    include: {
+      investments: true,
+    },
+  });
+  return investments?.investments;
+}
+
+export async function GetInvestment(email: string, id: string) {
+  const investment = await prisma.investment.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      user: {
+        include: {
+          referrals: true,
+        },
+      },
+    },
+  });
+  return investment;
+}
+
+export async function GetTransactions(email: string) {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+    include: {
+      transactions: true,
+    },
+  });
+  return user?.transactions;
 }
