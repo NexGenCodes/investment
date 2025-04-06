@@ -14,15 +14,15 @@ export async function GET(req: Request) {
   }
   investments.forEach(async (investment) => {
     const dailyValue = generateDailyInvestmentValue({
-      amount: investment.amount.toNumber(),
-      returns: investment.expectedReturn.toNumber(),
+      amount: investment.amount,
+      returns: investment.expectedReturn,
     });
     await prisma.investment.update({
       where: {
         id: investment.id,
       },
       data: {
-        dailyAmount: investment.dailyAmount.toNumber() + dailyValue,
+        dailyAmount: investment.dailyAmount + dailyValue,
       },
     });
   });
