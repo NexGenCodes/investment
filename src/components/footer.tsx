@@ -11,8 +11,6 @@ export default function Footer() {
           <h3>Quick Links</h3>
           <Link href="#aboutus">About Us</Link>
           <Link href="/investments">Investments</Link>
-          <Link href="/faq">FAQ</Link>
-          <Link href="/contact">Contact Us</Link>
         </div>
         <div className={styles.newsletter}>
           <h3>Subscribe to Our Newsletter</h3>

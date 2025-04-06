@@ -1,35 +1,38 @@
 "use client";
 
-import { User } from "@prisma/client";
 import InputField from "../ui/input";
 import SelectInput from "../ui/select";
 import Countries from "@/constants/countries";
 import Update from "@/actions/update";
 import { useActionState } from "react";
+import { User } from "@prisma/client";
 
 interface Props {
-  user: User;
+  data: User;
 }
 
-export default function UpdateForm({ user }: Props) {
+export default function UpdateForm({ data }: Props) {
   const [error, Action, isPending] = useActionState(Update, undefined);
   return (
     <form className="space-y-4" action={Action}>
       <InputField
-        name="FirstName"
+        name="firstName"
         placeholder="enter first name "
         label="First Name"
-        defaultValue={user?.firstName || ""}
+        type="text"
+        defaultValue={data?.firstName || undefined}
         error={{
           errors: error?.errors?.firstName,
           message: error?.message,
         }}
       />
       <InputField
-        name="LastName"
+        name="lastName"
         placeholder="enter last name "
         label="Last Name"
-        defaultValue={user?.lastName || ""}
+        type="text"
+        required
+        defaultValue={data.lastName || undefined}
         error={{
           errors: error?.errors?.lastName,
           message: error?.message,
@@ -38,6 +41,7 @@ export default function UpdateForm({ user }: Props) {
       <SelectInput
         name={"nationality"}
         list={Countries}
+        defaultValue={data.nationality || undefined}
         error={{
           errors: error?.errors?.nationality,
           message: error?.message,

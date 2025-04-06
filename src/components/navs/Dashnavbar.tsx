@@ -1,3 +1,5 @@
+"use client";
+
 import { IoChevronBackOutline } from "react-icons/io5";
 import Link from "next/link";
 import DropDown from "./dropDown";

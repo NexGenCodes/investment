@@ -29,7 +29,7 @@ const InputField = React.forwardRef<
   ) => {
     const [showPwd, setShowPwd] = useState(false);
     const isPwd = icon === "password" && (type === "password" || !type);
-    const [inputValue, setInputValue] = useState(defaultValue);
+    const [inputValue, setInputValue] = useState(defaultValue|| "");
     const generatedId = `input-${useId()}`;
     const inputId = id || generatedId;
 

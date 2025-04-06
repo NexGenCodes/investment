@@ -13,20 +13,26 @@ interface SelectInputProps {
   name: string;
   list: { value: string; label: string }[];
   error?: CombinedError;
+  defaultValue?: string;
 }
 
 export default function SelectInput(props: SelectInputProps) {
-  const { name: selectName, list, error } = props;
+  const { name: selectName, list, error, defaultValue } = props;
 
   function hasError(value?: CombinedError) {
     const result = value?.errors ? true : value?.message ? true : false;
     return result;
   }
 
-  const [selectedValue, setSelectedValue] = useState<{ value: string; label: string } | null>(null);
+  const [selectedValue, setSelectedValue] = useState<{
+    value: string;
+    label: string;
+  } | null>({ value: defaultValue || "", label: defaultValue || "" });
 
   // Define the onChange handler
-  const handleChange = (selectedOption: { value: string; label: string } | null) => {
+  const handleChange = (
+    selectedOption: { value: string; label: string } | null
+  ) => {
     setSelectedValue(selectedOption);
   };
 

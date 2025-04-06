@@ -1,40 +1,28 @@
 "use client";
 
-import MockData from "@/constants/mockdata";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { Investment } from "@prisma/client";
+import { ArrowUpIcon } from "lucide-react";
 
-export default function PortfolioPerformance() {
-    return(
-        <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={MockData.portfolioPerformance}>
-                <XAxis dataKey="date" hide />
-                <YAxis hide />
-                <Tooltip
-                  formatter={(value) => `₦${value.toLocaleString("en-NG")}`}
-                  contentStyle={{
-                    backgroundColor: "#1f2937",
-                    border: "none",
-                    borderRadius: "8px",
-                    color: "#fff",
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-    )
+interface Props {
+  data: Investment
+}
+
+export default function PortfolioPerformance({ data }: Props) {
+  const endDate = new Date(data.createdAt);
+  endDate.setDate(endDate.getDate() + data.duration * 7);
+  return (
+    <div className="w-full rounded-xl bg-gray-800 p-6 shadow-lg">
+      <div className="flex flex-col items-center justify-center">
+        <h1 className="text-md font-bold text-green-500 flex items-center gap-1">
+          ₦{data.amount.toLocaleString("en-NG")}
+          <ArrowUpIcon className="w-4 h-4 " />
+        </h1>
+
+        <p className="text-white">{data.duration} Weeks</p>
+        <p className="text-gray-400 text-sm">
+          end: {endDate.toLocaleDateString()}
+        </p>
+      </div>
+    </div>
+  );
 }

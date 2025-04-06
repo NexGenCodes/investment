@@ -1,19 +1,17 @@
 "use client";
-
-import { User } from "@prisma/client";
 import { useState } from "react";
 import { Copy } from "lucide-react";
 
 interface Props {
-  user: User;
+  referralCode?: string;
 }
 
-export default function ReferralSection({ user }: Props) {
+export default function ReferralSection({ referralCode }: Props) {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
-    if (user) {
-      navigator.clipboard.writeText(user.referralCode);
+    if (referralCode) {
+      navigator.clipboard.writeText(referralCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -22,12 +20,12 @@ export default function ReferralSection({ user }: Props) {
     <div>
       <div className="mt-8 bg-gray-800 p-4 md:p-6 rounded-xl shadow-lg border border-gray-700 w-full">
         {/* Referral Code Section */}
-        <h2 className="text-lg md:text-xl font-semibold text-gray-200">
+        <h2 className="text-sm font-semibold text-gray-200">
           Your Referral Code
         </h2>
         <div className="mt-4 flex flex-col md:flex-row justify-center items-center space-y-3 md:space-y-0 md:space-x-3 bg-gray-700 p-3 rounded-lg w-full">
           <span className="text-lg md:text-xl font-semibold text-gray-200 break-words">
-            {user.referralCode}
+            {referralCode}
           </span>
           <button
             onClick={copyToClipboard}

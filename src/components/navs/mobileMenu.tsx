@@ -1,6 +1,8 @@
+"use client";
+
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface Props {
   user: boolean;
@@ -8,13 +10,34 @@ interface Props {
 
 export default function MobileMenu({ user }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Function to handle closing the menu when a link is clicked
+  const closeMenu = () => setIsMenuOpen(false);
+
+  // Memoize links to avoid unnecessary re-renders
+  const links = useMemo(
+    () =>
+      user
+        ? [
+            { href: "/", label: "Home" },
+            { href: "/investments", label: "Investments" },
+            { href: "/referral", label: "Earn More" },
+            { href: "/dashboard", label: "Portfolio" },
+          ]
+        : [
+            { href: "/auth/login", label: "Login" },
+            { href: "/auth/register", label: "Register" },
+          ],
+    [user]
+  );
+
   return (
-    <div>
+    <div className="block md:hidden">
       <div>
         <button
           className="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-[#FFD700] rounded p-2"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((prev) => !prev)}
+          aria-expanded={isMenuOpen} // Use boolean value for aria-expanded
         >
           <Menu size={32} />
         </button>
@@ -28,62 +51,23 @@ export default function MobileMenu({ user }: Props) {
         {/* Close Button */}
         <button
           className="absolute top-4 right-4 p-2 text-white hover:text-red-600"
-          onClick={() => setIsMenuOpen(false)}
+          onClick={closeMenu}
         >
           <X size={32} />
         </button>
 
         {/* Menu Items */}
         <div className="flex flex-col items-center mt-16 space-y-6 text-lg font-semibold text-white">
-          {user ? (
-            <>
-              <Link
-                href="/"
-                className="hover:text-[#FFD700] transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                href="/investments"
-                className="hover:text-[#FFD700] transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Investments
-              </Link>
-              <Link
-                href="/referral"
-                className="hover:text-[#FFD700] transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Earn More
-              </Link>
-              <Link
-                href="/dashboard"
-                className="hover:text-[#FFD700] transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Portfolio
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/auth/login"
-                className="hover:text-green-400 transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                href="/auth/register"
-                className="hover:text-green-400 transition"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Register
-              </Link>
-            </>
-          )}
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="hover:text-[#FFD700] transition"
+              onClick={closeMenu}
+            >
+              {link.label}
+            </Link>
+          ))}
         </div>
       </div>
     </div>

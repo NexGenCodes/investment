@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -9,28 +9,35 @@ import DropDown from "./dropDown";
 import MobileMenu from "./mobileMenu";
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const { data: session, status } = useSession();
   const pathname = usePathname();
-  const { data: session } = useSession();
   const user = session?.user;
 
   // Scroll effect for navbar background change
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const debouncedHandleScroll = () => {
+      handleScroll();
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", debouncedHandleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", debouncedHandleScroll);
   }, []);
 
-  // Hide navbar on login/register pages
-  if (
-    pathname.startsWith("/dashboard") ||
-    pathname === "/auth/login" ||
-    pathname === "/auth/register"
-  )
-    return null;
+  // Skip rendering on specific paths
+  const shouldRenderNavbar = useMemo(() => {
+    return !(
+      pathname.startsWith("/dashboard") ||
+      pathname === "/auth/login" ||
+      pathname === "/auth/register"
+    );
+  }, [pathname]);
+
+  if (!shouldRenderNavbar) return null;
+
+  // Show loading state if session is still being fetched
+  if (status === "loading") return null;
 
   return (
     <nav
@@ -38,9 +45,9 @@ export default function Navbar() {
         isScrolled ? "bg-[#121212e0] shadow-lg" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-4 flex justify-between items-center">
+      <div className="max-full mx-auto px-6 sm:px-10 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link href="/">
+        <Link href="/" replace>
           <Image
             src="/images/img/logo.PNG"
             alt="Logo"
@@ -51,20 +58,26 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex space-x-8 text-lg font-medium text-white">
+        <div className="hidden md:flex space-x-8 text-lg font-medium text-white items-center">
           {user ? (
             <>
-              <Link href="/" className="hover:text-[#FFD700] transition">
+              <Link
+                href="/"
+                className="hover:text-[#FFD700] transition"
+                replace
+              >
                 Home
               </Link>
               <Link
                 href="/investments"
                 className="hover:text-[#FFD700] transition"
+                replace
               >
                 Investments
               </Link>
               <Link
                 href="/referral"
+                replace
                 className="hover:text-[#FFD700] transition"
               >
                 Earn More
@@ -75,12 +88,14 @@ export default function Navbar() {
             <>
               <Link
                 href="/auth/login"
+                replace
                 className="hover:text-green-400 transition"
               >
                 Login
               </Link>
               <Link
                 href="/auth/register"
+                replace
                 className="hover:text-green-400 transition"
               >
                 Register
@@ -88,8 +103,9 @@ export default function Navbar() {
             </>
           )}
         </div>
+
         {/* Mobile Menu Button */}
-        <MobileMenu user={user ? true : false} />
+        <MobileMenu user={Boolean(user)} />
       </div>
     </nav>
   );
