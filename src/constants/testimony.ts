@@ -16,4 +16,16 @@ const Testimonies: Testimony[] = [
   // Add other testimonials here
 ];
 
+export const whatPeopleSay = [
+    {
+      name: "Ollie Hunter",
+      message:
+        "I earned ₦40,000 in just a month by referring friends. It's so easy!",
+    },
+    {
+      name: "Mckenzie Dom",
+      message: "The referral program is a game-changer. Highly recommend it!",
+    },
+  ]
+
 export default Testimonies;
