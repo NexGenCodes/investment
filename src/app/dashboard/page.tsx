@@ -2,18 +2,17 @@ import { auth } from "@/lib/auth"; // Import auth function
 import WatchList from "@/components/watchList";
 import PortfolioOverView from "@/components/pOverView";
 import PortfolioPerformance from "@/components/pPerformance";
-// import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { GetInvestments, GetUserFromDb } from "@/lib/db";
 
 const Dashboard = async () => {
   const session = await auth();
   const email = session?.user?.email;
-  // if (!email) redirect("/auth/login");
-  if (!email) return null;
+  if (!email) redirect("/auth/login");
   const user = await GetUserFromDb({
     email,
   });
-  if (!user) return null;
+  if (!user) redirect("/auth/login");
 
   const investments = await GetInvestments(user.email);
 
@@ -32,7 +31,10 @@ const Dashboard = async () => {
       <div className="mb-8">
         <div className="p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5  gap-4">
           {investments?.map((d) => (
-            <PortfolioPerformance key={d.id} data={d} />
+            <PortfolioPerformance
+              key={d.id}
+              data={d}
+            />
           ))}
         </div>
 
