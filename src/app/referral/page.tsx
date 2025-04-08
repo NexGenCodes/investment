@@ -1,19 +1,8 @@
-import "../../style/globals.css";
+import "@/style/globals.css";
 import { whatPeopleSay } from "@/constants/testimony";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { GetUserFromDb } from "@/lib/db";
 import Link from "next/link";
 
 export default async function SolarReferralPage() {
-  const session = await auth();
-  const email = session?.user?.email;
-  if (!email) redirect("/auth/login");
-  const user = await GetUserFromDb({
-    email,
-  });
-  if (!user) redirect("/auth/login");
-
   return (
     <div>
       <div className="p-6 max-w-4xl mx-auto text-center bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen mt-28">
@@ -101,28 +90,6 @@ export default async function SolarReferralPage() {
               portfolio page{" "}
             </Link>
             Use it to invite friends and start earning rewards!
-          </p>
-        </div>
-
-        {/* total referrals */}
-        <div className="mt-8 bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-200">
-            Total Referrals
-          </h2>
-          <p className="text-sm mt-2 text-gray-400">
-            you have referred{" "}
-            <b className="text-green-400">
-              {user?.referrals?.length || 0} friends
-            </b>
-          </p>
-          <p className="text-sm mt-2 text-gray-400">
-            You have earned{" "}
-            <b className="text-green-400">
-              ₦
-              {user.referrals.filter((ref) => ref.balance || 0 > 0).length *
-                1000}
-            </b>{" "}
-            in total.
           </p>
         </div>
 

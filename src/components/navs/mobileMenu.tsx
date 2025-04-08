@@ -1,23 +1,25 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
+import { signOut } from "next-auth/react";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { NavLink } from "@/components/NavLink";
 
-interface Props {
+interface MobileMenuProps {
   user: boolean;
 }
 
-export default function MobileMenu({ user }: Props) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const pathname = usePathname();
-  
+export default function MobileMenu({ user }: MobileMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const menuRef = useRef<HTMLDivElement>(null);
 
-  // Function to handle closing the menu when a link is clicked
-  const closeMenu = () => setIsMenuOpen(false);
+  // Close menu on outside click
+  useOutsideClick(menuRef, () => setIsOpen(false));
 
-  // Memoize links to avoid unnecessary re-renders
+  // Memoized links based on user state
   const links = useMemo(
     () =>
       user
@@ -34,47 +36,73 @@ export default function MobileMenu({ user }: Props) {
     [user]
   );
 
+  // Handle logout
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    setIsOpen(false);
+    window.location.href = "/";
+  };
+
+  // Focus management
+  useEffect(() => {
+    if (isOpen && menuRef.current) {
+      const focusable = menuRef.current.querySelectorAll(
+        'a[href], button, [tabindex]:not([tabindex="-1"])'
+      );
+      (focusable[0] as HTMLElement)?.focus();
+    }
+  }, [isOpen]);
+
   return (
-    <div className="block md:hidden">
-      <div>
-        <button
-          className="md:hidden text-white focus:outline-none focus:ring-2 focus:ring-[#FFD700] rounded p-2"
-          onClick={() => setIsMenuOpen((prev) => !prev)}
-          aria-expanded={isMenuOpen} // Use boolean value for aria-expanded
-        >
-          <Menu size={32} />
-        </button>
-      </div>
-
-      <div
-        className={`fixed top-0 right-0 w-64 h-full bg-[#121212e0] shadow-xl transform transition-transform duration-300 ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+    <div className="md:hidden">
+      <button
+        onClick={() => setIsOpen(true)}
+        className="text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+        aria-label="Open menu"
       >
-        {/* Close Button */}
-        <button
-          className="absolute top-4 right-4 p-2 text-white hover:text-red-600"
-          onClick={closeMenu}
-        >
-          <X size={32} />
-        </button>
+        <Menu size={32} />
+      </button>
 
-        {/* Menu Items */}
-        <div className="flex flex-col items-center mt-16 space-y-6 text-lg font-semibold text-white">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`hover:text-[#FFD700] transition ${
-                pathname === link.href ? "text-[#FFD700]" : ""
-              }`}
-              onClick={closeMenu}
+      {isOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsOpen(false)}
+          />
+          <div
+            ref={menuRef}
+            className="fixed top-0 right-0 w-64 h-full bg-gray-900/90 shadow-xl transform transition-transform duration-300 z-50 translate-x-0"
+          >
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-4 right-4 p-2 text-white hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
+              aria-label="Close menu"
             >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      </div>
+              <X size={32} />
+            </button>
+            <nav className="mt-16 space-y-6 text-lg font-semibold flex flex-col items-start px-4">
+              {links.map((link) => (
+                <NavLink
+                  key={link.href}
+                  href={link.href}
+                  activePath={pathname}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  className="text-red-500 hover:text-red-400 transition-colors"
+                >
+                  Logout
+                </button>
+              )}
+            </nav>
+          </div>
+        </>
+      )}
     </div>
   );
 }

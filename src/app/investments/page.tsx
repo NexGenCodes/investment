@@ -1,17 +1,7 @@
 import InvestmentCard from "@/components/investmentCard";
 import InvestmentPlans from "@/constants/investmentPlan";
-import { auth } from "@/lib/auth";
-import { GetUserFromDb } from "@/lib/db";
-import { redirect } from "next/navigation";
 
 export default async function InvestmentsPage() {
-  const session = await auth();
-  const email = session?.user?.email;
-  if (!email) redirect("/auth/login");
-  const user = await GetUserFromDb({
-    email,
-  });
-  if (!user) redirect("/auth/login");
   return (
     <div className="max-w-7xl mx-auto p-4 pt-[70px] text-center min-h-screen flex flex-col pb-8">
       <div className="flex flex-col items-center text-center px-6 md:px-16 space-y-8 mt-14">

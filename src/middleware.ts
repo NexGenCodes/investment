@@ -1,24 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
-import authConfig from "@/auth.config"; // Adjust path if needed
+import authConfig from "@/auth.config";
 
 const { auth } = NextAuth(authConfig);
 
 const publicRoutes = ["/auth/login", "/auth/signup", "/auth/otp"];
 const protectedRoutes = ["/dashboard", "/investment"];
 
-export default auth(async (req: NextRequest) => {
+const middleware = auth(async (req: NextRequest) => {
   const otpEmail = req.cookies.get("otp_email")?.value; // Get cookie value
   const path = req.nextUrl.pathname;
   const isLoggedIn = !!req.auth; // req.auth is populated by NextAuth
-  const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    path.startsWith(route)
+  );
   const isPublicRoute = publicRoutes.some((route) => path.startsWith(route));
   const redirects = {
     public: "/dashboard",
     protected: "/auth/login",
   };
-
-  console.log("Middleware running...", { path, isLoggedIn, otpEmail });
 
   // Redirect authenticated users away from public routes
   if (isPublicRoute && isLoggedIn) {
@@ -38,8 +38,10 @@ export default auth(async (req: NextRequest) => {
   return NextResponse.next();
 });
 
+export default middleware;
+
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!api|_next/static|_next/image|favicon\\..*|sitemap.xml|robots.txt).*)",
   ],
 };

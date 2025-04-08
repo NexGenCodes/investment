@@ -18,8 +18,16 @@ export function otp(length: number = 4) {
   const otp = otpGenerator.generate(length, {
     digits: true,
     specialChars: false,
-    lowerCaseAlphabets:false,
-    upperCaseAlphabets:false,
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
   });
   return otp;
+}
+
+export function debounce(func: () => void, wait: number) {
+  let timeout: NodeJS.Timeout;
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(func, wait);
+  };
 }

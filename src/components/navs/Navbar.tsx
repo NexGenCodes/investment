@@ -1,48 +1,46 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
+import { useEffect, useMemo } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import DropDown from "./dropDown";
+import { NavLink } from "@/components/NavLink";
 import MobileMenu from "./mobileMenu";
+import DropDown from "./dropDown";
+import Spinner from "@/components/spinner";
+import useScroll from "@/hooks/useScroll";
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const { isScrolled, resetScroll } = useScroll(50);
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const user = session?.user;
 
+  // Reset scroll on navigation
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    const debouncedHandleScroll = () => handleScroll();
+    resetScroll();
+  }, [pathname, resetScroll]);
 
-    // Reset scroll state on page change
-    setIsScrolled(false);
-    window.addEventListener("scroll", debouncedHandleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", debouncedHandleScroll);
-  }, [pathname]); // Depend on pathname
-
-  const shouldRenderNavbar = useMemo(() => {
-    return !(
-      pathname.startsWith("/dashboard") ||
-      pathname === "/auth/login" ||
-      pathname === "/auth/register"
-    );
+  // Determine if Navbar should render
+  const shouldRender = useMemo(() => {
+    const hiddenPaths = ["/dashboard", "/auth/login", "/auth/register"];
+    return !hiddenPaths.some((path) => pathname.startsWith(path));
   }, [pathname]);
 
-  if (!shouldRenderNavbar) return null;
-  if (status === "loading") return null;
+  // Loading or hidden states
+  if (status === "loading") return <Spinner />;
+  if (!shouldRender) return null;
 
   return (
     <nav
-      className={`w-full fixed top-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-[#121212e0] shadow-lg" : "bg-transparent"
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+        isScrolled
+          ? "bg-gray-900/90 shadow-lg backdrop-blur-md"
+          : "bg-transparent"
       }`}
     >
-      <div className="max-full mx-auto px-6 sm:px-10 py-4 flex justify-between items-center">
-        <Link href="/" replace>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+        <NavLink href="/" activePath={pathname}>
           <Image
             src="/images/img/logo.PNG"
             alt="Logo"
@@ -50,60 +48,30 @@ export default function Navbar() {
             height={45}
             className="cursor-pointer"
           />
-        </Link>
+        </NavLink>
 
-        <div className="hidden md:flex space-x-8 text-lg font-medium text-white items-center">
+        <div className="hidden md:flex space-x-8 text-lg font-medium items-center">
           {user ? (
             <>
-              <Link
-                href="/"
-                className={`hover:text-[#FFD700] transition ${
-                  pathname === "/" ? "text-[#FFD700]" : ""
-                }`}
-                replace
-              >
+              <NavLink href="/" activePath={pathname}>
                 Home
-              </Link>
-              <Link
-                href="/investments"
-                className={`hover:text-[#FFD700] transition ${
-                  pathname === "/investments" ? "text-[#FFD700]" : ""
-                }`}
-                replace
-              >
+              </NavLink>
+              <NavLink href="/investments" activePath={pathname}>
                 Investments
-              </Link>
-              <Link
-                href="/referral"
-                className={`hover:text-[#FFD700] transition ${
-                  pathname === "/referral" ? "text-[#FFD700]" : ""
-                }`}
-                replace
-              >
+              </NavLink>
+              <NavLink href="/referral" activePath={pathname}>
                 Earn More
-              </Link>
+              </NavLink>
               <DropDown />
             </>
           ) : (
             <>
-              <Link
-                href="/auth/login"
-                className={`hover:text-green-400 transition ${
-                  pathname === "/auth/login" ? "text-green-400" : ""
-                }`}
-                replace
-              >
+              <NavLink href="/auth/login" activePath={pathname}>
                 Login
-              </Link>
-              <Link
-                href="/auth/register"
-                className={`hover:text-green-400 transition ${
-                  pathname === "/auth/register" ? "text-green-400" : ""
-                }`}
-                replace
-              >
+              </NavLink>
+              <NavLink href="/auth/register" activePath={pathname}>
                 Register
-              </Link>
+              </NavLink>
             </>
           )}
         </div>

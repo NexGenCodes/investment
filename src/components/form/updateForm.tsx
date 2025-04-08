@@ -8,7 +8,7 @@ import { useActionState } from "react";
 import { User } from "@prisma/client";
 
 interface Props {
-  data: User;
+  data?: User;
 }
 
 export default function UpdateForm({ data }: Props) {
@@ -29,15 +29,14 @@ export default function UpdateForm({ data }: Props) {
         label="Last Name"
         type="text"
         required
-        defaultValue={data.lastName || undefined}
+        defaultValue={data?.lastName || undefined}
         errors={error?.errors?.lastName}
       />
       <SelectInput
         name={"nationality"}
         list={Countries}
-        defaultValue={data.nationality || undefined}
+        defaultValue={data?.nationality || undefined}
         errors={error?.errors?.nationality}
-
       />
       <button
         className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition-colors"
