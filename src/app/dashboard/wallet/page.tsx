@@ -1,7 +1,7 @@
+import Deposit from "@/components/deposit";
 import TransactionHistory from "@/components/TransactionHistory";
 import { auth } from "@/lib/auth";
 import { GetTransactions, GetUserFromDb } from "@/lib/db";
-import Funding from "@/components/funding";
 
 export default async function Wallet() {
   const session = await auth();
@@ -13,15 +13,18 @@ export default async function Wallet() {
 
   return (
     <div className=" bg-gray-900 p-6 ">
-      <h2 className="text-2xl font-bold text-white mb-6">Wallet</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="flex items-center justify-between my-3 ">
+        <h2 className="text-2xl font-bold text-white">Wallet</h2>
+        <div className="flex items-center justify-between">
+          <Deposit user={user} />
+        </div>
+      </div>
+      <div className="my-4">
         <div className="bg-gray-800 rounded-xl p-6">
           <p className="text-gray-400 mb-2">Total Balance</p>
           <h3 className="text-3xl font-bold text-white">₦{user?.balance}</h3>
         </div>
       </div>
-
-      <Funding />
       <TransactionHistory transactions={transactions?.splice(0, 5)} />
     </div>
   );
