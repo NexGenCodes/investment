@@ -82,9 +82,6 @@ export default function Withdrawal() {
             required
             maxLength={10}
           />
-          {error?.message && (
-            <p className="text-red-500 text-xs ml-2 my-3">{error.message}</p>
-          )}
           <div className="mt-6 flex gap-4">
             <button
               type="submit"
