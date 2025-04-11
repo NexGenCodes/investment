@@ -75,6 +75,7 @@ const InvestmentCard = memo(({ data }: { data: InvestmentPlan }) => {
   );
 });
 
+// Add display name for better debugging
 InvestmentCard.displayName = "InvestmentCard";
 
 export default InvestmentCard;

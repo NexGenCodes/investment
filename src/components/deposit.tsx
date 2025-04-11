@@ -17,6 +17,7 @@ export default function Deposit({ user }: DepositProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | undefined>();
   const [depositAmount, setDepositAmount] = useState<number>(0);
+  const [isPending, setPending] = useState(false);
 
   const paymentConfig = Flutterwave({ user, amount: depositAmount });
   const initiatePayment = useFlutterwave(paymentConfig);
@@ -39,6 +40,7 @@ export default function Deposit({ user }: DepositProps) {
           toast.error("Payment failed. Please try again.");
         }
         setDepositAmount(0);
+        setPending(false);
         closePaymentModal();
       },
       onClose: () => {
@@ -65,6 +67,7 @@ export default function Deposit({ user }: DepositProps) {
 
     setError(undefined);
     setIsModalOpen(false);
+    setPending(true);
     setDepositAmount(amount);
   }, []);
 
@@ -77,10 +80,11 @@ export default function Deposit({ user }: DepositProps) {
   return (
     <div className="flex items-center justify-between">
       <button
+        disabled={isPending}
         onClick={() => setIsModalOpen(true)}
-        className="flex items-center gap-2 rounded-xl bg-blue-500 px-4 py-2 font-medium text-md text-white transition-colors hover:bg-blue-600"
+        className="flex items-center gap-2 rounded-xl bg-blue-500 px-4 py-2 font-medium text-sm lg:text-md text-white transition-colors hover:bg-blue-600"
       >
-        <ArrowUpRight className="h-5 w-5" />
+        <ArrowUpRight className="h-3 w-3 md:h-5 md:w-5" />
         Deposit
       </button>
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Deposit Funds">

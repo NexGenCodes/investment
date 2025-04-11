@@ -1,5 +1,6 @@
 import Deposit from "@/components/deposit";
 import TransactionHistory from "@/components/TransactionHistory";
+import Withdrawal from "@/components/withdrawal";
 import { auth } from "@/lib/auth";
 import { GetTransactions, GetUserFromDb } from "@/lib/db";
 
@@ -15,8 +16,9 @@ export default async function Wallet() {
     <div className=" bg-gray-900 p-6 ">
       <div className="flex items-center justify-between my-3 ">
         <h2 className="text-2xl font-bold text-white">Wallet</h2>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between space-x-4">
           <Deposit user={user} />
+          <Withdrawal />
         </div>
       </div>
       <div className="my-4">

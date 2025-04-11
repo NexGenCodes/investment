@@ -3,9 +3,9 @@ import styles from "../style/Home.module.css";
 import FAQSection from "@/components/faq";
 import Footer from "@/components/footer";
 import WhyChooseUs from "@/components/whyChooseUs";
-import Testimonial from "@/components/testimonial";
 import AboutUs from "@/components/aboutUs";
 import HowItWorks from "@/components/howItWorks";
+import Testimonial from "@/components/testimonial";
 
 
 export default async function Home() {

@@ -4,12 +4,14 @@ import { Prisma } from "@prisma/client";
 import { SignUpType, UpdateType } from "@/types/authSchema";
 
 type CreateUser = Omit<SignUpType, "confirmPassword">;
-type UpdateUser = UpdateType & { password?: string };
+type UpdateUser = UpdateType & { password?: string; balance?: number };
 
 type CreateInvestment = Omit<
   Prisma.InvestmentUncheckedCreateInput,
   "id" | "createdAt"
 >;
+
+type CreateTransaction = Omit<Prisma.TransactionUncheckedCreateInput, "id">;
 
 async function generateReferralCode(length: number = 8) {
   let attempts = 0; // Initialize attempt counter
@@ -145,4 +147,13 @@ export async function GetTransactions(email: string) {
     },
   });
   return user?.transactions;
+}
+
+export async function CreateTransaction(data: CreateTransaction) {
+  const transaction = await prisma.transaction.create({
+    data: {
+      ...data,
+    },
+  });
+  return transaction;
 }

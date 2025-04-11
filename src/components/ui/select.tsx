@@ -32,7 +32,7 @@ export default function SelectInput(props: SelectInputProps) {
   };
 
   return (
-    <div>
+    <div className="my-2">
       <label htmlFor={selectName} className="block text-xs text-gray-300 mb-1">
         {selectName.charAt(0).toUpperCase() + selectName.slice(1)}
       </label>

@@ -31,3 +31,16 @@ export function debounce(func: () => void, wait: number) {
     timeout = setTimeout(func, wait);
   };
 }
+
+
+export async function fetchWithRetry(url: string, options: RequestInit, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      return response;
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+}
