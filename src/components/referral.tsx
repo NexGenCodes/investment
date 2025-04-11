@@ -18,12 +18,11 @@ export default function ReferralSection({ referralCode }: Props) {
   };
   return (
     <div>
-      <div className="mt-8 bg-gray-800 p-4 md:p-6 rounded-xl shadow-lg border border-gray-700 w-full">
-        {/* Referral Code Section */}
+      <div className="my-6 bg-gray-800  p-4 rounded-xl shadow-lg border border-gray-700 w-full mx-auto md:w-[500px] lg:w-[800px]">
         <h2 className="text-sm font-semibold text-gray-200">
           Your Referral Code
         </h2>
-        <div className="mt-4 flex flex-col md:flex-row justify-center items-center space-y-3 md:space-y-0 md:space-x-3 bg-gray-700 p-3 rounded-lg w-full">
+        <div className="mt-4 flex flex-row justify-center items-center space-x-3 bg-gray-700 rounded-lg w-full py-6">
           <span className="text-lg md:text-xl font-semibold text-gray-200 break-words">
             {referralCode}
           </span>
@@ -35,7 +34,6 @@ export default function ReferralSection({ referralCode }: Props) {
           </button>
         </div>
       </div>
-      {/* Floating Copy Referral Link Button */}
       <div className="fixed bottom-4 inset-x-0 flex justify-end px-4 w-full">
         <button
           onClick={copyToClipboard}

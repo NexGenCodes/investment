@@ -12,25 +12,20 @@ import {
 } from "react";
 import toast from "react-hot-toast";
 
-// Move static data outside component to prevent re-creation
 const riskColors: Record<InvestmentPlan["riskLevel"], string> = {
   Low: "bg-green-500 text-white",
   Medium: "bg-yellow-500 text-black",
   High: "bg-red-500 text-white",
 };
 
-// Define state type for better TypeScript support
-
 const InvestmentCard = memo(({ data }: { data: InvestmentPlan }) => {
   const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState(createInvestment, undefined);
 
-  // Memoize handleInvest to prevent unnecessary re-renders
   const handleInvest = useCallback(() => {
     startTransition(() => formAction(data));
   }, [data, formAction]);
 
-  // Handle toast notifications efficiently
   useEffect(() => {
     if (!state) return;
 
@@ -39,7 +34,6 @@ const InvestmentCard = memo(({ data }: { data: InvestmentPlan }) => {
     console.log(state.success ? "success" : "error");
   }, [state]);
 
-  // Pre-compute values to reduce render calculations
   const riskColorClass = riskColors[data.riskLevel] || "bg-gray-500 text-white";
   const buttonText = isPending ? "Investing..." : `Invest in ${data.name}`;
 
@@ -81,7 +75,6 @@ const InvestmentCard = memo(({ data }: { data: InvestmentPlan }) => {
   );
 });
 
-// Add display name for better debugging
 InvestmentCard.displayName = "InvestmentCard";
 
 export default InvestmentCard;
