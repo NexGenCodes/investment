@@ -82,7 +82,6 @@ export default function Withdrawal() {
             required
             maxLength={10}
           />
-
           <div className="mt-6 flex gap-4">
             <button
               type="submit"
