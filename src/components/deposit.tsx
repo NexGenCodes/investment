@@ -2,50 +2,59 @@
 
 import { User } from "@prisma/client";
 import { ArrowUpRight } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { closePaymentModal, useFlutterwave } from "flutterwave-react-v3";
 import Modal from "./ui/Modal";
 import InputField from "./ui/input";
 import Flutterwave from "@/lib/flutterwave";
 import toast from "react-hot-toast";
+import deposit from "@/actions/deposit";
+import { cn } from "@/lib/utils";
 
 interface DepositProps {
   user: User | null;
 }
 
+const MIN_DEPOSIT_AMOUNT = 1000;
+
 export default function Deposit({ user }: DepositProps) {
+  const [isPending, setPending] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | undefined>();
-  const [depositAmount, setDepositAmount] = useState<number>(0);
-  const [isPending, setPending] = useState(false);
+  const [depositAmount, setDepositAmount] = useState<number | null>(null);
 
-  const paymentConfig = Flutterwave({ user, amount: depositAmount });
+  const paymentConfig = useMemo(
+    () => Flutterwave({ user, amount: depositAmount ?? MIN_DEPOSIT_AMOUNT }),
+    [user, depositAmount]
+  );
   const initiatePayment = useFlutterwave(paymentConfig);
 
   useEffect(() => {
-    if (depositAmount === 0) return;
-    if (depositAmount < 1000) {
-      setError("Amount must be greater than or equal to 1000");
-      setIsModalOpen(true);
-      setDepositAmount(0);
-      return;
-    }
+    if (!depositAmount) return;
     initiatePayment({
-      callback: (response) => {
-        if (response.status === "successful") {
-          console.log(`Successfully deposited ${depositAmount}`);
-          toast.success("Deposit successful");
-        } else {
-          setError("Payment failed. Please try again.");
-          toast.error("Payment failed. Please try again.");
+      callback: async (response) => {
+        try {
+          if (response.status === "successful") {
+            const { message } = await deposit(depositAmount);
+            if (message === "Deposit successful") {
+              toast.success(message);
+            } else {
+              toast.error(message);
+            }
+          } else {
+            toast.error("Payment failed. Please try again.");
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error("An error occurred during deposit.");
         }
-        setDepositAmount(0);
         setPending(false);
+        setDepositAmount(null);
         closePaymentModal();
       },
       onClose: () => {
-        setDepositAmount(0);
-        setError(undefined);
+        setPending(false);
+        setDepositAmount(null);
         closePaymentModal();
       },
     });
@@ -60,8 +69,8 @@ export default function Deposit({ user }: DepositProps) {
       return;
     }
 
-    if (amount < 1000) {
-      setError("Amount must be greater than or equal to 1000");
+    if (amount < MIN_DEPOSIT_AMOUNT) {
+      setError(`Amount must be greater than or equal to ${MIN_DEPOSIT_AMOUNT}`);
       return;
     }
 
@@ -74,7 +83,8 @@ export default function Deposit({ user }: DepositProps) {
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setError(undefined);
-    setDepositAmount(0);
+    setDepositAmount(null);
+    setPending(false);
   }, []);
 
   return (
@@ -82,7 +92,13 @@ export default function Deposit({ user }: DepositProps) {
       <button
         disabled={isPending}
         onClick={() => setIsModalOpen(true)}
-        className="flex items-center gap-2 rounded-xl bg-blue-500 px-4 py-2 font-medium text-sm lg:text-md text-white transition-colors hover:bg-blue-600"
+        className={cn(
+          "flex items-center gap-2 rounded-xl px-4 py-2 font-medium text-sm lg:text-md text-white transition-colors",
+          isPending
+            ? "bg-blue-300 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+        )}
+        aria-label="Open deposit funds modal"
       >
         <ArrowUpRight className="h-3 w-3 md:h-5 md:w-5" />
         Deposit
@@ -94,20 +110,28 @@ export default function Deposit({ user }: DepositProps) {
         >
           <InputField
             name="amount"
-            placeholder="Enter amount"
+            placeholder={`Enter amount (min ${MIN_DEPOSIT_AMOUNT})`}
             label="Amount"
             type="number"
             errors={error ? [error] : undefined}
+            aria-describedby={error ? "amount-error" : undefined}
             required
-            min={1000}
+            min={MIN_DEPOSIT_AMOUNT}
             step={1}
           />
           <div className="mt-6 flex gap-4">
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-blue-500 py-2 text-white transition-colors hover:bg-blue-600"
+              disabled={isPending}
+              aria-label="Deposit funds"
+              className={cn(
+                "flex-1 rounded-lg py-2 text-white transition-colors",
+                isPending
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              )}
             >
-              Deposit
+              {isPending ? "Processing..." : "Deposit"}
             </button>
             <button
               type="button"
