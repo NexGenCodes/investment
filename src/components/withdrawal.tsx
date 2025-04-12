@@ -1,13 +1,14 @@
 "use client";
 
-import { ArrowDownRight } from "lucide-react";
-import Modal from "./ui/Modal";
-import InputField from "./ui/input";
 import { useActionState, useCallback, useEffect, useState } from "react";
+import WithdrawalAction from "@/actions/withdrawal";
+import { ArrowDownRight } from "lucide-react";
 import { getBanks } from "@/lib/bank";
-import toast from "react-hot-toast";
-import WithdrawalAction from "@/actions/widrawal";
 import SelectInput from "./ui/select";
+import InputField from "./ui/input";
+import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
+import Modal from "./ui/Modal";
 
 interface Bank {
   value: string;
@@ -86,7 +87,13 @@ export default function Withdrawal() {
             <button
               type="submit"
               disabled={isPending}
-              className="flex-1 rounded-lg bg-blue-500 py-2 text-white transition-colors hover:bg-blue-600 disabled:opacity-50"
+              aria-label="Deposit funds"
+              className={cn(
+                "flex-1 rounded-lg py-2 text-white transition-colors",
+                isPending
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              )}
             >
               {isPending ? "Processing..." : "Withdraw"}
             </button>

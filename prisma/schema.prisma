@@ -65,4 +65,6 @@ model Transaction {
   investment   Investment?       @relation(fields: [investmentId], references: [id])
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
+  referenceId  Int?
+  reference    String? // Reference for the transaction (e.g., bank transfer ID)
 }

@@ -79,6 +79,7 @@ export default async function WithdrawalAction(
     return { message: "Withdrawal initiated successfully", success: true };
   } catch (error) {
     console.error("Withdrawal error:", error);
-    return { message: "Failed to process withdrawal" };
+    return { message: "Failed to process withdrawal", success:false };
   }
 }
+

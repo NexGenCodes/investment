@@ -34,15 +34,14 @@ export default function Deposit({ user }: DepositProps) {
     initiatePayment({
       callback: async (response) => {
         try {
-          if (response.status === "successful") {
-            const { message } = await deposit(depositAmount);
-            if (message === "Deposit successful") {
-              toast.success(message);
-            } else {
-              toast.error(message);
-            }
+          const { message, successful } = await deposit(
+            depositAmount,
+            response
+          );
+          if (successful) {
+            toast.success(message);
           } else {
-            toast.error("Payment failed. Please try again.");
+            toast.error(message);
           }
         } catch (error) {
           console.error(error);
