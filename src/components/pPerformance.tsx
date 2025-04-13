@@ -24,7 +24,6 @@ export default function PortfolioPerformance({ data }: Props) {
             {formatCurrency(data.dailyAmount)}
             <ArrowUpIcon className="w-5 h-5" />
           </h1>
-          <span className="text-sm text-gray-400">/ day</span>
         </div>
 
         {/* Duration */}

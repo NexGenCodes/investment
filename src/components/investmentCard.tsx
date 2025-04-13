@@ -1,6 +1,7 @@
 "use client";
 
 import createInvestment from "@/actions/investment";
+import { formatCurrency } from "@/lib/utils";
 import { InvestmentPlan } from "@/types/investment";
 import Image from "next/image";
 import {
@@ -77,6 +78,12 @@ const InvestmentCard = memo(({ data, disabled }: Props) => {
             className={`ml-2 rounded-lg px-3 py-1 text-xs font-semibold ${riskColorClass}`}
           >
             {data.riskLevel}
+          </span>
+        </div>
+        <div className="flex items-center text-sm text-gray-300">
+          price:
+          <span className={`ml-2 rounded-lg px-3 py-1 text-xs font-semibold`}>
+            {formatCurrency(data.investment)}
           </span>
         </div>
         {disabled ? (

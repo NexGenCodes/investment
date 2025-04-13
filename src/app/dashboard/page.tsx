@@ -16,28 +16,38 @@ export default async function Dashboard() {
   const investments = await GetInvestments(user.email);
 
   return (
-    <div className=" bg-gray-900 p-6 ">
+    <div className="bg-gray-900 p-6 min-h-screen">
       {/* Welcome Message */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white ">
-          Welcome back
-          <p className="text-green-500 first-letter:uppercase inline-block px-2">
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl font-extrabold text-white">
+          Welcome back,{" "}
+          <span className="text-green-500 first-letter:uppercase">
             {user?.firstName}
-          </p>
+          </span>
         </h1>
-        <p className="text-gray-400">Here is an overview of your portfolio.</p>
+        <p className="mt-2 text-lg text-gray-400">
+          Here is an overview of your portfolio.
+        </p>
       </div>
-      <div className="mb-8">
-        <div className="p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5  gap-4">
+
+      {/* Portfolio Performance Section */}
+      <div className="mb-12">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
           {investments?.map((d) => (
             <PortfolioPerformance key={d.id} data={d} />
           ))}
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Portfolio Overview - Full Width on Small Screens */}
+      {/* Portfolio Overview and Watchlist */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Portfolio Overview */}
+        <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow-lg p-6">
           <PortfolioOverView />
-          {/* Watchlist - Adjusted for Mobile */}
+        </div>
+
+        {/* Watchlist */}
+        <div className="bg-gray-800 rounded-lg shadow-lg p-6">
           <WatchList />
         </div>
       </div>
