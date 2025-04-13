@@ -54,7 +54,7 @@ export default function MobileMenu({ user }: MobileMenuProps) {
   }, [isOpen]);
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden block relative">
       <button
         onClick={() => setIsOpen(true)}
         className="text-white p-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -66,12 +66,12 @@ export default function MobileMenu({ user }: MobileMenuProps) {
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/50 "
             onClick={() => setIsOpen(false)}
           />
           <div
             ref={menuRef}
-            className="fixed top-0 right-0 w-64 h-full bg-gray-900/90 shadow-xl transform transition-transform duration-300 z-50 translate-x-0"
+            className="fixed top-0 right-0 w-64  bg-gray-900/90 shadow-xl transform transition-transform duration-300 z-10000 translate-x-0 h-screen overflow-y-auto"
           >
             <button
               onClick={() => setIsOpen(false)}

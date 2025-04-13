@@ -17,7 +17,7 @@ export default function TransactionHistory({ transactions }: Props) {
   }
 
   return (
-    <div className="bg-gray-800 rounded-xl p-6">
+    <div className="bg-gray-800 rounded-xl">
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -91,11 +91,11 @@ export default function TransactionHistory({ transactions }: Props) {
                 ) : (
                   <ArrowDownRight className="w-4 h-4 text-red-400 mr-2" />
                 )}
-                <span className="text-white font-medium">
+                <span className="text-white font-medium text-sm">
                   {transaction.type}
                 </span>
               </div>
-              <span className="text-white font-medium">
+              <span className="text-white font-medium text-xs">
                 {formatCurrency(transaction.amount)}
               </span>
             </div>
@@ -112,7 +112,14 @@ export default function TransactionHistory({ transactions }: Props) {
                 {transaction.status}
               </span>
               <span className="text-xs">
-                {transaction.createdAt.toLocaleString()}
+                {transaction.createdAt.toLocaleString("en-GB",{
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                })}
               </span>
             </div>
           </div>

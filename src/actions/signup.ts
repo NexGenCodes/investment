@@ -34,6 +34,7 @@ export default async function Signup(state: FormState, formData: FormData) {
         ? undefined
         : formData.get("referralCode"),
     confirmPassword: formData.get("confirmPassword"),
+    state: formData.get("state"),
   });
 
   // If any form fields are invalid, return early

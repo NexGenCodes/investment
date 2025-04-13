@@ -16,13 +16,13 @@ export default async function Dashboard() {
   const investments = await GetInvestments(user.email);
 
   return (
-    <div className="bg-gray-900 p-6 min-h-screen">
+    <div className="bg-gray-900 p-6 min-h-screen ">
       {/* Welcome Message */}
       <div className="mb-8 text-center">
-        <h1 className="text-4xl font-extrabold text-white">
+        <h1 className="text-4xl font-extrabold text-white ">
           Welcome back,{" "}
           <span className="text-green-500 first-letter:uppercase">
-            {user?.firstName}
+            {user?.firstName?.toUpperCase()}
           </span>
         </h1>
         <p className="mt-2 text-lg text-gray-400">

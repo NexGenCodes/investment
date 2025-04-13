@@ -31,6 +31,9 @@ export const signUpSchema = object({
   password: password,
   nationality: nationality,
   confirmPassword: password,
+  state: string()
+    .min(2, { message: "State is required" })
+    .optional(),
   referralCode: string()
     .length(8, "Referral code must be exactly 8 characters long")
     .optional(),
