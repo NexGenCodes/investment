@@ -5,7 +5,7 @@ import authConfig from "@/auth.config";
 const { auth } = NextAuth(authConfig);
 
 const publicRoutes = ["/auth/login", "/auth/signup", "/auth/otp"];
-const protectedRoutes = ["/dashboard", "/investment"];
+const protectedRoutes = ["/dashboard", "/investment", "/referral"];
 
 const middleware = auth(async (req: NextRequest) => {
   const otpEmail = req.cookies.get("otp_email")?.value; // Get cookie value
