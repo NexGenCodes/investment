@@ -24,6 +24,7 @@ export default function Withdrawal() {
   );
 
   useEffect(() => {
+    if (!isModalOpen) return;
     getBanks().then((data) => {
       if (Array.isArray(data)) {
         setBanks(data);
@@ -31,7 +32,7 @@ export default function Withdrawal() {
         toast.error("Failed to load banks");
       }
     });
-  }, []);
+  }, [isModalOpen]);
 
   useEffect(() => {
     if (!state) return;
@@ -51,11 +52,18 @@ export default function Withdrawal() {
   return (
     <div className="flex items-center justify-between">
       <button
+        disabled={isPending}
         onClick={() => setIsModalOpen(true)}
-        className="flex items-center gap-2 rounded-xl bg-blue-500 px-4 py-2 font-medium text-sm lg:text-md text-white transition-colors hover:bg-blue-600"
+        className={cn(
+          "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors sm:px-4 sm:py-2 sm:text-md lg:rounded-xl",
+          isPending
+            ? "bg-blue-300 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+        )}
+        aria-label="Open withdrawal  modal"
       >
-        <ArrowDownRight className="h-3 w-3 md:h-5 md:w-5" />
-        Withdraw
+        <ArrowDownRight className="h-4 w-4 sm:h-5 sm:w-5" />
+        <span className="sm:inline hidden">Withdraw</span>
       </button>
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Withdraw Funds">
         <form action={Action} className="w-full rounded-xl bg-gray-800 p-6">

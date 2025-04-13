@@ -92,15 +92,15 @@ export default function Deposit({ user }: DepositProps) {
         disabled={isPending}
         onClick={() => setIsModalOpen(true)}
         className={cn(
-          "flex items-center gap-2 rounded-xl px-4 py-2 font-medium text-sm lg:text-md text-white transition-colors",
+          "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white transition-colors sm:px-4 sm:py-2 sm:text-md lg:rounded-xl",
           isPending
             ? "bg-blue-300 cursor-not-allowed"
             : "bg-blue-500 hover:bg-blue-600"
         )}
         aria-label="Open deposit funds modal"
       >
-        <ArrowUpRight className="h-3 w-3 md:h-5 md:w-5" />
-        Deposit
+        <ArrowUpRight className="h-4 w-4 sm:h-5 sm:w-5" />
+        <span className="hidden sm:inline">Deposit</span>
       </button>
       <Modal isOpen={isModalOpen} onClose={closeModal} title="Deposit Funds">
         <form

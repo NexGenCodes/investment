@@ -3,14 +3,15 @@ import ChangePwd from "@/components/form/changePwd";
 import UpdateForm from "@/components/form/updateForm";
 import { auth } from "@/lib/auth";
 import { GetUserFromDb } from "@/lib/db";
+import { redirect } from "next/navigation";
 // import TwoFactorAuth from "@/components/form/2fa";
 
 export default async function Settings() {
   const session = await auth();
-  const email = session?.user?.email;
-  const user = await GetUserFromDb({
-    email: email || "",
-  });
+  const user = session?.user?.email
+    ? await GetUserFromDb({ email: session.user.email })
+    : null;
+  if (!user) return redirect("/dashboard");
 
   return (
     <div className=" bg-gray-900 p-6 transition-colors duration-200 ">

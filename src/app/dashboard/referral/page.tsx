@@ -2,18 +2,18 @@ import ReferralSection from "@/components/referral";
 import sharePlatforms from "@/constants/share";
 import { auth } from "@/lib/auth";
 import { GetUserFromDb } from "@/lib/db";
+import { cn } from "@/lib/utils";
 import { Share2 } from "lucide-react";
-import { Session } from "next-auth";
+import { redirect } from "next/navigation";
 
 export default async function SolarReferralPage() {
-  // Fetch session and user
-  const session = (await auth()) as Session | null;
+  const session = await auth();
   const user = session?.user?.email
     ? await GetUserFromDb({ email: session.user.email })
     : null;
 
-  // Define share data
-  const referralCode: string = user?.referralCode ?? "N/A";
+  if (!user) return redirect("/dashboard");
+
   const baseUrl: string =
     process.env.NEXT_PUBLIC_BASE_URL || "https://yourwebsite.com";
 
@@ -21,7 +21,7 @@ export default async function SolarReferralPage() {
     <div className=" bg-gradient-to-b from-gray-900 to-gray-900 p-4 sm:p-6 text-center text-gray-200">
       <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
         Welcome,{" "}
-        <span className="first-letter:uppercase">{user?.firstName}</span>
+        <span className="first-letter:uppercase">{user.firstName}</span>
       </h1>
       <p className="mt-2 text-base sm:text-lg">
         Invite friends and earn <span className="text-green-500">₦1,000</span>{" "}
@@ -30,31 +30,35 @@ export default async function SolarReferralPage() {
 
       {/* Referral and Share Section */}
       <div className="my-8 space-y-6 mt-16">
-        <ReferralSection referralCode={referralCode} />
+        <ReferralSection referralCode={user.referralCode} />
 
         {/* Social Share Buttons */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-          {sharePlatforms.map(
-            ({ name, href, getMessage, gradient, ariaLabel }) => {
-              const message = encodeURIComponent(
-                getMessage({ referralCode, baseUrl })
-              );
-              const url = encodeURIComponent(`${baseUrl}?ref=${referralCode}`);
-              return (
-                <a
-                  key={name}
-                  href={href({ message, url })}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={ariaLabel}
-                  className={`flex min-w-[120px] items-center justify-center rounded-lg bg-gradient-to-r ${gradient} px-4 py-2 text-sm sm:text-base text-white transition-all flex-none`}
-                >
-                  <Share2 className="mr-2 h-4 w-4" aria-hidden="true" />
-                  {name}
-                </a>
-              );
-            }
-          )}
+          {sharePlatforms.map(({ name, href, getMessage, ariaLabel }) => {
+            const message = encodeURIComponent(
+              getMessage({ referralCode: user.referralCode, baseUrl })
+            );
+            const url = encodeURIComponent(
+              `${baseUrl}?ref=${user.referralCode}`
+            );
+            return (
+              <a
+                key={name}
+                href={href({ message, url })}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={ariaLabel}
+                className={cn(
+                  "flex min-w-[120px] items-center justify-center rounded-lg px-4 py-2 text-sm sm:text-base text-white transition-all flex-none",
+                  "bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-400 hover:to-blue-400",
+                  "shadow-md hover:shadow-lg transform hover:scale-105",
+                )}
+              >
+                <Share2 className="mr-2 h-4 w-4" aria-hidden="true" />
+                {name}
+              </a>
+            );
+          })}
         </div>
       </div>
 

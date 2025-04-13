@@ -21,7 +21,7 @@ export default async function deposit(
       amount,
       userId: user.id,
       type: "DEPOSIT",
-      status: "COMPLETED",
+      status: "FAILED",
       referenceId: response.transaction_id,
       reference: response.tx_ref,
     });
@@ -39,10 +39,12 @@ export default async function deposit(
   });
 
   const createTransaction = await CreateTransaction({
-    amount,
+    amount: +amount,
     userId: user.id,
     type: "DEPOSIT",
     status: "COMPLETED",
+    referenceId: response.transaction_id,
+    reference: response.tx_ref,
   });
   if (!createTransaction)
     return { message: "Failed to create transaction.", successful: false };

@@ -1,7 +1,12 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { CreateInvestment, GetUserFromDb } from "@/lib/db";
+import {
+  CreateInvestment,
+  CreateTransaction,
+  GetUserFromDb,
+  UpdateUser,
+} from "@/lib/db";
 import { InvestmentPlan } from "@/types/investment";
 import { redirect } from "next/navigation";
 
@@ -57,9 +62,17 @@ export default async function createInvestment(
     };
   }
 
+  const updatedUser = await UpdateUser(user.email, {
+    balance: user.balance - data.investment,
+  });
+
+  if (!updatedUser) {
+    return { success: false, message: "Failed to update balance" };
+  }
+
   const investment = await CreateInvestment({
     duration: data.duration,
-    userId: user.id,
+    userId: updatedUser.id,
     planName: data.name,
     amount: data.investment,
     expectedReturn: data.returnAmount,
@@ -68,6 +81,18 @@ export default async function createInvestment(
 
   if (!investment) {
     return { success: false, message: "Investment creation failed" };
+  }
+
+  const transaction = await CreateTransaction({
+    userId: updatedUser.id,
+    amount: -data.investment,
+    type: "INVESTMENT",
+    investmentId: investment.id,
+    status: "COMPLETED",
+  });
+
+  if (!transaction) {
+    return { success: false, message: "Transaction creation failed" };
   }
 
   redirect("/dashboard");

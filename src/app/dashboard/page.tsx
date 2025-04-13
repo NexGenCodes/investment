@@ -3,15 +3,17 @@ import WatchList from "@/components/watchList";
 import PortfolioOverView from "@/components/pOverView";
 import PortfolioPerformance from "@/components/pPerformance";
 import { GetInvestments, GetUserFromDb } from "@/lib/db";
+import { redirect } from "next/navigation";
 
-const Dashboard = async () => {
+export default async function Dashboard() {
   const session = await auth();
-  const email = session?.user?.email;
-  const user = await GetUserFromDb({
-    email: email || "",
-  });
+  const user = session?.user?.email
+    ? await GetUserFromDb({ email: session.user.email })
+    : null;
 
-  const investments = await GetInvestments(user?.email || "");
+  if (!user) return redirect("/");
+
+  const investments = await GetInvestments(user.email);
 
   return (
     <div className=" bg-gray-900 p-6 ">
@@ -41,6 +43,4 @@ const Dashboard = async () => {
       </div>
     </div>
   );
-};
-
-export default Dashboard;
+}

@@ -9,6 +9,7 @@ import {
   useEffect,
   memo,
   useCallback,
+  useMemo,
 } from "react";
 import toast from "react-hot-toast";
 
@@ -18,7 +19,12 @@ const riskColors: Record<InvestmentPlan["riskLevel"], string> = {
   High: "bg-red-500 text-white",
 };
 
-const InvestmentCard = memo(({ data }: { data: InvestmentPlan }) => {
+interface Props {
+  data: InvestmentPlan;
+  disabled?: boolean;
+}
+
+const InvestmentCard = memo(({ data, disabled }: Props) => {
   const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState(createInvestment, undefined);
 
@@ -29,13 +35,24 @@ const InvestmentCard = memo(({ data }: { data: InvestmentPlan }) => {
   useEffect(() => {
     if (!state) return;
 
-    const toastMethod = state.success ? toast.success : toast.error;
-    toastMethod(state.message || "An error occurred");
+    const showToast = (message: string, success: boolean) => {
+      const toastMethod = success ? toast.success : toast.error;
+      toastMethod(message || "An error occurred");
+    };
+
+    showToast(state.message || "An error occurred", state.success);
     console.log(state.success ? "success" : "error");
   }, [state]);
 
-  const riskColorClass = riskColors[data.riskLevel] || "bg-gray-500 text-white";
-  const buttonText = isPending ? "Investing..." : `Invest in ${data.name}`;
+  const riskColorClass = useMemo(
+    () => riskColors[data.riskLevel] || "bg-gray-500 text-white",
+    [data.riskLevel]
+  );
+
+  const buttonText = useMemo(
+    () => (isPending ? "Investing..." : `Invest in ${data.name}`),
+    [isPending, data.name]
+  );
 
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-lg transition-transform hover:scale-105">
@@ -62,20 +79,21 @@ const InvestmentCard = memo(({ data }: { data: InvestmentPlan }) => {
             {data.riskLevel}
           </span>
         </div>
-        <button
-          className="mt-4 rounded-lg bg-[rgb(255,215,0)] px-6 py-2 text-sm font-semibold text-gray-900 shadow-md transition-colors hover:bg-gray-200 disabled:opacity-50"
-          onClick={handleInvest}
-          disabled={isPending}
-          type="button" // Explicitly define button type
-        >
-          {buttonText}
-        </button>
+        {disabled ? (
+          <p className="mt-4 text-sm text-gray-400">invested</p>
+        ) : (
+          <button
+            className="mt-4 rounded-lg bg-[rgb(255,215,0)] px-6 py-2 text-sm font-semibold text-gray-900 shadow-md transition-colors hover:bg-gray-200 disabled:opacity-50"
+            onClick={handleInvest}
+            disabled={isPending}
+            type="button"
+          >
+            {buttonText}
+          </button>
+        )}
       </div>
     </div>
   );
 });
-
-// Add display name for better debugging
 InvestmentCard.displayName = "InvestmentCard";
-
 export default InvestmentCard;

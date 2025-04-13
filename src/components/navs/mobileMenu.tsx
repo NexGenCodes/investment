@@ -80,7 +80,7 @@ export default function MobileMenu({ user }: MobileMenuProps) {
             >
               <X size={32} />
             </button>
-            <nav className="mt-16 space-y-6 text-lg font-semibold flex flex-col items-start px-4">
+            <nav className="mt-16 space-y-6 text-lg font-semibold flex flex-col items-center px-4">
               {links.map((link) => (
                 <NavLink
                   key={link.href}

@@ -2,14 +2,6 @@ import otpGenerator from "otp-generator";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-/**
- * Combines and merges class names safely, handling conditional class names.
- * - Uses `clsx` for conditional class joining.
- * - Uses `twMerge` to resolve Tailwind class conflicts.
- *
- * @param inputs - Class names, conditionally applied.
- * @returns A properly merged string of class names.
- */
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
@@ -32,8 +24,11 @@ export function debounce(func: () => void, wait: number) {
   };
 }
 
-
-export async function fetchWithRetry(url: string, options: RequestInit, retries = 3) {
+export async function fetchWithRetry(
+  url: string,
+  options: RequestInit,
+  retries = 3
+) {
   for (let i = 0; i < retries; i++) {
     try {
       const response = await fetch(url, options);
@@ -43,4 +38,24 @@ export async function fetchWithRetry(url: string, options: RequestInit, retries 
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
+}
+export const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 2,
+  }).format(amount);
+};
+export const isPlanActive = (startDate: Date, duration: number): boolean => {
+  const end = new Date(startDate);
+  end.setMonth(end.getMonth() + duration);
+  const today = new Date();
+  return today < end;
+};
+
+export function getInvestmentByPlanName<T extends { planName: string }>(
+  investments: T[],
+  planName: string
+): T | undefined {
+  return investments.find((investment) => investment.planName === planName);
 }

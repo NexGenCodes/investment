@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/lib/utils";
 import { Transaction } from "@prisma/client";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
@@ -17,8 +18,7 @@ export default function TransactionHistory({ transactions }: Props) {
 
   return (
     <div className="bg-gray-800 rounded-xl p-6">
-      <h3 className="text-white font-semibold mb-6">Transaction History</h3>
-      <div className="hidden sm:block overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="text-gray-400 text-sm flex justify-between items-center border-b border-gray-700">
@@ -53,7 +53,7 @@ export default function TransactionHistory({ transactions }: Props) {
                   </div>
                 </td>
                 <td className="text-white ml-5">
-                  ₦{transaction.amount.toLocaleString()}
+                  {formatCurrency(transaction.amount)}
                 </td>
                 <td className="text-white ml-12">
                   <span
@@ -78,7 +78,7 @@ export default function TransactionHistory({ transactions }: Props) {
       </div>
 
       {/* Mobile View */}
-      <div className="sm:hidden space-y-4">
+      <div className="md:hidden space-y-4">
         {transactions.map((transaction) => (
           <div
             key={transaction.id}
@@ -96,7 +96,7 @@ export default function TransactionHistory({ transactions }: Props) {
                 </span>
               </div>
               <span className="text-white font-medium">
-                ₦{transaction.amount.toLocaleString()}
+                {formatCurrency(transaction.amount)}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm text-gray-400">
@@ -111,7 +111,9 @@ export default function TransactionHistory({ transactions }: Props) {
               >
                 {transaction.status}
               </span>
-              <span>{transaction.createdAt.toLocaleString()}</span>
+              <span className="text-xs">
+                {transaction.createdAt.toLocaleString()}
+              </span>
             </div>
           </div>
         ))}

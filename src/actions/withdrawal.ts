@@ -33,7 +33,7 @@ export default async function WithdrawalAction(
 
     const validatedFields = withdrawalSchema.safeParse({
       amount: Number(formData.get("amount")),
-      bankCode: formData.get("bankCode"),
+      bankCode: formData.get("bank"),
       accountNumber: formData.get("accountNumber"),
     });
 
@@ -73,7 +73,6 @@ export default async function WithdrawalAction(
       type: "WITHDRAWAL",
       userId: user.id,
       status: "PENDING",
-      investmentId: null,
     });
 
     return { message: "Withdrawal initiated successfully", success: true };
