@@ -28,6 +28,7 @@ model User {
   firstName     String?
   lastName      String?
   nationality   String?
+  state         String?
   referralCode  String    @unique
   referredById  String?
   referredBy    User?     @relation("UserReferrals", fields: [referredById], references: [id])
@@ -43,11 +44,11 @@ model Investment {
   id             String   @id @default(uuid())
   userId         String
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  planName       String // e.g., "Solar Panel", "Photoelectric Cell"
-  amount         Float // Amount invested
-  expectedReturn Float // Total expected return after duration
-  duration       Int // Duration in weeks
-  dailyAmount    Float    @default(0) // Updated every day
+  planName       String
+  amount         Float
+  expectedReturn Float
+  duration       Int
+  dailyAmount    Float    @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

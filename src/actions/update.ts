@@ -26,6 +26,7 @@ export default async function Update(state: FormState, formData: FormData) {
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
     nationality: formData.get("nationality"),
+    state: formData.get("state"),
   });
 
 

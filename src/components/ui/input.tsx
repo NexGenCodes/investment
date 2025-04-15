@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useId, useState } from "react";
+import { useId, useState, useEffect } from "react";
 import { Eye, EyeOff, Search } from "lucide-react";
 import React from "react";
 
 interface InputProps {
-  defaultValue?: string; // Optional for uncontrolled usage
+  defaultValue?: string;
   errors?: string[];
   placeholder?: string;
   className?: string;
@@ -24,17 +24,21 @@ const InputField = React.forwardRef<
     ref
   ) => {
     const [showPwd, setShowPwd] = useState(false);
-    const isPwd = icon === "password" && (type === "password" || !type);
     const [inputValue, setInputValue] = useState(defaultValue || "");
     const generatedId = `input-${useId()}`;
     const inputId = id || generatedId;
+    const isPwd = icon === "password" && (type === "password" || !type);
+
+    useEffect(() => {
+      setInputValue(defaultValue || "");
+    }, [defaultValue]);
 
     return (
       <div className="relative space-y-2">
         {label && (
           <label
             htmlFor={inputId}
-            className="first-letter:text-md text-white text-xs"
+            className="text-xs text-white first-letter:text-md"
           >
             {label}
           </label>
@@ -49,6 +53,8 @@ const InputField = React.forwardRef<
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             type={isPwd ? (showPwd ? "text" : "password") : type}
+            aria-invalid={!!errors?.length}
+            aria-describedby={errors?.length ? `${inputId}-error` : undefined}
             className={cn(
               "w-full p-3 border rounded-md bg-gray-900 text-white focus:ring-2 focus:ring-[rgb(255,215,0)] border-gray-700 outline-none focus:border-[rgb(255,215,0)]",
               icon === "search" && "pl-10",
@@ -73,11 +79,15 @@ const InputField = React.forwardRef<
             </button>
           )}
         </div>
-        {errors?.map((val, index) => (
-          <p key={index} className="text-red-500 text-xs m-1">
-            {val}
-          </p>
-        ))}
+        {errors && (
+          <div id={`${inputId}-error`} className="space-y-1">
+            {errors.map((val, index) => (
+              <p key={index} className="text-red-500 text-xs m-1">
+                {val}
+              </p>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

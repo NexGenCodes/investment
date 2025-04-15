@@ -1,4 +1,3 @@
-import otpGenerator from "otp-generator";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -6,14 +5,10 @@ export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
-export function otp(length: number = 4) {
-  const otp = otpGenerator.generate(length, {
-    digits: true,
-    specialChars: false,
-    lowerCaseAlphabets: false,
-    upperCaseAlphabets: false,
-  });
-  return otp;
+export function otp(digits: number = 6): string {
+  const min = Math.pow(10, digits - 1);
+  const max = Math.pow(10, digits) - 1;
+  return Math.floor(min + Math.random() * (max - min + 1)).toString();
 }
 
 export function debounce(func: () => void, wait: number) {

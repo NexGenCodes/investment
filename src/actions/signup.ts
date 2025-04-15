@@ -1,11 +1,13 @@
 "use server";
 
 import { sendOtp } from "@/email/email";
-import { setToCache } from "@/lib/cache";
+import { getFromCache, setToCache } from "@/lib/cache";
 import { deleteCookie, getCookie, setCookie } from "@/lib/cookies";
 import { GetUserFromDb } from "@/lib/db";
 import { otp } from "@/lib/utils";
 import { signUpSchema } from "@/types/authSchema";
+import { randomUUID } from "crypto";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 type Error = {
@@ -21,6 +23,9 @@ type Error = {
 };
 
 type FormState = Error | undefined;
+
+const OTP_LENGTH = 6;
+const OTP_EXPIRATION = 300;
 
 export default async function Signup(state: FormState, formData: FormData) {
   const validatedFields = await signUpSchema.safeParseAsync({
@@ -54,19 +59,28 @@ export default async function Signup(state: FormState, formData: FormData) {
     };
   }
   // create otp for user
-  const otpCode = otp(4);
   // check if cookie exists before setting
-  if (await getCookie("otp_email")) {
-    await deleteCookie("otp_email");
+  if (await getCookie("otp_session")) {
+    await deleteCookie("otp_session");
   }
-  // save to cache
-  const isCached = setToCache(otpCode, validatedFields.data);
+
+  let sessionId = randomUUID();
+  while (getFromCache(sessionId)) {
+    sessionId = randomUUID();
+  }
+  const otpCode = otp(OTP_LENGTH);
+  const userAgent = (await headers()).get("user-agent") || "unknown";
+  const isCached = setToCache(sessionId, { userData: validatedFields.data, otp: otpCode, userAgent });
   if (!isCached) {
-    return {
-      message: "An error occurred while creating your account.",
-    };
+    return { message: "An error occurred while creating your account cache" };
   }
-  await setCookie("otp_email", validatedFields.data.email);
+  // set cookie for user email
+  const isSet = await setCookie("otp_session", sessionId, OTP_EXPIRATION);
+
+  if (!isSet) {
+    return { message: "An error occurred while creating your account. cookies" };
+  }
+
   // send otp to user
   const isSent = await sendOtp(validatedFields.data.email, otpCode);
 

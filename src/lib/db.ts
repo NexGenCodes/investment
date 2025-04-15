@@ -15,86 +15,85 @@ type CreateInvestment = Omit<
 type CreateTransaction = Omit<Prisma.TransactionUncheckedCreateInput, "id">;
 
 async function generateReferralCode(length: number = 8) {
-  let attempts = 0; // Initialize attempt counter
-
-  while (attempts < 3) {
-    attempts++; // Increment attempts on each try
-
-    // Generate a random referral code
+  const maxAttempts = 3;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const referralCode = randomBytes(length)
       .toString("hex")
       .slice(0, length)
       .toUpperCase();
-
-    // Check if the referral code already exists in the database
-    const existingReferralCode = await prisma.user.findUnique({
+    const existing = await prisma.user.findUnique({
       where: { referralCode },
+      select: { id: true }, // Select minimal data
     });
-
-    if (!existingReferralCode) {
-      return referralCode; // Return the unique code if it does not exist in the database
-    }
+    if (!existing) return referralCode;
   }
-  throw new Error("Failed to generate a unique referral code after 3 attempts");
+  console.log(`Failed to generate unique referral code after ${maxAttempts} attempts`);
 }
 
 async function getReferredById(referralCode?: string) {
-  if (!referralCode) {
-    return null;
-  }
-  const referredBy = await prisma.user.findUnique({
+  if (!referralCode) return null;
+  const user = await prisma.user.findUnique({
     where: { referralCode },
+    select: { id: true }, // Select only necessary field
   });
-  if (!referredBy) {
-    return null;
-  }
-  return referredBy?.id;
+  return user?.id ?? null;
 }
 
 export async function GetUserFromDb(where: Prisma.UserWhereUniqueInput) {
-  try {
-    const user = await prisma.user.findUnique({
-      where,
-      include: {
-        referrals: true,
-      },
-    });
+  if (!where || typeof where !== "object" || !Object.keys(where).length) {
+    console.error("Invalid or missing 'where' parameter");
+    return null
+  }
+  if (!where.id && !where.email && !where.referralCode) {
+    console.error("At least one unique field (id, email, or referralCode) is required");
+    return null
+  }
 
-    return user;
+  try {
+    return await prisma.user.findUnique({
+      where,
+      include: { referrals: { select: { id: true, email: true } } }, // Optimize include
+    });
   } catch (error) {
     console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
+    return null
   }
 }
 
 export async function CreateUser(userData: CreateUser) {
   try {
-    const user = await prisma.user.create({
+    const { referralCode: inputReferralCode, ...restData } = userData;
+    const [generatedReferralCode, referredById] = await Promise.all([
+      generateReferralCode(),
+      getReferredById(inputReferralCode),
+    ]);
+
+    if (!generatedReferralCode) {
+      console.error("Failed to generate a unique referral code.");
+      return null;
+    }
+
+    return await prisma.user.create({
       data: {
-        ...userData,
-        referralCode: await generateReferralCode(),
-        referredById: await getReferredById(userData.referralCode),
+        ...restData,
+        referralCode: generatedReferralCode,
+        referredById,
         emailVerified: new Date(),
       },
     });
-    return user;
   } catch (error) {
     console.error("Failed to create user:", error);
     return null;
   }
 }
-
 export async function UpdateUser(email: string, userData: UpdateUser) {
+  if (!email) return null
+
   try {
-    const user = await prisma.user.update({
-      where: {
-        email: email,
-      },
-      data: {
-        ...userData,
-      },
+    return await prisma.user.update({
+      where: { email },
+      data: userData,
     });
-    return user;
   } catch (error) {
     console.error("Failed to update user:", error);
     return null;
@@ -102,59 +101,68 @@ export async function UpdateUser(email: string, userData: UpdateUser) {
 }
 
 export async function CreateInvestment(data: CreateInvestment) {
-  const investment = await prisma.investment.create({
-    data: {
-      ...data,
-    },
-  });
-  return investment;
+  try {
+    return await prisma.investment.create({ data });
+  } catch (error) {
+    console.error("Failed to create investment:", error);
+    return null;
+  }
 }
 
 export async function GetInvestments(email: string) {
-  const investments = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-    include: {
-      investments: true,
-    },
-  });
-  return investments?.investments;
+  if (!email) return null;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { investments: true },
+    });
+    return user?.investments ?? [];
+  } catch (error) {
+    console.error("Failed to fetch investments:", error);
+    return null;
+  }
 }
 
-export async function GetInvestment(email: string, id: string) {
-  const investment = await prisma.investment.findUnique({
-    where: {
-      id: id,
-    },
-    include: {
-      user: {
-        include: {
-          referrals: true,
+export async function GetInvestment(id: string) {
+  if (!id) return null;
+
+  try {
+    return await prisma.investment.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: { id: true, email: true, referrals: { select: { id: true, email: true } } },
         },
       },
-    },
-  });
-  return investment;
+    });
+  } catch (error) {
+    console.error("Failed to fetch investment:", error);
+    return null;
+  }
 }
 
 export async function GetTransactions(email: string) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-    include: {
-      transactions: true,
-    },
-  });
-  return user?.transactions;
+  if (!email) return null;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { transactions: true },
+    });
+    return user?.transactions;
+  } catch (error) {
+    console.error("Failed to fetch transactions:", error);
+    return null;
+  }
 }
 
+
 export async function CreateTransaction(data: CreateTransaction) {
-  const transaction = await prisma.transaction.create({
-    data: {
-      ...data,
-    },
-  });
-  return transaction;
+  try {
+    return await prisma.transaction.create({ data });
+  } catch (error) {
+    console.error("Failed to create transaction:", error);
+    return null
+  }
 }

@@ -1,5 +1,6 @@
-import Countries from "@/constants/countries";
+import { countries } from "@/lib/country";
 import { object, string, z } from "zod";
+
 
 const password = string()
   .min(8, { message: "Password must be at least 8 characters long." })
@@ -17,9 +18,15 @@ const nationality = string({
 })
   .min(1, "Nationality is required")
   .max(32, "Nationality must be less than 32 characters")
-  .refine((value) => Countries.some((country) => country.value === value), {
+  .refine((value) => countries.some((country) => country.value === value), {
     message: "Invalid nationality. Please select a valid country.",
   });
+
+const state = string({
+  required_error: "State is required",
+})
+  .min(2, "State is required")
+  .max(32, "State must be less than 32 characters")
 
 export const signInSchema = object({
   email: email,
@@ -29,15 +36,8 @@ export const signInSchema = object({
 export const signUpSchema = object({
   email: email,
   password: password,
-  nationality: nationality,
   confirmPassword: password,
-  state: string()
-    .min(2, { message: "State is required" })
-    .optional(),
-  referralCode: string()
-    .length(8, "Referral code must be exactly 8 characters long")
-    .optional(),
-
+  referralCode: string().length(8, "Referral code must be exactly 8 characters long").optional(),
   firstName: string({ required_error: "First name is required" })
     .min(2, "First name is required")
     .max(32, "First name must be less than 32 characters"),
@@ -50,7 +50,7 @@ export const signUpSchema = object({
 });
 
 export const otpSchema = object({
-  otp: string().length(4, "OTP must be exactly 4 characters long"),
+  otp: string().length(6, "OTP must be exactly 4 characters long"),
 });
 
 export const changePwdSchema = object({
@@ -75,6 +75,7 @@ export const updateSchema = object({
     .trim()
     .optional(),
   nationality: nationality.optional(),
+  state: state.optional(),
 });
 
 export type ChangePwdType = z.infer<typeof changePwdSchema>;

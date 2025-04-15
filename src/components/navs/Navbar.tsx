@@ -23,13 +23,18 @@ export default function Navbar() {
 
   // Determine if Navbar should render
   const shouldRender = useMemo(() => {
-    const hiddenPaths = ["/dashboard", "/auth/login", "/auth/register"];
+    const hiddenPaths = [
+      "/dashboard",
+      "/auth/login",
+      "/auth/register",
+      "/auth/otp",
+    ];
     return !hiddenPaths.some((path) => pathname.startsWith(path));
   }, [pathname]);
 
   // Loading or hidden states
-  if (status === "loading") return <Spinner />;
   if (!shouldRender) return null;
+  if (status === "loading") return <Spinner />;
 
   return (
     <nav

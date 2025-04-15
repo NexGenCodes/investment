@@ -2,61 +2,13 @@
 
 import Signup from "@/actions/signup";
 import Link from "next/link";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState } from "react";
 import InputField from "../ui/input";
-import SelectInput from "../ui/select";
 import { useRouter } from "next/navigation";
-import { Country, State } from "country-state-city";
-import { GroupBase, SelectInstance } from "react-select";
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
 
 export default function SignUpForm() {
   const [error, Action, isPending] = useActionState(Signup, undefined);
-  const [countryValue, setCountryValue] = useState<string>("");
-  const [stateOptions, setStateOptions] = useState<SelectOption[]>([]);
-  const stateSelectRef = useRef<SelectInstance<
-    SelectOption,
-    false,
-    GroupBase<SelectOption>
-  > | null>(null);
-  const [errors, setErrors] = useState<{
-    country?: string[];
-    state?: string[];
-  }>({});
-
   const router = useRouter();
-
-  const countryOptions: SelectOption[] = Country.getAllCountries().map(
-    (country) => ({
-      value: country.isoCode,
-      label: country.name,
-    })
-  );
-
-  // Update states when country changes
-  useEffect(() => {
-    if (countryValue) {
-      const states = State.getStatesOfCountry(countryValue).map((state) => ({
-        value: state.isoCode,
-        label: state.name,
-      }));
-      setStateOptions(states);
-      if (stateSelectRef.current) {
-        stateSelectRef.current.clearValue();
-      }
-      setErrors((prev) => ({ ...prev, state: undefined }));
-    } else {
-      setStateOptions([]);
-      if (stateSelectRef.current) {
-        stateSelectRef.current.clearValue();
-      }
-      setErrors((prev) => ({ ...prev, state: undefined }));
-    }
-  }, [countryValue]);
 
   return (
     <div className="w-full max-w-md px-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
@@ -85,20 +37,6 @@ export default function SignUpForm() {
           required
           errors={error?.errors?.email}
           placeholder="Enter your email"
-        />
-        <SelectInput
-          name="nationality"
-          list={countryOptions}
-          errors={error?.errors?.nationality || errors.country}
-          onChange={setCountryValue}
-        />
-
-        <SelectInput
-          name="state"
-          list={stateOptions}
-          errors={error?.errors?.state || errors.state}
-          disabled={!countryValue || stateOptions.length === 0}
-          ref={stateSelectRef}
         />
         <InputField
           name="password"

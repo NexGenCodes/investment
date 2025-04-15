@@ -8,7 +8,7 @@ const publicRoutes = ["/auth/login", "/auth/signup", "/auth/otp"];
 const protectedRoutes = ["/dashboard", "/investment", "/referral"];
 
 const middleware = auth(async (req: NextRequest) => {
-  const otpEmail = req.cookies.get("otp_email")?.value; // Get cookie value
+  const otpEmail = req.cookies.get("otp_session")?.value; 
   const path = req.nextUrl.pathname;
   const isLoggedIn = !!req.auth; // req.auth is populated by NextAuth
   const isProtectedRoute = protectedRoutes.some((route) =>
