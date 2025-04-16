@@ -11,7 +11,7 @@
       "headers": [
         {
           "key": "x-cron-secret",
-          "value": "@cron_secret"
+          "value": "@CRON_SECRET"
         }
       ]
     }
