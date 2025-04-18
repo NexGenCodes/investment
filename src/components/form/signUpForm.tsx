@@ -9,12 +9,7 @@ import { countries } from "@/lib/country";
 import Signup from "@/actions/signup";
 
 export default function SignUpForm() {
-  const [state, Action, isPending] = useActionState(Signup, {
-    error: undefined,
-    success: undefined,
-    sessionId: undefined,
-    errors: {},
-  });
+  const [state, Action, isPending] = useActionState(Signup, undefined);
   const router = useRouter();
 
   return (

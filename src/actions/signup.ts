@@ -16,19 +16,21 @@ import { redirect } from "next/navigation";
 const OTP_LENGTH = 6;
 const OTP_EXPIRATION = 300;
 
-type FormState = {
-  error?: string;
-  errors?: {
-    firstName?: string[];
-    lastName?: string[];
-    nationality?: string[];
-    referralCode?: string[];
-    email?: string[];
-    password?: string[];
-    confirmPassword?: string[];
-    state?: string[];
-  };
-};
+type FormState =
+  | {
+      error?: string;
+      errors?: {
+        firstName?: string[];
+        lastName?: string[];
+        nationality?: string[];
+        referralCode?: string[];
+        email?: string[];
+        password?: string[];
+        confirmPassword?: string[];
+        state?: string[];
+      };
+    }
+  | undefined;
 
 export default async function Signup(
   _prevState: FormState,
