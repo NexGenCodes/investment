@@ -11,7 +11,7 @@ import InputField from "../ui/input";
 import OtpAction from "@/actions/otp";
 import resendOtpAction from "@/actions/resendOtp";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const TIMER_DURATION = 100;
 
@@ -24,9 +24,12 @@ export default function OtpForm() {
     resendOtpAction,
     undefined
   );
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("sessionId");
 
   const startTimer = useCallback(() => {
     setTimeLeft(TIMER_DURATION);
@@ -45,7 +48,6 @@ export default function OtpForm() {
   }, []);
 
   useEffect(() => {
-    const sessionId = localStorage.getItem("session-id");
     if (!sessionId) {
       router.push("/auth/signup");
     } else {
@@ -54,7 +56,7 @@ export default function OtpForm() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [router, startTimer]);
+  }, [router, startTimer, sessionId]);
 
   useEffect(() => {
     if (otpState?.error) {
@@ -64,7 +66,6 @@ export default function OtpForm() {
         otpState.error.includes("Session expired") ||
         otpState.error.includes("Too many incorrect attempts")
       ) {
-        localStorage.removeItem("session-id");
         router.push("/auth/signup");
       }
     }
@@ -77,7 +78,6 @@ export default function OtpForm() {
         resendState.error.includes("Session not found") ||
         resendState.error.includes("Session expired")
       ) {
-        localStorage.removeItem("session-id");
         router.push("/auth/signup");
       }
     }
@@ -105,6 +105,9 @@ export default function OtpForm() {
             errors={otpState?.errors?.otp}
             className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-900 text-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
           />
+
+          <input type="hidden" name="sessionId" value={sessionId || ""} />
+
           {otpState?.error && (
             <p className="text-red-500 text-sm text-center">{otpState.error}</p>
           )}
@@ -117,6 +120,7 @@ export default function OtpForm() {
           </button>
         </form>
         <form action={resendAction} className="text-center">
+          <input type="hidden" name="sessionId" value={sessionId || ""} />
           {timeLeft > 0 ? (
             <p className="text-gray-400 text-sm">
               Resend OTP in{" "}

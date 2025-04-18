@@ -11,14 +11,13 @@ import { headers } from "next/headers";
 import { AppError } from "@/lib/appError";
 import { rateLimit } from "@/lib/rateLimit";
 import { ZodError } from "zod";
+import { redirect } from "next/navigation";
 
 const OTP_LENGTH = 6;
 const OTP_EXPIRATION = 300;
 
 type FormState = {
   error?: string;
-  success?: boolean;
-  sessionId?: string;
   errors?: {
     firstName?: string[];
     lastName?: string[];
@@ -102,7 +101,7 @@ export default async function Signup(
       return { error: "An error occurred while sending your OTP" };
     }
 
-    return { success: true, sessionId };
+    redirect(`/auth/otp?sessionId=${encodeURIComponent(sessionId)}`);
   } catch (error) {
     console.error("Signup error:", error);
     if (error instanceof ZodError) return { error: "Invalid input data" };

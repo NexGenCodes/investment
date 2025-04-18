@@ -13,7 +13,7 @@ import { headers } from "next/headers";
 type FormState =
   | {
       error?: string;
-      errors?: { otp?: string[] };
+      errors?: { otp?: string[]; session?: string[] };
       success?: boolean;
     }
   | undefined;
@@ -35,16 +35,14 @@ export default async function OtpAction(
 ): Promise<FormState> {
   const validatedFields = await otpSchema.safeParseAsync({
     otp: formData.get("otp"),
+    sessionId: formData.get("sessionId"),
   });
 
   if (!validatedFields.success) {
     return { errors: validatedFields.error.flatten().fieldErrors };
   }
 
-  const sessionId = (await headers()).get("X-Session-Id");
-  if (!sessionId) {
-    return { error: "Session not found. Please try signing up again." };
-  }
+  const sessionId = validatedFields.data.sessionId;
 
   // Rate limit OTP attempts (5 attempts/minute/sessionId)
   const rateLimitKey = `rate:otp:${sessionId}`;

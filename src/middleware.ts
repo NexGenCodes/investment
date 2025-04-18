@@ -11,9 +11,10 @@ const protectedRoutes = ["/dashboard", "/investment", "/referral"];
 
 export default auth(async (req: NextRequest) => {
   const path = req.nextUrl.pathname;
-  const sessionId = req.headers.get("X-Session-Id");
   const isLoggedIn = !!req.auth;
-  const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    path.startsWith(route)
+  );
   const isPublicRoute = publicRoutes.some((route) => path.startsWith(route));
   const redirects = {
     public: "/dashboard",
@@ -36,14 +37,15 @@ export default auth(async (req: NextRequest) => {
     if (isLoggedIn) {
       return NextResponse.next();
     }
-
-    // Check for X-Session-Id header
+    const sessionId = req.nextUrl.searchParams.get("sessionId");
     if (!sessionId) {
       return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
     }
 
     // Validate sessionId against node-cache
-    const sessionData = getFromCache<{ iv: string; encrypted: string }>(`signup:${sessionId}`);
+    const sessionData = getFromCache<{ iv: string; encrypted: string }>(
+      `signup:${sessionId}`
+    );
     if (!sessionData) {
       return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
     }

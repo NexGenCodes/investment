@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import InputField from "../ui/input";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import SelectInput from "../ui/select";
 import { countries } from "@/lib/country";
 import Signup from "@/actions/signup";
@@ -16,19 +15,7 @@ export default function SignUpForm() {
     sessionId: undefined,
     errors: {},
   });
-
   const router = useRouter();
-
-  useEffect(() => {
-    if (state?.success) {
-      toast.success("otp sent  successfully");
-    }
-
-    if (state?.sessionId) {
-      localStorage.setItem("session-id", state.sessionId);
-      router.push("/auth/otp");
-    }
-  }, [state, router]);
 
   return (
     <div className="w-full max-w-md px-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">

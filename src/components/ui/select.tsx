@@ -2,7 +2,12 @@
 
 import { cn } from "@/lib/utils";
 import { forwardRef, useState } from "react";
-import Select, { SingleValue, GroupBase, SelectInstance, StylesConfig } from "react-select";
+import Select, {
+  SingleValue,
+  GroupBase,
+  SelectInstance,
+  StylesConfig,
+} from "react-select";
 
 interface SelectOption {
   value: string;
@@ -136,6 +141,8 @@ const SelectInput = forwardRef<
           name={selectName}
           isSearchable
           isClearable
+          instanceId={selectName}
+          inputId={`${selectName}-input`}
           isDisabled={disabled}
           classNamePrefix="react-select"
           className={cn(

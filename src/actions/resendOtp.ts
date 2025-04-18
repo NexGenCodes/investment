@@ -7,12 +7,11 @@ import { decrypt, encrypt } from "@/lib/encrypt";
 import { rateLimit } from "@/lib/rateLimit";
 import { otp } from "@/lib/utils";
 import { SignUpType } from "@/types/authSchema";
-import { headers } from "next/headers";
 
 type FormState = {
   error?: string;
   success?: boolean;
-};
+}| undefined;
 
 type SessionData = {
   iv: string;
@@ -28,8 +27,15 @@ type EncryptedData = {
 const OTP_LENGTH = 6;
 const OTP_EXPIRATION = 300; // 5 minutes
 
-export default async function resendOtpAction(): Promise<FormState> {
-  const sessionId = (await headers()).get("X-Session-Id");
+export default async function resendOtpAction(
+  state: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const validatedFields = formData.get("sessionId");
+  if (!validatedFields || validatedFields === "") {
+    return { error: "Session ID is required." };
+  }
+  const sessionId = validatedFields;
   if (!sessionId) {
     return { error: "Session not found. Please try signing up again." };
   }
