@@ -1,7 +1,6 @@
 import { countries } from "@/lib/country";
 import { object, string, z } from "zod";
 
-
 const password = string()
   .min(8, { message: "Password must be at least 8 characters long." })
   .regex(/[a-zA-Z]/, { message: " Password must contain at least one letter." })
@@ -26,7 +25,7 @@ const state = string({
   required_error: "State is required",
 })
   .min(2, "State is required")
-  .max(32, "State must be less than 32 characters")
+  .max(32, "State must be less than 32 characters");
 
 export const signInSchema = object({
   email: email,
@@ -37,7 +36,10 @@ export const signUpSchema = object({
   email: email,
   password: password,
   confirmPassword: password,
-  referralCode: string().length(8, "Referral code must be exactly 8 characters long").optional(),
+  nationality: nationality,
+  referralCode: string()
+    .length(8, "Referral code must be exactly 8 characters long")
+    .optional(),
   firstName: string({ required_error: "First name is required" })
     .min(2, "First name is required")
     .max(32, "First name must be less than 32 characters"),
@@ -57,13 +59,15 @@ export const changePwdSchema = object({
   currentPassword: password,
   newPassword: password,
   confirmPassword: password,
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "New passwords do not match",
-  path: ["confirmPassword"],
-}).refine((data) => data.currentPassword === data.newPassword, {
-  message: "New password cannot be the same as the current password",
-  path: ["newPassword"],
-});
+})
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "New passwords do not match",
+    path: ["confirmPassword"],
+  })
+  .refine((data) => data.currentPassword === data.newPassword, {
+    message: "New password cannot be the same as the current password",
+    path: ["newPassword"],
+  });
 
 export const updateSchema = object({
   firstName: string()

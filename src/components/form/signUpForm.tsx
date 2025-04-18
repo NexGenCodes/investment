@@ -1,14 +1,34 @@
 "use client";
 
-import Signup from "@/actions/signup";
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import InputField from "../ui/input";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import SelectInput from "../ui/select";
+import { countries } from "@/lib/country";
+import Signup from "@/actions/signup";
 
 export default function SignUpForm() {
-  const [error, Action, isPending] = useActionState(Signup, undefined);
+  const [state, Action, isPending] = useActionState(Signup, {
+    error: undefined,
+    success: undefined,
+    sessionId: undefined,
+    errors: {},
+  });
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (state?.success) {
+      toast.success("otp sent  successfully");
+    }
+
+    if (state?.sessionId) {
+      localStorage.setItem("session-id", state.sessionId);
+      router.push("/auth/otp");
+    }
+  }, [state, router]);
 
   return (
     <div className="w-full max-w-md px-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
@@ -20,14 +40,14 @@ export default function SignUpForm() {
           name="firstName"
           label="First Name"
           required
-          errors={error?.errors?.firstName}
+          errors={state?.errors?.firstName}
           placeholder="Enter your firstName"
         />
         <InputField
           name="lastName"
           label="Last Name"
           required
-          errors={error?.errors?.lastName}
+          errors={state?.errors?.lastName}
           placeholder="Enter your lastName"
         />
         <InputField
@@ -35,16 +55,23 @@ export default function SignUpForm() {
           type="email"
           label="Email"
           required
-          errors={error?.errors?.email}
+          errors={state?.errors?.email}
           placeholder="Enter your email"
         />
+
+        <SelectInput
+          name="nationality"
+          list={countries}
+          errors={state?.errors?.nationality}
+        />
+
         <InputField
           name="password"
           label="Password"
           required
           type="password"
           icon="password"
-          errors={error?.errors?.password}
+          errors={state?.errors?.password}
           placeholder="Enter your password"
         />
         <InputField
@@ -53,7 +80,7 @@ export default function SignUpForm() {
           required
           type="password"
           icon="password"
-          errors={error?.errors?.confirmPassword}
+          errors={state?.errors?.confirmPassword}
           placeholder="Confirm your password"
         />
         <InputField
@@ -61,12 +88,12 @@ export default function SignUpForm() {
           label="Referral Code"
           required={false}
           type="text"
-          errors={error?.errors?.referralCode}
+          errors={state?.errors?.referralCode}
           placeholder="Enter referral code (optional)"
         />
 
-        {error?.message && (
-          <p className="text-red-500 text-xs ml-2">{error.message}</p>
+        {state?.error && (
+          <p className="text-red-500 text-xs ml-2">{state.error}</p>
         )}
         <button
           type="submit"

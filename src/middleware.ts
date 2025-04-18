@@ -1,27 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
+import { getFromCache } from "./lib/cache";
+import { decrypt } from "./lib/encrypt";
 
 const { auth } = NextAuth(authConfig);
 
-const publicRoutes = ["/auth/login", "/auth/signup", "/auth/otp"];
+const publicRoutes = ["/auth/login", "/auth/register", "/auth/otp"];
 const protectedRoutes = ["/dashboard", "/investment", "/referral"];
 
-const middleware = auth(async (req: NextRequest) => {
-  const otpEmail = req.cookies.get("otp_session")?.value; 
+export default auth(async (req: NextRequest) => {
   const path = req.nextUrl.pathname;
-  const isLoggedIn = !!req.auth; // req.auth is populated by NextAuth
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    path.startsWith(route)
-  );
+  const sessionId = req.headers.get("X-Session-Id");
+  const isLoggedIn = !!req.auth;
+  const isProtectedRoute = protectedRoutes.some((route) => path.startsWith(route));
   const isPublicRoute = publicRoutes.some((route) => path.startsWith(route));
   const redirects = {
     public: "/dashboard",
     protected: "/auth/login",
   };
 
-  // Redirect authenticated users away from public routes
-  if (isPublicRoute && isLoggedIn) {
+  // Redirect authenticated users away from public routes (except /auth/otp)
+  if (isPublicRoute && isLoggedIn && !path.startsWith("/auth/otp")) {
     return NextResponse.redirect(new URL(redirects.public, req.nextUrl));
   }
 
@@ -30,15 +30,35 @@ const middleware = auth(async (req: NextRequest) => {
     return NextResponse.redirect(new URL(redirects.protected, req.nextUrl));
   }
 
-  // Redirect unauthenticated users away from /auth/otp unless they have otp_email cookie
-  if (path.startsWith("/auth/otp") && !isLoggedIn && !otpEmail) {
-    return NextResponse.redirect(new URL(redirects.protected, req.nextUrl));
+  // Restrict /auth/otp to users with a valid signup session
+  if (path.startsWith("/auth/otp")) {
+    // Allow authenticated users to access /auth/otp (optional, based on your flow)
+    if (isLoggedIn) {
+      return NextResponse.next();
+    }
+
+    // Check for X-Session-Id header
+    if (!sessionId) {
+      return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
+    }
+
+    // Validate sessionId against node-cache
+    const sessionData = getFromCache<{ iv: string; encrypted: string }>(`signup:${sessionId}`);
+    if (!sessionData) {
+      return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
+    }
+
+    try {
+      decrypt(sessionData.encrypted, sessionData.iv); // Ensure valid encryption
+      return NextResponse.next(); // Allow access to /auth/otp
+    } catch (error) {
+      console.error("Middleware error:", error);
+      return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
+    }
   }
 
   return NextResponse.next();
 });
-
-export default middleware;
 
 export const config = {
   matcher: [
