@@ -54,7 +54,7 @@ export default async function resendOtpAction(): Promise<FormState> {
   }
 
   // Decrypt session data
-  const decryptedData = decrypt(
+  const decryptedData = await decrypt(
     sessionData.encrypted,
     sessionData.iv
   ) as EncryptedData | null;
@@ -71,7 +71,7 @@ export default async function resendOtpAction(): Promise<FormState> {
   }
 
   // Update session data with new OTP
-  const updatedSessionData = encrypt({
+  const updatedSessionData = await encrypt({
     userData: decryptedData.userData,
     otp: newOtp,
     userAgent: decryptedData.userAgent,

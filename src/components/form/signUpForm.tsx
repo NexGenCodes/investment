@@ -1,14 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import InputField from "../ui/input";
 import SelectInput from "../ui/select";
 import { countries } from "@/lib/country";
 import Signup from "@/actions/signup";
+import { encrypt } from "@/lib/encrypt";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
   const [state, Action, isPending] = useActionState(Signup, undefined);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function handleSession() {
+      if (state?.sessionId) {
+        const encrypted = await encrypt(state.sessionId);
+        if (encrypted) {
+          sessionStorage.setItem("x-sessionId", JSON.stringify(encrypted));
+          setTimeout(
+            () => sessionStorage.removeItem("x-session"),
+            5 * 60 * 1000
+          );
+          router.push("/auth/otp");
+        } else {
+          throw new Error("encryption failed");
+        }
+      }
+    }
+    handleSession();
+  }, [state?.sessionId, router]);
 
   return (
     <div className="w-full max-w-md px-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">

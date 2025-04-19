@@ -27,18 +27,10 @@ type EncryptedData = {
 };
 
 export default async function OtpAction(_State: FormState, formData: FormData) {
-  const headersList = await headers();
-  const sessionId = headersList.get("x-session-id");
-
-  if (!sessionId) {
-    return {
-      error: "Session ID is missing. Please try signing up again.",
-    };
-  }
-
   // Validate OTP input
   const validatedFields = await otpSchema.safeParseAsync({
     otp: formData.get("otp"),
+    session: formData.get("sessionId"),
   });
 
   if (!validatedFields.success) {
@@ -49,7 +41,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Rate limit OTP attempts
-  const rateLimitKey = `rate:otp:${sessionId}`;
+  const rateLimitKey = `rate:otp:${validatedFields.data.sessionId}`;
   const isRateLimited = await rateLimit(rateLimitKey, 5, 60);
   if (!isRateLimited) {
     return {
@@ -59,7 +51,9 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Retrieve session data from cache
-  const sessionData = getFromCache<SessionData>(`signup:${sessionId}`);
+  const sessionData = getFromCache<SessionData>(
+    `signup:${validatedFields.data.sessionId}`
+  );
   if (!sessionData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
@@ -68,7 +62,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Decrypt session data
-  const decryptedData = decrypt(
+  const decryptedData = await decrypt(
     sessionData.encrypted,
     sessionData.iv
   ) as EncryptedData | null;
@@ -81,13 +75,13 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
 
   // Validate OTP
   if (decryptedData.otp !== validatedFields.data.otp) {
-    const failedAttemptsKey = `failed_attempts_${sessionId}`;
+    const failedAttemptsKey = `failed_attempts_${validatedFields.data.sessionId}`;
     const failedAttempts = (getFromCache<number>(failedAttemptsKey) || 0) + 1;
 
     setToCache(failedAttemptsKey, failedAttempts, 300); // 5-minute TTL
 
     if (failedAttempts >= 5) {
-      cleanUpCache(sessionId, failedAttemptsKey);
+      cleanUpCache(validatedFields.data.sessionId, failedAttemptsKey);
       return {
         error: "Too many incorrect attempts. Please try signing up again.",
 
@@ -99,7 +93,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Optional: Validate user agent
-  const userAgent = headersList.get("user-agent") || "unknown";
+  const userAgent = (await headers()).get("user-agent") || "unknown";
   if (decryptedData.userAgent !== userAgent) {
     console.warn("User agent mismatch:", {
       stored: decryptedData.userAgent,
@@ -121,7 +115,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
     referralCode: decryptedData.userData.referralCode,
   });
   if (!user) {
-    cleanUpCache(sessionId);
+    cleanUpCache(validatedFields.data.sessionId);
     return {
       error: "An error occurred while creating your account.",
       errors: undefined,
@@ -129,7 +123,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Clean up cache and sign in user
-  cleanUpCache(sessionId);
+  cleanUpCache(validatedFields.data.sessionId);
   await signIn("credentials", {
     redirect: true,
     redirectTo: "/dashboard",

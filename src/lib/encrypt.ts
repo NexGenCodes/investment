@@ -1,9 +1,11 @@
+"use server";
+
 import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
 
 const algorithm = "aes-256-cbc";
-const key = Buffer.from(process.env.ENCRYPTION_KEY!, "hex");
+const key = Buffer.from(process.env.ENCRYPTION_KEY || "", "hex");
 
-export function encrypt(data: unknown) {
+export async function encrypt(data: unknown) {
   try {
     const iv = randomBytes(16);
     const cipher = createCipheriv(algorithm, key, iv);
@@ -16,7 +18,10 @@ export function encrypt(data: unknown) {
   }
 }
 
-export function decrypt(encrypted: string, iv: string): unknown | null {
+export async function decrypt(
+  encrypted: string,
+  iv: string
+): Promise<unknown | null> {
   try {
     const decipher = createDecipheriv(algorithm, key, Buffer.from(iv, "hex"));
     let decrypted = decipher.update(encrypted, "hex", "utf8");

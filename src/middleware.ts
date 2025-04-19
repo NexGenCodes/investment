@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
-import { getFromCache } from "./lib/cache";
-// import { getFromCache } from "./lib/cache";
+
 
 const { auth } = NextAuth(authConfig);
 
@@ -27,23 +26,6 @@ export default auth(async (req: NextRequest) => {
 
   if (isProtectedRoute && !isLoggedIn) {
     return NextResponse.redirect(new URL(redirects.protected, req.nextUrl));
-  }
-
-  if (path.startsWith("/auth/otp")) {
-    const sessionId = req.headers.get("x-session-id");
-    if (!sessionId) {
-      return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
-    }
-
-    // Validate sessionId against node-cache
-    const sessionData = getFromCache<{ iv: string; encrypted: string }>(
-      `signup:${sessionId}`
-    );
-    if (!sessionData) {
-      return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
-    }
-
-    return NextResponse.next();
   }
 
   return NextResponse.next();

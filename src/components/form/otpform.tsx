@@ -6,6 +6,8 @@ import InputField from "../ui/input";
 import OtpAction from "@/actions/otp";
 import resendOtpAction from "@/actions/resendOtp";
 import { toast } from "react-hot-toast";
+import { decrypt } from "@/lib/encrypt";
+import { useRouter } from "next/navigation";
 
 const TIMER_DURATION = 100;
 
@@ -21,6 +23,8 @@ export default function OtpForm() {
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
+  const [sessionID, setSessionID] = useState("");
+  const router = useRouter();
 
   // Start the OTP resend timer
   const startTimer = useCallback(() => {
@@ -39,13 +43,32 @@ export default function OtpForm() {
     }, 1000);
   }, []);
 
-  // Cleanup timer on component unmount
+  const sessionIDSet = useCallback(async () => {
+    const encryptedSession = sessionStorage.getItem("x-sessionId");
+    if (encryptedSession) {
+      const { iv, encrypted } = JSON.parse(encryptedSession);
+      const sessionId = await decrypt(encrypted, iv);
+      if (sessionId) {
+        setSessionID(sessionId as string);
+      } else {
+        console.log(sessionID)
+        router.push("/auth/register");
+      }
+    } else {
+      console.log(encryptedSession)
+      router.push("/auth/register");
+    }
+  }, [router]);
+
   useEffect(() => {
+    sessionIDSet().catch((error) => {
+      console.error({ message: "error getting the sessionid", error });
+    });
     startTimer();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [startTimer]);
+  }, [sessionIDSet, startTimer]);
 
   // Handle resend OTP success or error
   useEffect(() => {
@@ -76,6 +99,13 @@ export default function OtpForm() {
             errors={otpState?.errors?.otp}
             className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-900 text-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
           />
+          <input
+            name="sessionId"
+            required
+            hidden
+            defaultValue={sessionID}
+            readOnly
+          />
           {otpState?.error && (
             <p className="text-red-500 text-sm text-center">{otpState.error}</p>
           )}
@@ -88,6 +118,13 @@ export default function OtpForm() {
           </button>
         </form>
         <form action={resendAction} className="text-center">
+          <input
+            name="sessionId"
+            required
+            hidden
+            defaultValue={sessionID}
+            readOnly
+          />
           {timeLeft > 0 ? (
             <p className="text-gray-400 text-sm">
               Resend OTP in{" "}
