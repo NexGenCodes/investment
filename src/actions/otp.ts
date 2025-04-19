@@ -44,15 +44,17 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
+      error: undefined,
     };
   }
 
   // Rate limit OTP attempts
   const rateLimitKey = `rate:otp:${sessionId}`;
   const isRateLimited = await rateLimit(rateLimitKey, 5, 60);
-  if (isRateLimited) {
+  if (!isRateLimited) {
     return {
       error: "Too many attempts. Please try again later.",
+      errors: undefined,
     };
   }
 
@@ -61,6 +63,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   if (!sessionData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
+      errors: undefined,
     };
   }
 
@@ -72,6 +75,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   if (!decryptedData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
+      errors: undefined,
     };
   }
 
@@ -86,6 +90,8 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
       cleanUpCache(sessionId, failedAttemptsKey);
       return {
         error: "Too many incorrect attempts. Please try signing up again.",
+
+        errors: undefined,
       };
     }
 
@@ -99,7 +105,10 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
       stored: decryptedData.userAgent,
       current: userAgent,
     });
-    // Optionally skip this check or log for monitoring
+    return {
+      error: "User agent mismatch. Please try signing up again.",
+      errors: undefined,
+    };
   }
 
   // Create user
@@ -115,6 +124,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
     cleanUpCache(sessionId);
     return {
       error: "An error occurred while creating your account.",
+      errors: undefined,
     };
   }
 

@@ -25,9 +25,9 @@ export default async function Signin(State: FormState, formData: FormData) {
 
   // If any form fields are invalid, return early
   if (!validatedFields.success) {
-    console.log(validatedFields.error.flatten().fieldErrors);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
+      message:undefined,
     };
   }
 
@@ -36,7 +36,9 @@ export default async function Signin(State: FormState, formData: FormData) {
   const user = await GetUserFromDb({ email });
   if (!user) {
     return {
-      message: "user does not exist ",
+      message: "user does not exist",
+      errors: undefined,
+      
     };
   }
 
@@ -45,6 +47,7 @@ export default async function Signin(State: FormState, formData: FormData) {
   if (!pwdMatch) {
     return {
       message: "password does not match",
+      errors: undefined,
     };
   }
 

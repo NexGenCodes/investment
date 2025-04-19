@@ -21,14 +21,11 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
   const session = await auth();
   const email = session?.user?.email;
   if (!email) {
-    return { message: "You must be logged in to update your profile." };
+    return {
+      message: "You must be logged in to update your profile.",
+      errors: undefined,
+    };
   }
-
-  console.log({
-    confirmPassword: formData.get("confirmPassword"),
-    currentPassword: formData.get("currentPassword"),
-    newPassword: formData.get("newPassword"),
-  });
 
   const validatedFields = await changePwdSchema.safeParseAsync({
     confirmPassword: formData.get("confirmPassword"),
@@ -40,6 +37,7 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
+      message: undefined,
     };
   }
 
@@ -48,6 +46,7 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
   if (!isUserExist) {
     return {
       message: "user does not exist ",
+      errors: undefined,
     };
   }
 
@@ -59,6 +58,7 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
   if (!isPasswordMatch) {
     return {
       message: "password does not match",
+      errors: undefined,
     };
   }
 
@@ -72,6 +72,7 @@ export default async function UpdatePwd(state: FormState, formData: FormData) {
   if (!updatedUser) {
     return {
       message: "An error occurred while updating your profile.",
+      errors: undefined,
     };
   }
 

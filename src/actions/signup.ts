@@ -48,6 +48,7 @@ export default async function Signup(_State: FormState, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
+      error: undefined,
     };
   }
 
@@ -56,13 +57,16 @@ export default async function Signup(_State: FormState, formData: FormData) {
   // Check if user exists
   const isUserExist = await GetUserFromDb({ email });
   if (isUserExist) {
-    return { error: "User already exists" };
+    return { error: "User already exists", errors: undefined };
   }
 
   // Rate limit signup attempts
   const limit = await rateLimit(`rate:signup:${email}`, 5, 60);
-  if (limit) {
-    return { error: "Too many signup attempts. Please try again later." };
+  if (!limit) {
+    return {
+      error: "Too many signup attempts. Please try again later.",
+      errors: undefined,
+    };
   }
 
   // Generate unique session ID
@@ -75,7 +79,10 @@ export default async function Signup(_State: FormState, formData: FormData) {
   const otpCode = otp(OTP_LENGTH);
 
   if (!otpCode) {
-    return { error: "An error occurred while generating your OTP" };
+    return {
+      error: "An error occurred while generating your OTP",
+      errors: undefined,
+    };
   }
 
   // Hash password
@@ -90,7 +97,10 @@ export default async function Signup(_State: FormState, formData: FormData) {
   });
 
   if (!sessionData) {
-    return { error: "An error occurred while encrypting your data" };
+    return {
+      error: "An error occurred while encrypting your data",
+      errors: undefined,
+    };
   }
 
   const isCached = setToCache(
@@ -100,13 +110,19 @@ export default async function Signup(_State: FormState, formData: FormData) {
   );
 
   if (!isCached) {
-    return { error: "An error occurred while creating your account cache" };
+    return {
+      error: "An error occurred while creating your account cache",
+      errors: undefined,
+    };
   }
 
   // Send OTP
   const isSent = await sendOtp(email, otpCode);
   if (!isSent) {
-    return { error: "An error occurred while sending your OTP" };
+    return {
+      error: "An error occurred while sending your OTP",
+      errors: undefined,
+    };
   }
 
   const response = NextResponse.redirect("/auth/otp");
