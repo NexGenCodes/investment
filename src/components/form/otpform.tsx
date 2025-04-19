@@ -51,11 +51,11 @@ export default function OtpForm() {
       if (sessionId) {
         setSessionID(sessionId as string);
       } else {
-        console.log(sessionId)
+        console.log(sessionId);
         router.push("/auth/register");
       }
     } else {
-      console.log(encryptedSession)
+      console.log(encryptedSession);
       router.push("/auth/register");
     }
   }, [router]);
@@ -74,12 +74,19 @@ export default function OtpForm() {
   useEffect(() => {
     if (resendState?.error) {
       toast.error(resendState.error);
+      if (
+        resendState.error.includes(
+          "You have exceeded the maximum number of OTP resend attempts. Please try again later."
+        )
+      ) {
+        router.push("/auth/register");
+      }
     }
     if (resendState?.success) {
       toast.success("New OTP sent successfully");
       startTimer();
     }
-  }, [resendState, startTimer]);
+  }, [resendState, router, startTimer]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
