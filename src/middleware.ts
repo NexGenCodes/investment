@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import { getFromCache } from "./lib/cache";
+// import { getFromCache } from "./lib/cache";
 
 const { auth } = NextAuth(authConfig);
 
-const publicRoutes = ["/auth/login", "/auth/register"];
+const publicRoutes = ["/auth/login", "/auth/register", "/auth/otp"];
 const protectedRoutes = ["/dashboard", "/investment", "/referral"];
 
 export default auth(async (req: NextRequest) => {
@@ -20,22 +21,16 @@ export default auth(async (req: NextRequest) => {
     protected: "/auth/login",
   };
 
-  // Redirect authenticated users away from public routes (except /auth/otp)
   if (isPublicRoute && isLoggedIn) {
     return NextResponse.redirect(new URL(redirects.public, req.nextUrl));
   }
 
-  // Redirect unauthenticated users away from protected routes
   if (isProtectedRoute && !isLoggedIn) {
     return NextResponse.redirect(new URL(redirects.protected, req.nextUrl));
   }
 
-  // Restrict /auth/otp to users with a valid signup session
   if (path.startsWith("/auth/otp")) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL(redirects.public, req.nextUrl));
-    }
-    const sessionId = req.nextUrl.searchParams.get("sessionId");
+    const sessionId = req.headers.get("x-session-id");
     if (!sessionId) {
       return NextResponse.redirect(new URL("/auth/register", req.nextUrl));
     }

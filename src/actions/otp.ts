@@ -1,11 +1,9 @@
 "use server";
 
-import { AppError } from "@/lib/appError";
 import { signIn } from "@/lib/auth";
 import { getFromCache, deleteFromCache, setToCache } from "@/lib/cache";
 import { CreateUser } from "@/lib/db";
 import { decrypt } from "@/lib/encrypt";
-import { Hash } from "@/lib/password";
 import { rateLimit } from "@/lib/rateLimit";
 import { otpSchema, SignUpType } from "@/types/authSchema";
 import { headers } from "next/headers";
@@ -14,7 +12,6 @@ type FormState =
   | {
       error?: string;
       errors?: { otp?: string[]; session?: string[] };
-      success?: boolean;
     }
   | undefined;
 
@@ -29,32 +26,37 @@ type EncryptedData = {
   userAgent: string;
 };
 
-export default async function OtpAction(
-  state: FormState,
-  formData: FormData
-): Promise<FormState> {
+export default async function OtpAction(_State: FormState, formData: FormData) {
+  const headersList = await headers();
+  const sessionId = headersList.get("x-session-id");
+
+  if (!sessionId) {
+    return {
+      error: "Session ID is missing. Please try signing up again.",
+    };
+  }
+
+  // Validate OTP input
   const validatedFields = await otpSchema.safeParseAsync({
     otp: formData.get("otp"),
-    sessionId: formData.get("sessionId"),
   });
 
   if (!validatedFields.success) {
-    return { errors: validatedFields.error.flatten().fieldErrors };
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
   }
 
-  const sessionId = validatedFields.data.sessionId;
-
-  // Rate limit OTP attempts (5 attempts/minute/sessionId)
+  // Rate limit OTP attempts
   const rateLimitKey = `rate:otp:${sessionId}`;
-  try {
-    await rateLimit(rateLimitKey, 5, 60);
-  } catch (error) {
-    if (error instanceof AppError) {
-      return { error: "Too many attempts. Please try again later." };
-    }
-    throw error;
+  const isRateLimited = await rateLimit(rateLimitKey, 5, 60);
+  if (isRateLimited) {
+    return {
+      error: "Too many attempts. Please try again later.",
+    };
   }
 
+  // Retrieve session data from cache
   const sessionData = getFromCache<SessionData>(`signup:${sessionId}`);
   if (!sessionData) {
     return {
@@ -63,36 +65,35 @@ export default async function OtpAction(
   }
 
   // Decrypt session data
-  let decryptedData: EncryptedData;
-  try {
-    decryptedData = decrypt(
-      sessionData.encrypted,
-      sessionData.iv
-    ) as EncryptedData;
-  } catch (error) {
-    console.error("Decryption error:", error);
-    return { error: "Invalid session data. Please try signing up again." };
+  const decryptedData = decrypt(
+    sessionData.encrypted,
+    sessionData.iv
+  ) as EncryptedData | null;
+  if (!decryptedData) {
+    return {
+      error: "Session expired or invalid. Please try signing up again.",
+    };
   }
 
   // Validate OTP
   if (decryptedData.otp !== validatedFields.data.otp) {
-    // Increment failed attempts
     const failedAttemptsKey = `failed_attempts_${sessionId}`;
     const failedAttempts = (getFromCache<number>(failedAttemptsKey) || 0) + 1;
+
     setToCache(failedAttemptsKey, failedAttempts, 300); // 5-minute TTL
+
     if (failedAttempts >= 5) {
-      deleteFromCache(`signup:${sessionId}`);
-      deleteFromCache(failedAttemptsKey);
-      deleteFromCache(`last_otp_${sessionId}`);
+      cleanUpCache(sessionId, failedAttemptsKey);
       return {
         error: "Too many incorrect attempts. Please try signing up again.",
       };
     }
+
     return { error: "Invalid OTP. Please try again." };
   }
 
-  // Optional: Relaxed user agent validation
-  const userAgent = (await headers()).get("user-agent") || "unknown";
+  // Optional: Validate user agent
+  const userAgent = headersList.get("user-agent") || "unknown";
   if (decryptedData.userAgent !== userAgent) {
     console.warn("User agent mismatch:", {
       stored: decryptedData.userAgent,
@@ -102,32 +103,33 @@ export default async function OtpAction(
   }
 
   // Create user
-  const hashedPassword = await Hash(decryptedData.userData.password);
   const user = await CreateUser({
     email: decryptedData.userData.email,
-    password: hashedPassword,
+    password: decryptedData.userData.password,
     firstName: decryptedData.userData.firstName,
     lastName: decryptedData.userData.lastName,
     nationality: decryptedData.userData.nationality,
     referralCode: decryptedData.userData.referralCode,
   });
-
   if (!user) {
-    // Clean up cache on failure
-    deleteFromCache(`signup:${sessionId}`);
-    deleteFromCache(`failed_attempts_${sessionId}`);
-    deleteFromCache(`last_otp_${sessionId}`);
-    return { error: "An error occurred while creating your account." };
+    cleanUpCache(sessionId);
+    return {
+      error: "An error occurred while creating your account.",
+    };
   }
 
-  // Clean up cache
-  deleteFromCache(`signup:${sessionId}`);
-  deleteFromCache(`failed_attempts_${sessionId}`);
-  deleteFromCache(`last_otp_${sessionId}`);
-
+  // Clean up cache and sign in user
+  cleanUpCache(sessionId);
   await signIn("credentials", {
     redirect: true,
     redirectTo: "/dashboard",
     ...user,
   });
+}
+
+// Helper function to clean up cache
+function cleanUpCache(sessionId: string, failedAttemptsKey?: string) {
+  deleteFromCache(`signup:${sessionId}`);
+  deleteFromCache(failedAttemptsKey || `failed_attempts_${sessionId}`);
+  deleteFromCache(`last_otp_${sessionId}`);
 }

@@ -1,17 +1,19 @@
 "use server";
 
+import { headers } from "next/headers";
 import { sendOtp } from "@/email/email";
-import { AppError } from "@/lib/appError";
 import { setToCache, getFromCache } from "@/lib/cache";
 import { decrypt, encrypt } from "@/lib/encrypt";
 import { rateLimit } from "@/lib/rateLimit";
 import { otp } from "@/lib/utils";
 import { SignUpType } from "@/types/authSchema";
 
-type FormState = {
-  error?: string;
-  success?: boolean;
-}| undefined;
+type FormState =
+  | {
+      error?: string;
+      success?: boolean;
+    }
+  | undefined;
 
 type SessionData = {
   iv: string;
@@ -27,28 +29,20 @@ type EncryptedData = {
 const OTP_LENGTH = 6;
 const OTP_EXPIRATION = 300; // 5 minutes
 
-export default async function resendOtpAction(
-  state: FormState,
-  formData: FormData
-): Promise<FormState> {
-  const validatedFields = formData.get("sessionId");
-  if (!validatedFields || validatedFields === "") {
-    return { error: "Session ID is required." };
-  }
-  const sessionId = validatedFields;
+export default async function resendOtpAction(): Promise<FormState> {
+  const headersList = await headers();
+  const sessionId = headersList.get("x-session-id");
   if (!sessionId) {
     return { error: "Session not found. Please try signing up again." };
   }
 
   // Rate limit resend attempts (3 attempts/5 minutes/sessionId)
-  const rateLimitKey = `rate:resend_otp:${sessionId}`;
-  try {
-    await rateLimit(rateLimitKey, 3, 300); // 3 attempts in 5 minutes
-  } catch (error) {
-    if (error instanceof AppError) {
-      return { error: "Too many resend attempts. Please try again later." };
-    }
-    throw error;
+  const limit = await rateLimit(`rate:resend_otp:${sessionId}`, 3, 300); // 3 attempts in 5 minutes
+  if (limit) {
+    return {
+      error:
+        "You have exceeded the maximum number of OTP resend attempts. Please try again later.",
+    };
   }
 
   // Get session data from cache
@@ -60,19 +54,21 @@ export default async function resendOtpAction(
   }
 
   // Decrypt session data
-  let decryptedData: EncryptedData;
-  try {
-    decryptedData = decrypt(
-      sessionData.encrypted,
-      sessionData.iv
-    ) as EncryptedData;
-  } catch (error) {
-    console.error("Decryption error:", error);
-    return { error: "Invalid session data. Please try signing up again." };
+  const decryptedData = decrypt(
+    sessionData.encrypted,
+    sessionData.iv
+  ) as EncryptedData | null;
+  if (!decryptedData) {
+    return {
+      error: "Session expired or invalid. Please try signing up again.",
+    };
   }
-
   // Generate new OTP
   const newOtp = otp(OTP_LENGTH);
+
+  if (!newOtp) {
+    return { error: "An error occurred while generating your OTP." };
+  }
 
   // Update session data with new OTP
   const updatedSessionData = encrypt({
@@ -80,6 +76,9 @@ export default async function resendOtpAction(
     otp: newOtp,
     userAgent: decryptedData.userAgent,
   });
+  if (!updatedSessionData) {
+    return { error: "An error occurred while updating your session." };
+  }
   const isCached = setToCache(
     `signup:${sessionId}`,
     updatedSessionData,
@@ -90,7 +89,14 @@ export default async function resendOtpAction(
   }
 
   // Store last OTP send time
-  setToCache(`last_otp_${sessionId}`, Date.now(), OTP_EXPIRATION);
+  const lastOtpSet = setToCache(
+    `last_otp_${sessionId}`,
+    Date.now(),
+    OTP_EXPIRATION
+  );
+  if (!lastOtpSet) {
+    return { error: "An error occurred while storing the last OTP send time." };
+  }
 
   // Send new OTP
   const isSent = await sendOtp(decryptedData.userData.email, newOtp);

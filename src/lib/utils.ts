@@ -5,10 +5,15 @@ export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
-export function otp(digits: number = 6): string {
-  const min = Math.pow(10, digits - 1);
-  const max = Math.pow(10, digits) - 1;
-  return Math.floor(min + Math.random() * (max - min + 1)).toString();
+export function otp(digits: number = 6) {
+  try {
+    const min = Math.pow(10, digits - 1);
+    const max = Math.pow(10, digits) - 1;
+    return Math.floor(min + Math.random() * (max - min + 1)).toString();
+  } catch (error) {
+    console.error("otp failed:", error);
+    return null;
+  }
 }
 
 export function debounce(func: () => void, wait: number) {

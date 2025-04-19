@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  useActionState,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useActionState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import InputField from "../ui/input";
 import OtpAction from "@/actions/otp";
 import resendOtpAction from "@/actions/resendOtp";
 import { toast } from "react-hot-toast";
-import { useRouter, useSearchParams } from "next/navigation";
 
 const TIMER_DURATION = 100;
 
@@ -27,65 +21,42 @@ export default function OtpForm() {
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("sessionId");
 
+  // Start the OTP resend timer
   const startTimer = useCallback(() => {
     setTimeLeft(TIMER_DURATION);
     if (timerRef.current) clearInterval(timerRef.current);
-    const interval = setInterval(() => {
+
+    timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
-        const next = prev - 1;
-        if (next <= 0) {
-          clearInterval(interval);
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
           timerRef.current = null;
+          return 0;
         }
-        return next;
+        return prev - 1;
       });
     }, 1000);
-    timerRef.current = interval;
   }, []);
 
+  // Cleanup timer on component unmount
   useEffect(() => {
-    if (!sessionId) {
-      router.push("/auth/signup");
-    } else {
-      startTimer();
-    }
+    startTimer();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [router, startTimer, sessionId]);
+  }, [startTimer]);
 
+  // Handle resend OTP success or error
   useEffect(() => {
-    if (otpState?.error) {
-      toast.error(otpState.error);
-      if (
-        otpState.error.includes("Session not found") ||
-        otpState.error.includes("Session expired") ||
-        otpState.error.includes("Too many incorrect attempts")
-      ) {
-        router.push("/auth/signup");
-      }
-    }
-    if (otpState?.success) {
-      toast.success("OTP verified successfully");
-    }
     if (resendState?.error) {
       toast.error(resendState.error);
-      if (
-        resendState.error.includes("Session not found") ||
-        resendState.error.includes("Session expired")
-      ) {
-        router.push("/auth/signup");
-      }
     }
     if (resendState?.success) {
       toast.success("New OTP sent successfully");
       startTimer();
     }
-  }, [otpState, resendState, router, startTimer]);
+  }, [resendState, startTimer]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
@@ -105,9 +76,6 @@ export default function OtpForm() {
             errors={otpState?.errors?.otp}
             className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-900 text-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
           />
-
-          <input type="hidden" name="sessionId" value={sessionId || ""} />
-
           {otpState?.error && (
             <p className="text-red-500 text-sm text-center">{otpState.error}</p>
           )}
@@ -120,7 +88,6 @@ export default function OtpForm() {
           </button>
         </form>
         <form action={resendAction} className="text-center">
-          <input type="hidden" name="sessionId" value={sessionId || ""} />
           {timeLeft > 0 ? (
             <p className="text-gray-400 text-sm">
               Resend OTP in{" "}

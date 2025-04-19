@@ -1,6 +1,5 @@
 "use server";
 import { randomUUID } from "crypto";
-import bcrypt from "bcrypt";
 import { sendOtp } from "@/email/email";
 import { getFromCache, setToCache } from "@/lib/cache";
 import { GetUserFromDb } from "@/lib/db";
@@ -9,7 +8,8 @@ import { otp } from "@/lib/utils";
 import { signUpSchema } from "@/types/authSchema";
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/rateLimit";
-import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
+import { Hash } from "@/lib/password";
 
 const OTP_LENGTH = 6;
 const OTP_EXPIRATION = 300;
@@ -30,10 +30,7 @@ type FormState =
     }
   | undefined;
 
-export default async function Signup(
-  _prevState: FormState,
-  formData: FormData
-) {
+export default async function Signup(_State: FormState, formData: FormData) {
   const validatedFields = await signUpSchema.safeParseAsync({
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
@@ -63,7 +60,10 @@ export default async function Signup(
   }
 
   // Rate limit signup attempts
-  await rateLimit(`rate:signup:${email}`, 5, 60);
+  const limit = await rateLimit(`rate:signup:${email}`, 5, 60);
+  if (limit) {
+    return { error: "Too many signup attempts. Please try again later." };
+  }
 
   // Generate unique session ID
   let sessionId = randomUUID();
@@ -74,8 +74,12 @@ export default async function Signup(
   // Generate OTP
   const otpCode = otp(OTP_LENGTH);
 
+  if (!otpCode) {
+    return { error: "An error occurred while generating your OTP" };
+  }
+
   // Hash password
-  const hashedPassword = await bcrypt.hash(validatedFields.data.password, 10);
+  const hashedPassword = await Hash(validatedFields.data.password);
 
   // Store user data in cache
   const userAgent = (await headers()).get("user-agent") || "unknown";
@@ -84,6 +88,11 @@ export default async function Signup(
     otp: otpCode,
     userAgent,
   });
+
+  if (!sessionData) {
+    return { error: "An error occurred while encrypting your data" };
+  }
+
   const isCached = setToCache(
     `signup:${sessionId}`,
     sessionData,
@@ -100,5 +109,6 @@ export default async function Signup(
     return { error: "An error occurred while sending your OTP" };
   }
 
-  redirect(`/auth/otp?sessionId=${encodeURIComponent(sessionId)}`);
+  const response = NextResponse.redirect("/auth/otp");
+  response.headers.set("x-session-id", sessionId);
 }

@@ -3,14 +3,12 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import InputField from "../ui/input";
-import { useRouter } from "next/navigation";
 import SelectInput from "../ui/select";
 import { countries } from "@/lib/country";
 import Signup from "@/actions/signup";
 
 export default function SignUpForm() {
   const [state, Action, isPending] = useActionState(Signup, undefined);
-  const router = useRouter();
 
   return (
     <div className="w-full max-w-md px-6 bg-gray-800 rounded-2xl shadow-lg border border-gray-700">
@@ -89,7 +87,6 @@ export default function SignUpForm() {
         Already have an account?
         <Link
           href="/auth/login"
-          onClick={() => setTimeout(() => router.refresh(), 1000)}
           className="text-blue-400 hover:text-yellow-400 hover:underline px-1"
         >
           Log in
