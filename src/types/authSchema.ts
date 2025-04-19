@@ -55,6 +55,9 @@ export const otpSchema = object({
   otp: string().length(6, "OTP must be exactly 4 characters long"),
   sessionId: string().min(1, "Session ID is required"),
 });
+export const resendOtpSchema = object({
+  sessionId: string().min(1, "Session ID is required"),
+});
 
 export const changePwdSchema = object({
   currentPassword: password,

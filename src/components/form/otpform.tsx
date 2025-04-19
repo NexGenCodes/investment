@@ -51,7 +51,7 @@ export default function OtpForm() {
       if (sessionId) {
         setSessionID(sessionId as string);
       } else {
-        console.log(sessionID)
+        console.log(sessionId)
         router.push("/auth/register");
       }
     } else {

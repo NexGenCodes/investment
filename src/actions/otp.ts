@@ -11,7 +11,7 @@ import { headers } from "next/headers";
 type FormState =
   | {
       error?: string;
-      errors?: { otp?: string[]; session?: string[] };
+      errors?: { otp?: string[]; sessionId?: string[] };
     }
   | undefined;
 
@@ -28,9 +28,10 @@ type EncryptedData = {
 
 export default async function OtpAction(_State: FormState, formData: FormData) {
   // Validate OTP input
+  console.log("start")
   const validatedFields = await otpSchema.safeParseAsync({
     otp: formData.get("otp"),
-    session: formData.get("sessionId"),
+    sessionId: formData.get("sessionId"),
   });
 
   if (!validatedFields.success) {
@@ -62,10 +63,10 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Decrypt session data
-  const decryptedData = await decrypt(
+  const decryptedData = (await decrypt(
     sessionData.encrypted,
     sessionData.iv
-  ) as EncryptedData | null;
+  )) as EncryptedData | null;
   if (!decryptedData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
