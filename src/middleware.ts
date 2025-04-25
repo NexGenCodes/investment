@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
-
+import { decrypt } from "./lib/encrypt";
+import { getFromCache } from "./lib/cache";
 
 const { auth } = NextAuth(authConfig);
 
@@ -18,6 +19,7 @@ export default auth(async (req: NextRequest) => {
   const redirects = {
     public: "/dashboard",
     protected: "/auth/login",
+    signup: "/auth/register",
   };
 
   if (isPublicRoute && isLoggedIn) {
@@ -26,6 +28,17 @@ export default auth(async (req: NextRequest) => {
 
   if (isProtectedRoute && !isLoggedIn) {
     return NextResponse.redirect(new URL(redirects.protected, req.nextUrl));
+  }
+
+  if (path.startsWith("/auth/otp")) {
+    const iv = req.nextUrl.searchParams.get("iv");
+    const encrypted = req.nextUrl.searchParams.get("encrypted");
+
+    // Redirect to signup if query parameters are missing
+    if (!iv || !encrypted) {
+      console.log("Missing Query Params. Redirecting to Signup...");
+      return NextResponse.redirect(new URL(redirects.signup, req.nextUrl));
+    }
   }
 
   return NextResponse.next();

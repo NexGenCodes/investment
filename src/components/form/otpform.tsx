@@ -6,10 +6,10 @@ import InputField from "../ui/input";
 import OtpAction from "@/actions/otp";
 import resendOtpAction from "@/actions/resendOtp";
 import { toast } from "react-hot-toast";
-import { decrypt } from "@/lib/encrypt";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { TIMER_DURATION } from "@/constants/globals";
 
-const TIMER_DURATION = 100;
+
 
 export default function OtpForm() {
   const [otpState, otpAction, otpPending] = useActionState(
@@ -23,8 +23,23 @@ export default function OtpForm() {
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
-  const [sessionID, setSessionID] = useState("");
+  const [iv, setIV] = useState("");
+  const [encrypted, setEncrypted] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Extract query parameters and set state
+  useEffect(() => {
+    const ivParam = searchParams.get("iv");
+    const encryptedParam = searchParams.get("encrypted");
+
+    if (ivParam && encryptedParam) {
+      setIV(ivParam);
+      setEncrypted(encryptedParam);
+    } else {
+      router.push("/auth/register");
+    }
+  }, [searchParams, router]);
 
   // Start the OTP resend timer
   const startTimer = useCallback(() => {
@@ -43,32 +58,12 @@ export default function OtpForm() {
     }, 1000);
   }, []);
 
-  const sessionIDSet = useCallback(async () => {
-    const encryptedSession = sessionStorage.getItem("x-sessionId");
-    if (encryptedSession) {
-      const { iv, encrypted } = JSON.parse(encryptedSession);
-      const sessionId = await decrypt(encrypted, iv);
-      if (sessionId) {
-        setSessionID(sessionId as string);
-      } else {
-        console.log(sessionId);
-        router.push("/auth/register");
-      }
-    } else {
-      console.log(encryptedSession);
-      router.push("/auth/register");
-    }
-  }, [router]);
-
   useEffect(() => {
-    sessionIDSet().catch((error) => {
-      console.error({ message: "error getting the sessionid", error });
-    });
     startTimer();
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [sessionIDSet, startTimer]);
+  }, [startTimer]);
 
   // Handle resend OTP success or error
   useEffect(() => {
@@ -89,7 +84,13 @@ export default function OtpForm() {
   }, [resendState, router, startTimer]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="flex flex-col justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4">
+      <button
+        onClick={() => router.push("/auth/register")}
+        className="py-2 my-4 w-3/12  rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold  "
+      >
+        back
+      </button>
       <div className="space-y-6 max-w-md w-full bg-gray-800 p-8 rounded-2xl shadow-lg">
         <h1 className="text-3xl font-extrabold text-center text-yellow-400 uppercase tracking-wide">
           Verify OTP
@@ -106,11 +107,12 @@ export default function OtpForm() {
             errors={otpState?.errors?.otp}
             className="w-full px-4 py-3 rounded-lg border border-gray-700 bg-gray-900 text-white focus:ring-2 focus:ring-yellow-400 focus:outline-none"
           />
+          <input name="iv" required hidden defaultValue={iv} readOnly />
           <input
-            name="sessionId"
+            name="encrypted"
             required
             hidden
-            defaultValue={sessionID}
+            defaultValue={encrypted}
             readOnly
           />
           {otpState?.error && (
@@ -125,11 +127,12 @@ export default function OtpForm() {
           </button>
         </form>
         <form action={resendAction} className="text-center">
+          <input name="iv" required hidden defaultValue={iv} readOnly />
           <input
-            name="sessionId"
+            name="encrypted"
             required
             hidden
-            defaultValue={sessionID}
+            defaultValue={encrypted}
             readOnly
           />
           {timeLeft > 0 ? (
@@ -150,9 +153,6 @@ export default function OtpForm() {
             >
               {resendPending ? "Resending..." : "Resend OTP"}
             </button>
-          )}
-          {resendState?.error && (
-            <p className="text-red-500 text-sm mt-2">{resendState.error}</p>
           )}
         </form>
       </div>

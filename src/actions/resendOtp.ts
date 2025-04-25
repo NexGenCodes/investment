@@ -1,5 +1,6 @@
 "use server";
 
+import { OTP_LENGTH, OTP_TTL } from "@/constants/globals";
 import { sendOtp } from "@/email/email";
 import { setToCache, getFromCache } from "@/lib/cache";
 import { decrypt, encrypt } from "@/lib/encrypt";
@@ -10,8 +11,8 @@ import { resendOtpSchema, SignUpType } from "@/types/authSchema";
 type FormState =
   | {
       error?: string;
+      errors?: { iv?: string[]; encrypted?: string[] };
       success?: boolean;
-      errors?: { sessionId?: string[] };
     }
   | undefined;
 
@@ -26,16 +27,13 @@ type EncryptedData = {
   userAgent: string;
 };
 
-const OTP_LENGTH = 6;
-const OTP_EXPIRATION = 300; // 5 minutes
-
 export default async function resendOtpAction(
   _state: FormState,
   formData: FormData
 ): Promise<FormState> {
-  console.log(formData.get("sessionId"));
   const validatedFields = await resendOtpSchema.safeParseAsync({
-    sessionId: formData.get("sessionId"),
+    iv: formData.get("iv"),
+    encrypted: formData.get("encrypted"),
   });
 
   if (!validatedFields.success) {
@@ -45,12 +43,18 @@ export default async function resendOtpAction(
       success: undefined,
     };
   }
+  const { iv, encrypted } = validatedFields.data;
+
+  const sessionId = await decrypt<string>(encrypted, iv);
+  if (!sessionId) {
+    return {
+      errors: undefined,
+      error: "invalid session id ",
+      success: undefined,
+    };
+  }
   // Rate limit resend attempts (3 attempts/5 minutes/sessionId)
-  const limit = await rateLimit(
-    `rate:resend_otp:${validatedFields.data.sessionId}`,
-    3,
-    300
-  ); // 3 attempts in 5 minutes
+  const limit = await rateLimit(`rate:resend_otp:${sessionId}`, 3, OTP_TTL);
   if (limit) {
     return {
       error:
@@ -61,9 +65,7 @@ export default async function resendOtpAction(
   }
 
   // Get session data from cache
-  const sessionData = getFromCache<SessionData>(
-    `signup:${validatedFields.data.sessionId}`
-  );
+  const sessionData = getFromCache<SessionData>(`signup:${sessionId}`);
   if (!sessionData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
@@ -73,10 +75,10 @@ export default async function resendOtpAction(
   }
 
   // Decrypt session data
-  const decryptedData = (await decrypt(
+  const decryptedData = await decrypt<EncryptedData>(
     sessionData.encrypted,
     sessionData.iv
-  )) as EncryptedData | null;
+  );
   if (!decryptedData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
@@ -86,7 +88,6 @@ export default async function resendOtpAction(
   }
   // Generate new OTP
   const newOtp = otp(OTP_LENGTH);
-
   if (!newOtp) {
     return {
       error: "An error occurred while generating your OTP.",
@@ -109,9 +110,9 @@ export default async function resendOtpAction(
     };
   }
   const isCached = setToCache(
-    `signup:${validatedFields.data.sessionId}`,
+    `signup:${sessionId}`,
     updatedSessionData,
-    OTP_EXPIRATION
+    OTP_TTL
   );
   if (!isCached) {
     return {
@@ -122,11 +123,7 @@ export default async function resendOtpAction(
   }
 
   // Store last OTP send time
-  const lastOtpSet = setToCache(
-    `last_otp_${validatedFields.data.sessionId}`,
-    Date.now(),
-    OTP_EXPIRATION
-  );
+  const lastOtpSet = setToCache(`last_otp_${sessionId}`, Date.now(), OTP_TTL);
   if (!lastOtpSet) {
     return {
       error: "An error occurred while storing the last OTP send time.",

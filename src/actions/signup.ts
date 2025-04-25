@@ -9,14 +9,12 @@ import { signUpSchema } from "@/types/authSchema";
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/rateLimit";
 import { Hash } from "@/lib/password";
-
-const OTP_LENGTH = 6;
-const OTP_EXPIRATION = 300;
+import { redirect } from "next/navigation";
+import { OTP_LENGTH, OTP_TTL, RATE_LIMIT } from "@/constants/globals";
 
 type FormState =
   | {
       error?: string;
-      sessionId?: string;
       errors?: {
         firstName?: string[];
         lastName?: string[];
@@ -31,6 +29,7 @@ type FormState =
   | undefined;
 
 export default async function Signup(_State: FormState, formData: FormData) {
+  const headerList = await headers();
   const validatedFields = await signUpSchema.safeParseAsync({
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
@@ -49,29 +48,24 @@ export default async function Signup(_State: FormState, formData: FormData) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       error: undefined,
-      sessionId: undefined,
     };
   }
 
   const { email } = validatedFields.data;
 
   // Check if user exists
-  const isUserExist = await GetUserFromDb({ email });
-  if (isUserExist) {
+  if (await GetUserFromDb({ email })) {
     return {
       error: "User already exists",
       errors: undefined,
-      sessionId: undefined,
     };
   }
 
   // Rate limit signup attempts
-  const limit = await rateLimit(`rate:signup:${email}`, 5, 60);
-  if (!limit) {
+  if (!(await rateLimit(`rate:signup:${email}`, 5, RATE_LIMIT))) {
     return {
       error: "Too many signup attempts. Please try again later.",
       errors: undefined,
-      sessionId: undefined,
     };
   }
 
@@ -83,12 +77,10 @@ export default async function Signup(_State: FormState, formData: FormData) {
 
   // Generate OTP
   const otpCode = otp(OTP_LENGTH);
-
   if (!otpCode) {
     return {
       error: "An error occurred while generating your OTP",
       errors: undefined,
-      sessionId: undefined,
     };
   }
 
@@ -96,7 +88,7 @@ export default async function Signup(_State: FormState, formData: FormData) {
   const hashedPassword = await Hash(validatedFields.data.password);
 
   // Store user data in cache
-  const userAgent = (await headers()).get("user-agent") || "unknown";
+  const userAgent = headerList.get("user-agent") || "unknown";
   const sessionData = await encrypt({
     userData: { ...validatedFields.data, password: hashedPassword },
     otp: otpCode,
@@ -107,37 +99,41 @@ export default async function Signup(_State: FormState, formData: FormData) {
     return {
       error: "An error occurred while encrypting your data",
       errors: undefined,
-      sessionId: undefined,
     };
   }
 
-  const isCached = setToCache(
-    `signup:${sessionId}`,
-    sessionData,
-    OTP_EXPIRATION
-  );
+  // set to cache
+  const setCache = setToCache(`signup:${sessionId}`, sessionData, OTP_TTL);
 
-  if (!isCached) {
+  if (!setCache) {
     return {
       error: "An error occurred while creating your account cache",
       errors: undefined,
-      sessionId: undefined,
     };
   }
 
   // Send OTP
-  const isSent = await sendOtp(email, otpCode);
-  if (!isSent) {
+  const setOtp = await sendOtp(email, otpCode);
+  if (!setOtp) {
     return {
       error: "An error occurred while sending your OTP",
       errors: undefined,
-      sessionId: undefined,
     };
   }
 
-  return {
-    sessionId:sessionId,
-    errors: undefined,
-    error: undefined,
-  };
+  // Encrypt sessionId for redirection
+  const encryptedSession = await encrypt(sessionId);
+  if (!encryptedSession) {
+    return {
+      error: "An error occurred while encrypting your session ID",
+      errors: undefined,
+    };
+  }
+
+  // Redirect with encrypted sessionId and iv as query params
+  redirect(
+    `/auth/otp?iv=${encodeURIComponent(
+      encryptedSession.iv
+    )}&encrypted=${encodeURIComponent(encryptedSession.encrypted)}`
+  );
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { OTP_TTL, RATE_LIMIT } from "@/constants/globals";
 import { signIn } from "@/lib/auth";
 import { getFromCache, deleteFromCache, setToCache } from "@/lib/cache";
 import { CreateUser } from "@/lib/db";
@@ -11,7 +12,7 @@ import { headers } from "next/headers";
 type FormState =
   | {
       error?: string;
-      errors?: { otp?: string[]; sessionId?: string[] };
+      errors?: { otp?: string[]; iv?: string[]; encrypted?: string[] };
     }
   | undefined;
 
@@ -27,11 +28,10 @@ type EncryptedData = {
 };
 
 export default async function OtpAction(_State: FormState, formData: FormData) {
-  // Validate OTP input
-  console.log("start")
   const validatedFields = await otpSchema.safeParseAsync({
     otp: formData.get("otp"),
-    sessionId: formData.get("sessionId"),
+    iv: formData.get("iv"),
+    encrypted: formData.get("encrypted"),
   });
 
   if (!validatedFields.success) {
@@ -40,10 +40,20 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
       error: undefined,
     };
   }
+  const { otp, iv, encrypted } = validatedFields.data;
+
+  // decrypt
+  const sessionId = await decrypt<string>(encrypted, iv);
+  if (!sessionId) {
+    return {
+      errors: undefined,
+      error: "invalid token failed to decrypt",
+    };
+  }
 
   // Rate limit OTP attempts
-  const rateLimitKey = `rate:otp:${validatedFields.data.sessionId}`;
-  const isRateLimited = await rateLimit(rateLimitKey, 5, 60);
+  const rateLimitKey = `rate:otp:${sessionId}`;
+  const isRateLimited = await rateLimit(rateLimitKey, 5, RATE_LIMIT);
   if (!isRateLimited) {
     return {
       error: "Too many attempts. Please try again later.",
@@ -52,9 +62,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Retrieve session data from cache
-  const sessionData = getFromCache<SessionData>(
-    `signup:${validatedFields.data.sessionId}`
-  );
+  const sessionData = getFromCache<SessionData>(`signup:${sessionId}`);
   if (!sessionData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
@@ -63,10 +71,10 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Decrypt session data
-  const decryptedData = (await decrypt(
+  const decryptedData = await decrypt<EncryptedData>(
     sessionData.encrypted,
     sessionData.iv
-  )) as EncryptedData | null;
+  );
   if (!decryptedData) {
     return {
       error: "Session expired or invalid. Please try signing up again.",
@@ -75,22 +83,20 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Validate OTP
-  if (decryptedData.otp !== validatedFields.data.otp) {
-    const failedAttemptsKey = `failed_attempts_${validatedFields.data.sessionId}`;
+  if (decryptedData.otp !== otp) {
+    const failedAttemptsKey = `failed_attempts_${sessionId}`;
     const failedAttempts = (getFromCache<number>(failedAttemptsKey) || 0) + 1;
-
-    setToCache(failedAttemptsKey, failedAttempts, 300); // 5-minute TTL
+    setToCache(failedAttemptsKey, failedAttempts, OTP_TTL); // 5-minute TTL
 
     if (failedAttempts >= 5) {
-      cleanUpCache(validatedFields.data.sessionId, failedAttemptsKey);
+      cleanUpCache(sessionId as string, failedAttemptsKey);
       return {
         error: "Too many incorrect attempts. Please try signing up again.",
-
         errors: undefined,
       };
     }
 
-    return { error: "Invalid OTP. Please try again." };
+    return { error: "Invalid OTP. Please try again.", errors: undefined };
   }
 
   // Optional: Validate user agent
@@ -116,7 +122,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
     referralCode: decryptedData.userData.referralCode,
   });
   if (!user) {
-    cleanUpCache(validatedFields.data.sessionId);
+    cleanUpCache(sessionId as string);
     return {
       error: "An error occurred while creating your account.",
       errors: undefined,
@@ -124,7 +130,7 @@ export default async function OtpAction(_State: FormState, formData: FormData) {
   }
 
   // Clean up cache and sign in user
-  cleanUpCache(validatedFields.data.sessionId);
+  cleanUpCache(sessionId as string);
   await signIn("credentials", {
     redirect: true,
     redirectTo: "/dashboard",
