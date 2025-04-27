@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
-import { decrypt } from "./lib/encrypt";
-import { getFromCache } from "./lib/cache";
 
 const { auth } = NextAuth(authConfig);
 
