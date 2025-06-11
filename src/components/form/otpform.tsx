@@ -9,8 +9,6 @@ import { toast } from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TIMER_DURATION } from "@/constants/globals";
 
-
-
 export default function OtpForm() {
   const [otpState, otpAction, otpPending] = useActionState(
     OtpAction,
@@ -121,7 +119,7 @@ export default function OtpForm() {
           <button
             type="submit"
             className="w-full py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold shadow-md hover:from-blue-700 hover:to-blue-900 focus:ring-4 focus:ring-yellow-400 focus:outline-none transition-all duration-300"
-            disabled={otpPending}
+            disabled={otpPending && timeLeft <= 0}
           >
             {otpPending ? "Verifying..." : "Verify"}
           </button>

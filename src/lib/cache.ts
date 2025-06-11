@@ -1,6 +1,5 @@
+import { OTP_TTL } from "@/constants/globals";
 import NodeCache from "node-cache";
-
-const OTP_EXPIRATION = 300;
 
 class CacheSingleton {
   private static instance: CacheSingleton;
@@ -8,8 +7,8 @@ class CacheSingleton {
 
   private constructor() {
     this.cache = new NodeCache({
-      stdTTL: OTP_EXPIRATION,
-      checkperiod: 240,
+      stdTTL: OTP_TTL,
+      checkperiod: OTP_TTL,
     });
   }
 

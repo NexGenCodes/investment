@@ -103,7 +103,11 @@ export default async function Signup(_State: FormState, formData: FormData) {
   }
 
   // set to cache
-  const setCache = setToCache(`signup:${sessionId}`, sessionData, OTP_TTL);
+  const setCache = setToCache(
+    `signup:${sessionId}`,
+    sessionData,
+    OTP_TTL + 100
+  );
 
   if (!setCache) {
     return {
